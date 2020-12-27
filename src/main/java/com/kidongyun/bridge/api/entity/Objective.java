@@ -19,5 +19,7 @@ public class Objective extends Cell {
 
     private String description;
 
-    private int priority;
+    private Integer priority;
+
+    private Long parent;
 }

@@ -32,7 +32,7 @@ public class CellRepositoryTest {
 
     /** when you add each objective and plan values, findByType(Cell.Type.Objective) function() should be returned the collection had only 1 sized value  */
     @Test
-    public void findByType_shouldBeNormal() {
+    public void findByType_ObjectiveShouldBeNormal() {
         Objective objective = Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
                 .title("I would like to become senoir developer").description("I always study the techniques of coding for 3 hours").priority(1).build();
         objectiveRepository.save(objective);
@@ -48,7 +48,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void save_ObjectiveIsInserted() {
+    public void save_ObjectiveShouldBeInserted() {
         Objective objective = Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
                 .title("I would like to become senoir developer").description("I always study the techniques of coding for 3 hours").priority(1).build();
         objectiveRepository.save(objective);
