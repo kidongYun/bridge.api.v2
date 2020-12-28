@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -22,6 +23,6 @@ public class Member {
 
     private String password;
 
-//    @OneToMany(mappedBy = "member")
-//    private List<Cell> cells;
+    @OneToMany(mappedBy = "member")
+    private Set<Cell> cells = new HashSet<>();
 }
