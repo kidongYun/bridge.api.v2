@@ -31,6 +31,6 @@ public class Cell {
 
     protected Type type;
 
-    @ManyToOne
-    protected Member member;
+//    @ManyToOne
+//    protected Member member;
 }

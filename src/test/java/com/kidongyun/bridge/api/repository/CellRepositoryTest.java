@@ -46,16 +46,4 @@ public class CellRepositoryTest {
         log.info("YKD : " + objectives.toString());
         assertThat(objectives.size()).isEqualTo(1);
     }
-
-    @Test
-    public void save_ObjectiveShouldBeInserted() {
-        Objective objective = Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("I would like to become senoir developer").description("I always study the techniques of coding for 3 hours").priority(1).build();
-        objectiveRepository.save(objective);
-
-        List<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
-
-        log.info("YKD : " + objectives.toString());
-        assertThat(objectives.size()).isEqualTo(1);
-    }
 }

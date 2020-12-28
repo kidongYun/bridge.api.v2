@@ -22,6 +22,6 @@ public class Member {
 
     private String password;
 
-    @OneToMany(mappedBy = "member")
-    private List<Cell> cells;
+//    @OneToMany(mappedBy = "member")
+//    private List<Cell> cells;
 }

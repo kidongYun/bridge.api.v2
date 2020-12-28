@@ -1,34 +1,30 @@
-package com.kidongyun.bridge.api;
+package com.kidongyun.bridge.api.repository.objective;
 
-import com.kidongyun.bridge.api.entity.Cell;
-import com.kidongyun.bridge.api.entity.Member;
+import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Objective;
-import com.kidongyun.bridge.api.repository.cell.CellRepository;
-import com.kidongyun.bridge.api.repository.member.MemberRepository;
-import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
-public class TestRunner implements ApplicationRunner {
-    private final ObjectiveRepository objectiveRepository;
-    private final MemberRepository memberRepository;
+@RunWith(SpringRunner.class)
+@DataJpaTest
+@Import(QuerydslConfig.class)
+public class ObjectiveRepositoryTest {
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        Member member = Member.builder().email("oriondigestive@gmail.com").password("q1w2e3r4").build();
+    @Autowired
+    ObjectiveRepository objectiveRepository;
 
-        memberRepository.save(member);
-
-        Objective  parent_objective = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+    @Test
+    public void findByParent() {
+        Objective parent_objective = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").build();
 
         Objective child_objective = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
@@ -46,6 +42,7 @@ public class TestRunner implements ApplicationRunner {
         objectiveRepository.save(child_objective3);
 
         List<Objective> objectives = objectiveRepository.findByParent(1L);
+        assertThat(objectives.size())
         log.info("YKD : " + objectives.toString());
     }
 }
