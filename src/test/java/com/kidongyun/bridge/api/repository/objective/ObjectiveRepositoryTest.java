@@ -118,9 +118,11 @@ public class ObjectiveRepositoryTest {
         objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title4").description("desc4").parent(2L).member(john).build());
 
+        /* Act */
         Objective objective = objectiveRepository.findById(2L)
                 .orElseThrow(() -> new Exception("We can't find the objective you told me"));
 
+        /* Assert */
         assertThat(objective).isNotNull();
         assertThat(objective.getId()).isEqualTo(2L);
     }
