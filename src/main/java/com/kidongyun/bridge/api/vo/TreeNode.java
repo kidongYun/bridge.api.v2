@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @Slf4j
 @Getter
@@ -28,7 +29,15 @@ public class TreeNode<T> {
         children.add(new TreeNode.Builder<T>().data(data).parent(this).build());
     }
 
-    public void removeChild() {
+    public void removeChild(Predicate<T> condition) {
+        List<TreeNode<T>> result = new ArrayList<>();
+        for(TreeNode<T> child : children) {
+            if(condition.test(child.data)) {
+                continue;
+            }
+            result.add(child);
+        }
+        this.setChildren(result);
     }
 
     private List<T> dfs(TreeNode<T> treeNode, List<T> dataList) {

@@ -27,6 +27,41 @@ public class TreeNodeTest {
     }
 
     @Test
+    public void removeChild_byId() {
+        /* Arrange */
+        TreeNode<Objective> root = new TreeNode.Builder<Objective>().data(Objective.builder().id(1L).build()).build();
+        root.addChild(Objective.builder().id(2L).build());
+        root.addChild(Objective.builder().id(3L).build());
+        root.addChild(Objective.builder().id(4L).build());
+        assertThat(root.getChildren().size()).isEqualTo(3);
+
+        /* Act */
+        root.removeChild(obj -> obj.getId() == 3L);
+
+        /* Assert */
+        assertThat(root.getChildren().size()).isEqualTo(2);
+        assertThat(root.getChildren().get(0).getData().getId()).isEqualTo(2L);
+        assertThat(root.getChildren().get(1).getData().getId()).isEqualTo(4L);
+    }
+
+    @Test
+    public void removeChild_byPriority() {
+        /* Arrange */
+        TreeNode<Objective> root = new TreeNode.Builder<Objective>().data(Objective.builder().id(1L).build()).build();
+        root.addChild(Objective.builder().id(2L).priority(1).build());
+        root.addChild(Objective.builder().id(3L).priority(1).build());
+        root.addChild(Objective.builder().id(4L).priority(2).build());
+        assertThat(root.getChildren().size()).isEqualTo(3);
+
+        /* Act */
+        root.removeChild(obj -> obj.getPriority() == 1);
+
+        /* Assert */
+        assertThat(root.getChildren().size()).isEqualTo(1);
+        assertThat(root.getChildren().get(0).getData().getId()).isEqualTo(4L);
+    }
+
+    @Test
     public void traversal_normal() {
         /* Arrange */
         TreeNode<Objective> root = new TreeNode.Builder<Objective>().data(Objective.builder().id(1L).build()).build();
