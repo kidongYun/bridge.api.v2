@@ -5,6 +5,10 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -21,5 +25,9 @@ public class Objective extends Cell {
 
     private Integer priority;
 
-    private Long parent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Objective parent;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    private Set<Objective> children;
 }
