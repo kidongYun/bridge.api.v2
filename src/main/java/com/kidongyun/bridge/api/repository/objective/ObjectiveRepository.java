@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Transactional
 public interface ObjectiveRepository extends CellRepository<Objective>, ObjectiveRepositoryCustom {
-    Set<Objective> findByParent(Long parent);
+    Set<Objective> findByParent(Objective parent);
 
     Set<Objective> findByParentAndMember(Long parent, Member member);
 

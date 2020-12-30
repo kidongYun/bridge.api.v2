@@ -48,7 +48,7 @@ public class ObjectiveRepositoryTest {
         }
 
         /* Act */
-        Set<Objective> result = objectiveRepository.findByParent(1L);
+        Set<Objective> result = objectiveRepository.findByParent(Objective.builder().id(1L).build());
 
         /* Assert */
         assertThat(result.size()).isEqualTo(2);
