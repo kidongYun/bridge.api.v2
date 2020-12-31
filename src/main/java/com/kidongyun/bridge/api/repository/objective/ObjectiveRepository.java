@@ -13,6 +13,4 @@ public interface ObjectiveRepository extends CellRepository<Objective>, Objectiv
     Set<Objective> findByParent(Objective parent);
 
     Set<Objective> findByParentAndMember(Objective parent, Member member);
-
-    Optional<Objective> findById(Long id);
 }

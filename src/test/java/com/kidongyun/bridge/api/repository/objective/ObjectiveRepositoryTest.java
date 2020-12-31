@@ -1,6 +1,5 @@
 package com.kidongyun.bridge.api.repository.objective;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
@@ -123,29 +122,5 @@ public class ObjectiveRepositoryTest {
             assertThat(result.getParent().getId()).isEqualTo(1L);
             assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
         }
-    }
-
-    @Test
-    public void findById_normal() throws Exception {
-        /* Arrange */
-        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title1").description("desc1").build());
-
-        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
-
-        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
-
-        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
-
-        /* Act */
-        Objective objective = objectiveRepository.findById(2L)
-                .orElseThrow(() -> new Exception("We can't find the objective you told me"));
-
-        /* Assert */
-        assertThat(objective).isNotNull();
-        assertThat(objective.getId()).isEqualTo(2L);
     }
 }

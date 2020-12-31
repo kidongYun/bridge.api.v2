@@ -98,4 +98,39 @@ public class CellRepositoryTest {
             assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
         }
     }
+
+    @Test
+    public void findById_normal() throws Exception {
+        /* Arrange */
+        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").build());
+
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
+
+        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
+
+        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
+
+        planRepository.save(Plan.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content5").build());
+
+        planRepository.save(Plan.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content6").build());
+
+        /* Act */
+        Objective objective = objectiveRepository.findById(2L)
+                .orElseThrow(() -> new Exception("We can't find the objective you told me"));
+
+        Plan plan = planRepository.findById(5L)
+                .orElseThrow(() -> new Exception("We can't find the plan you told me"));
+
+        /* Assert */
+        assertThat(objective).isNotNull();
+        assertThat(objective.getId()).isEqualTo(2L);
+        assertThat(plan).isNotNull();
+        assertThat(plan.getId()).isEqualTo(5L);
+    }
 }
