@@ -2,9 +2,11 @@ package com.kidongyun.bridge.api.repository;
 
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
+import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.repository.cell.CellRepository;
+import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,25 +27,75 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CellRepositoryTest {
 
     @Autowired
+    CellRepository<Cell> cellRepository;
+
+    @Autowired
     CellRepository<Objective> objectiveRepository;
 
     @Autowired
     CellRepository<Plan> planRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     /** when you add each objective and plan values, findByType(Cell.Type.Objective) function() should be returned the collection had only 1 sized value  */
     @Test
-    public void findByType_ObjectiveShouldBeNormal() {
-        Objective objective = Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("I would like to become senoir developer").description("I always study the techniques of coding for 3 hours").priority(1).build();
-        objectiveRepository.save(objective);
+    public void findByType_normal() {
+        /* Arrange */
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
+                .title("title1").description("desc1").priority(1).build());
 
-        Plan plan = Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("Let's study Spring Data JPA").build();
-        planRepository.save(plan);
+        planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content1").build());
 
-        List<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
+        /* Act */
+        Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
 
-        log.info("YKD : " + objectives.toString());
-        assertThat(objectives.size()).isEqualTo(1);
+        /* Assert */
+        log.info("YKD : " + results.toString());
+        assertThat(results.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void findByMember_normal() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(john);
+
+        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
+                .title("title1").description("desc1").priority(1).member(john).build());
+
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
+                .title("title2").description("desc2").priority(1).member(john).build());
+
+        planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content3").member(john).build());
+
+        planRepository.save(Plan.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content4").member(john).build());
+
+        Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(julia);
+
+        objectiveRepository.save(Objective.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
+                .title("title5").description("desc5").priority(1).member(julia).build());
+
+        objectiveRepository.save(Objective.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
+                .title("title6").description("desc6").priority(1).member(julia).build());
+
+        planRepository.save(Plan.builder().id(7L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content7").member(julia).build());
+
+        planRepository.save(Plan.builder().id(8L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content8").member(julia).build());
+
+        /* Act */
+        Set<Cell> results = cellRepository.findByMember(john);
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+        for(Cell result : results) {
+            assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
+        }
     }
 }

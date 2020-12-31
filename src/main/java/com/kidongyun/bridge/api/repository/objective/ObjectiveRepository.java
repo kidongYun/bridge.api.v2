@@ -12,7 +12,7 @@ import java.util.Set;
 public interface ObjectiveRepository extends CellRepository<Objective>, ObjectiveRepositoryCustom {
     Set<Objective> findByParent(Objective parent);
 
-    Set<Objective> findByParentAndMember(Long parent, Member member);
+    Set<Objective> findByParentAndMember(Objective parent, Member member);
 
     Optional<Objective> findById(Long id);
 }

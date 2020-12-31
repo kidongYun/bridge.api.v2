@@ -1,8 +1,11 @@
 package com.kidongyun.bridge.api.repository.objective;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
+import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
+import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,34 +28,56 @@ public class ObjectiveRepositoryTest {
     @Autowired
     ObjectiveRepository objectiveRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Test
+    public void findByType_normal() {
+        /* Arrange */
+        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").build());
+
+        objectiveRepository.save(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
+
+        objectiveRepository.save(Objective.builder().id(3L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
+
+        objectiveRepository.save(Objective.builder().id(4L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
+
+        /* Act */
+        Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+        for(Objective result : results) {
+            assertThat(result.getType()).isEqualTo(Cell.Type.Objective);
+        }
+    }
+
     @Test
     public void findByParent_normal() {
         /* Arrange */
-        Set<Objective> stubs = new HashSet<>();
-
-        stubs.add(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").build());
 
-        stubs.add(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
 
-        stubs.add(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
 
-        stubs.add(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
 
-        for(Objective stub : stubs) {
-            objectiveRepository.save(stub);
-        }
-
         /* Act */
-        Set<Objective> result = objectiveRepository.findByParent(Objective.builder().id(1L).build());
+        Set<Objective> results = objectiveRepository.findByParent(Objective.builder().id(1L).build());
 
         /* Assert */
-        assertThat(result.size()).isEqualTo(2);
-        for(Objective objective : result) {
-            assertThat(objective.getParent()).isEqualTo(1);
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getParent().getId()).isEqualTo(1L);
         }
     }
 
@@ -61,6 +85,7 @@ public class ObjectiveRepositoryTest {
     public void findByParentAndMember_normal() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(john);
 
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").member(john).build());
@@ -75,6 +100,7 @@ public class ObjectiveRepositoryTest {
                 .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).member(john).build());
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(julia);
 
         objectiveRepository.save(Objective.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title5").description("desc5").parent(Objective.builder().id(3L).build()).member(julia).build());
@@ -89,32 +115,30 @@ public class ObjectiveRepositoryTest {
                 .status("prepared").title("title8").description("desc8").parent(Objective.builder().id(4L).build()).member(julia).build());
 
         /* Act */
-        Set<Objective> results = objectiveRepository.findByParentAndMember(1L, Member.builder().email("john@gmail.com").build());
+        Set<Objective> results = objectiveRepository.findByParentAndMember(Objective.builder().id(1L).build(), john);
 
         /* Assert */
         assertThat(results.size()).isEqualTo(2);
         for(Objective result : results) {
-            assertThat(result.getParent()).isEqualTo(1L);
-            assertThat(result.getMember()).isEqualTo(john);
+            assertThat(result.getParent().getId()).isEqualTo(1L);
+            assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
         }
     }
 
     @Test
     public void findById_normal() throws Exception {
         /* Arrange */
-        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
-
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title1").description("desc1").member(john).build());
+                .status("completed").title("title1").description("desc1").build());
 
         objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).member(john).build());
+                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
 
         objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).member(john).build());
+                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
 
         objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).member(john).build());
+                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
 
         /* Act */
         Objective objective = objectiveRepository.findById(2L)
