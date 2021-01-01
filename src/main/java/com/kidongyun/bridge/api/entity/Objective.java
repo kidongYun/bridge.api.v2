@@ -13,8 +13,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Getter
@@ -44,17 +48,28 @@ public class Objective extends Cell {
 
     @Getter
     @Setter
-    @ToString
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
     public static class Response {
         private Long id;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private String status;
+        private Type type;
+        private String email;
         private String title;
         private String description;
         private Integer priority;
-        private Objective parent;
-        private Set<Objective> children;
+        private Long parentId;
+        private Set<Long> childrenId;
+
+        public static Response of(Objective obj) {
+            return Response.builder().id(obj.getId()).startDateTime(obj.getStartDateTime()).endDateTime(obj.getEndDateTime()).status(obj.status)
+                    .type(obj.type).email(obj.member.getEmail()).title(obj.getTitle()).description(obj.getDescription()).priority(obj.getPriority())
+                    .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
+                    .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
+        }
     }
 }

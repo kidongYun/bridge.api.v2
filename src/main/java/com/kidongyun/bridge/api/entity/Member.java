@@ -22,6 +22,7 @@ public class Member {
 
     private String password;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private Set<Cell> cells = new HashSet<>();
 }
