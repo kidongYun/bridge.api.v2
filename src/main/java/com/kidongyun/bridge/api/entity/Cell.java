@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Slf4j
 @Getter
 @Setter
-@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

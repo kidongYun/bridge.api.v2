@@ -10,7 +10,6 @@ import javax.persistence.Id;
 @Slf4j
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

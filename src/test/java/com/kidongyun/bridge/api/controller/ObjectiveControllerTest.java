@@ -7,16 +7,19 @@ import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,36 +28,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Import(QuerydslConfig.class)
 public class ObjectiveControllerTest {
-    @Autowired
+    @Mock
     ObjectiveRepository objectiveRepository;
 
-    @Autowired
+    @InjectMocks
     ObjectiveController objectiveController;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(objectiveController).build();
     }
 
     @Test
     public void getObjective_normal() throws Exception {
         /* Arrange */
-        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title1").description("desc1").build());
+        when(objectiveRepository.findById(2L)).thenReturn(Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build()));
 
-        objectiveRepository.save(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
+        /* Act, Assert */
+        mockMvc.perform(get("/api/v1/objective/2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 
-        objectiveRepository.save(Objective.builder().id(3L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
+    @Test
+    public void getObjective_cantFindObjective() throws Exception {
+        /* Arrange */
 
-        objectiveRepository.save(Objective.builder().id(4L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
-
-        mockMvc.perform(get("/api/v1/objective/1")
-                .param("id", "1"))
+        mockMvc.perform(get("/api/v1/objective/2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
