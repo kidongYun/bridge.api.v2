@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api.controller;
 
+import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import com.kidongyun.bridge.api.service.ObjectiveService;
@@ -28,9 +29,15 @@ public class ObjectiveController {
         this.objectiveRepository = objectiveRepository;
     }
 
+    @GetMapping
+    public ResponseEntity<?> getObjective() {
+        log.info("YKD : getObjective");
+        return ResponseEntity.status(HttpStatus.OK).body(objectiveRepository.findByType(Cell.Type.Objective));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getObjective(@PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.findById(id)
+    public ResponseEntity<?> getObjectiveById(@PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.findByIdAndType(id, Cell.Type.Objective)
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR))));
     }
 }

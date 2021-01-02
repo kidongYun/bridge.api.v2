@@ -16,4 +16,6 @@ public interface CellRepository<T extends Cell> extends JpaRepository<T, Long>, 
     Set<T> findByMember(Member member);
 
     Optional<T> findById(Long id);
+
+    Optional<T> findByIdAndType(Long id, Cell.Type type);
 }

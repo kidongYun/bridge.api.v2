@@ -67,7 +67,8 @@ public class Objective extends Cell {
 
         public static Response of(Objective obj) {
             return Response.builder().id(obj.getId()).startDateTime(obj.getStartDateTime()).endDateTime(obj.getEndDateTime()).status(obj.status)
-                    .type(obj.type).email(obj.member.getEmail()).title(obj.getTitle()).description(obj.getDescription()).priority(obj.getPriority())
+                    .type(obj.type).email(Objects.requireNonNullElse(obj.member, Member.builder().build()).getEmail())
+                    .title(obj.getTitle()).description(obj.getDescription()).priority(obj.getPriority())
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
         }

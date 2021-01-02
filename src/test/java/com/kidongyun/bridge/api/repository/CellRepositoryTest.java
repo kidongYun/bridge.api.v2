@@ -52,7 +52,6 @@ public class CellRepositoryTest {
         Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
 
         /* Assert */
-        log.info("YKD : " + results.toString());
         assertThat(results.size()).isEqualTo(1);
     }
 
@@ -121,16 +120,31 @@ public class CellRepositoryTest {
                 .status("prepared").type(Cell.Type.Plan).content("content6").build());
 
         /* Act */
-        Objective objective = objectiveRepository.findById(2L)
-                .orElseThrow(() -> new Exception("We can't find the objective you told me"));
+        Objective objective = objectiveRepository.findById(2L).orElse(null);
 
-        Plan plan = planRepository.findById(5L)
-                .orElseThrow(() -> new Exception("We can't find the plan you told me"));
+        Plan plan = planRepository.findById(5L).orElse(null);
 
         /* Assert */
         assertThat(objective).isNotNull();
         assertThat(objective.getId()).isEqualTo(2L);
         assertThat(plan).isNotNull();
         assertThat(plan.getId()).isEqualTo(5L);
+    }
+
+    @Test
+    public void findByIdAndType_normal() throws Exception {
+        /* Arrange */
+        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build());
+
+        planRepository.save(Plan.builder().id(2L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status("prepared").content("content2").build());
+
+        /* Act, Assert */
+        assertThat(objectiveRepository.findByIdAndType(1L, Cell.Type.Objective).orElse(null).getId()).isEqualTo(1L);
+        assertThat(objectiveRepository.findByIdAndType(2L, Cell.Type.Objective).orElse(null)).isNull();
+
+        assertThat(planRepository.findByIdAndType(1L, Cell.Type.Plan).orElse(null)).isNull();
+        assertThat(planRepository.findByIdAndType(2L, Cell.Type.Plan).orElse(null).getId()).isEqualTo(2L);
     }
 }
