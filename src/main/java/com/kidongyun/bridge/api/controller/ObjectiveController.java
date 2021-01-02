@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 import javax.transaction.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RestController
@@ -31,8 +35,8 @@ public class ObjectiveController {
 
     @GetMapping
     public ResponseEntity<?> getObjective() {
-        log.info("YKD : getObjective");
-        return ResponseEntity.status(HttpStatus.OK).body(objectiveRepository.findByType(Cell.Type.Objective));
+        return ResponseEntity.status(HttpStatus.OK).body(objectiveRepository.findByType(Cell.Type.Objective)
+                .stream().map(Objective.Response::of).collect(toSet()));
     }
 
     @GetMapping("/{id}")

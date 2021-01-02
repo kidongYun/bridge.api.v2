@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api;
 
+import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class TestRunner implements ApplicationRunner {
+public class DevRunner implements ApplicationRunner {
     private final MemberRepository memberRepository;
     private final ObjectiveRepository objectiveRepository;
 
@@ -27,32 +28,32 @@ public class TestRunner implements ApplicationRunner {
 
         memberRepository.save(john);
 
-        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").member(john).build());
 
-        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).member(john).build());
 
-        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(3L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).member(john).build());
 
-        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(4L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).member(john).build());
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
 
         memberRepository.save(julia);
 
-        objectiveRepository.save(Objective.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(5L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title5").description("desc5").parent(Objective.builder().id(3L).build()).member(julia).build());
 
-        objectiveRepository.save(Objective.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(6L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title6").description("desc6").parent(Objective.builder().id(3L).build()).member(julia).build());
 
-        objectiveRepository.save(Objective.builder().id(7L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(7L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title7").description("desc7").parent(Objective.builder().id(4L).build()).member(julia).build());
 
-        objectiveRepository.save(Objective.builder().id(8L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        objectiveRepository.save(Objective.builder().id(8L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title8").description("desc8").parent(Objective.builder().id(4L).build()).member(julia).build());
     }
 }

@@ -2,6 +2,7 @@ package com.kidongyun.bridge.api.controller;
 
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
+import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
@@ -50,11 +51,13 @@ public class ObjectiveControllerTest {
     public void getObjective_normal() throws Exception {
         /* Arrange */
         Set<Objective> stub = new HashSet<>();
-        stub.add(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title1").description("desc1").parent(Objective.builder().id(1L).build()).build());
 
+        Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title1").description("desc1").member(Member.builder().build()).build();
+
+        stub.add(parent);
         stub.add(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
+                .status("prepared").title("title2").description("desc2").member(Member.builder().build()).parent(parent).build());
 
         when(objectiveRepository.findByType(Cell.Type.Objective)).thenReturn(stub);
 
