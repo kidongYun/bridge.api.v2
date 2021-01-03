@@ -101,11 +101,11 @@ public class ObjectiveControllerTest {
     @Test
     public void postObjective_normal() throws Exception {
         /* Arrange */
-        String content = objectMapper.writeValueAsString(Objective.Post.builder()
-                .endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30)).status("completed")
-                .email("john@gmail.com").title("titleFromApiTest").description("descFromApiTest").priorityLevel(1).parentId(1L).build());
-        Set<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
-        log.info("YKD : " + objectives.size());
+        Objective.Post stub = Objective.Post.builder().endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30))
+                .status("completed").email("john@gmail.com").title("title from test").description("desc from test").build();
+        String content = objectMapper.writeValueAsString(stub);
+
+        when(objectiveRepository.save(stub.toDomain())).thenReturn(stub.toDomain());
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
@@ -113,8 +113,5 @@ public class ObjectiveControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
-        log.info("YKD : " + results.size());
     }
 }

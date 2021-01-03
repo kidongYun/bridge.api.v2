@@ -23,12 +23,10 @@ import static java.util.stream.Collectors.toSet;
 @RequestMapping("api/v1/objective")
 public class ObjectiveController {
     private ObjectiveRepository objectiveRepository;
-    private CellRepository cellRepository;
 
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository, CellRepository cellRepository) {
+    public ObjectiveController(ObjectiveRepository objectiveRepository) {
         this.objectiveRepository = objectiveRepository;
-        this.cellRepository = cellRepository;
     }
 
     @GetMapping
@@ -46,14 +44,14 @@ public class ObjectiveController {
     @ExecuteLog
     @PostMapping
     public ResponseEntity<?> postObjective(@RequestBody Objective.Post param) {
-        Objective obj = objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
+        Objective obj = objectiveRepository.save(param.toDomain());
 
-//        if(Objects.isNull(obj)) {
-//            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        log.info("YKD : " + obj.getTitle());
+        log.info("YKD : " + obj.getDescription());
 
-        log.info("YKD : " +  cellRepository.findAll().size());
+        if(Objects.isNull(obj)) {
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(obj);
     }
