@@ -26,6 +26,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,6 +86,23 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void postObjective_normal() throws Exception {
+        /* Arrange */
+
+        /* Act, Assert */
+        mockMvc.perform(post("/api/v1/objective")
+                .param("endDateTime", "2021-06-30 12:16:56")
+                .param("status", "completed")
+                .param("email", "john@gmail.com")
+                .param("title", "title1")
+                .param("description", "desc1")
+                .param("priorityLevel", "1")
+                .param("parentId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

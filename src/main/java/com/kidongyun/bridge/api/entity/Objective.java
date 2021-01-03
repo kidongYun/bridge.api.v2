@@ -1,10 +1,6 @@
 package com.kidongyun.bridge.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +61,24 @@ public class Objective extends Cell {
                     .title(obj.getTitle()).description(obj.getDescription()).priority(obj.getPriority())
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class Post {
+        private LocalDateTime endDateTime;
+        private String status;
+        private String email;
+        private String title;
+        private String description;
+        private Integer priorityLevel;
+        private Long parentId;
+
+        public Objective toDomain() {
+            return Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(endDateTime).status(status)
+                    .type(Type.Objective).member(Member.builder().email(email).build()).title(title).description(description)
+                    .priority(Priority.builder().level(priorityLevel).build()).parent(Objective.builder().id(parentId).build()).build();
         }
     }
 }
