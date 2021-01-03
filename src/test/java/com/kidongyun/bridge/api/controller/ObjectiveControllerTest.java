@@ -1,19 +1,23 @@
 package com.kidongyun.bridge.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Import(QuerydslConfig.class)
@@ -39,6 +44,9 @@ public class ObjectiveControllerTest {
 
     @InjectMocks
     ObjectiveController objectiveController;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     private MockMvc mockMvc;
 
@@ -93,17 +101,20 @@ public class ObjectiveControllerTest {
     @Test
     public void postObjective_normal() throws Exception {
         /* Arrange */
+        String content = objectMapper.writeValueAsString(Objective.Post.builder()
+                .endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30)).status("completed")
+                .email("john@gmail.com").title("titleFromApiTest").description("descFromApiTest").priorityLevel(1).parentId(1L).build());
+        Set<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
+        log.info("YKD : " + objectives.size());
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
-                .param("endDateTime", "2021-06-30 12:16:56")
-                .param("status", "completed")
-                .param("email", "john@gmail.com")
-                .param("title", "title1")
-                .param("description", "desc1")
-                .param("priorityLevel", "1")
-                .param("parentId", "1"))
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
+        log.info("YKD : " + results.size());
     }
 }

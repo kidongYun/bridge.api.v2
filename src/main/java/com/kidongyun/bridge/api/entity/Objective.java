@@ -65,7 +65,10 @@ public class Objective extends Cell {
     }
 
     @Getter
+    @Setter
+    @Builder
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
         private LocalDateTime endDateTime;
         private String status;

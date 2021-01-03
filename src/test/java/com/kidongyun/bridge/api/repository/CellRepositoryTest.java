@@ -39,12 +39,28 @@ public class CellRepositoryTest {
     MemberRepository memberRepository;
 
     @Test
+    public void save_normal() {
+        /* Arrange, Act, Assert */
+        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
+        assertThat(cellRepository.findAll().size()).isEqualTo(1);
+
+        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").type(Cell.Type.Objective).title("title2").description("desc2").build());
+        assertThat(cellRepository.findAll().size()).isEqualTo(2);
+
+        planRepository.save(Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").type(Cell.Type.Plan).content("content3").build());
+        assertThat(cellRepository.findAll().size()).isEqualTo(3);
+    }
+
+    @Test
     public void findByType_normal() {
         /* Arrange */
-        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title1").description("desc1").build());
+        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
 
-        planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").type(Cell.Type.Plan).content("content1").build());
 
         /* Act */
