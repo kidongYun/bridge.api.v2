@@ -4,7 +4,9 @@ import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
+import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
+import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,9 @@ public class ObjectiveRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    PriorityRepository priorityRepository;
 
     @Test
     public void findByType_normal() {
@@ -121,6 +126,70 @@ public class ObjectiveRepositoryTest {
         for(Objective result : results) {
             assertThat(result.getParent().getId()).isEqualTo(1L);
             assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
+        }
+    }
+
+    @Test
+    public void findByPriority_normal() {
+        /* Arrange */
+        Priority priority1 = Priority.builder().level(1).description("Important").build();
+        priorityRepository.save(priority1);
+
+        Priority priority2 = Priority.builder().level(2).description("Normal").build();
+        priorityRepository.save(priority2);
+
+        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").priority(priority1).build());
+
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title2").description("desc2").priority(priority1).build());
+
+        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title3").description("desc3").priority(priority2).build());
+
+        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title4").description("desc4").priority(priority2).build());
+
+        /* Act */
+        Set<Objective> results = objectiveRepository.findByPriority(Priority.builder().level(1).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getPriority().getLevel()).isEqualTo(1);
+            assertThat(result.getPriority().getDescription()).isEqualTo("Important");
+        }
+    }
+
+    @Test
+    public void findByPriorityLevel_normal() {
+        /* Arrange */
+        Priority priority1 = Priority.builder().level(1).description("Important").build();
+        priorityRepository.save(priority1);
+
+        Priority priority2 = Priority.builder().level(2).description("Normal").build();
+        priorityRepository.save(priority2);
+
+        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").priority(priority1).build());
+
+        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title2").description("desc2").priority(priority1).build());
+
+        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title3").description("desc3").priority(priority2).build());
+
+        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title4").description("desc4").priority(priority2).build());
+
+        /* Act */
+        Set<Objective> results = objectiveRepository.findByPriorityLevel(1);
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getPriority().getLevel()).isEqualTo(1);
+            assertThat(result.getPriority().getDescription()).isEqualTo("Important");
         }
     }
 }

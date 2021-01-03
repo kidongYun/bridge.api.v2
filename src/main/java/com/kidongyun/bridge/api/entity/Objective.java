@@ -9,10 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,7 +29,11 @@ public class Objective extends Cell {
 
     private String description;
 
-    private Integer priority;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Priority priority;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "objective")
+    private Set<Plan> plans;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Objective parent;
@@ -41,17 +42,10 @@ public class Objective extends Cell {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private Set<Objective> children = new HashSet<>();
 
-    @JsonIgnore
-    public Set<Objective> getChildren() {
-        return children;
-    }
-
     @Getter
     @Setter
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
-    @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
     public static class Response {
         private Long id;
         private LocalDateTime startDateTime;
@@ -61,7 +55,7 @@ public class Objective extends Cell {
         private String email;
         private String title;
         private String description;
-        private Integer priority;
+        private Priority priority;
         private Long parentId;
         private Set<Long> childrenId;
 

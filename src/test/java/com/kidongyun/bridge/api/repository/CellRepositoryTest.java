@@ -38,12 +38,11 @@ public class CellRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
-    /** when you add each objective and plan values, findByType(Cell.Type.Objective) function() should be returned the collection had only 1 sized value  */
     @Test
     public void findByType_normal() {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title1").description("desc1").priority(1).build());
+                .title("title1").description("desc1").build());
 
         planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").type(Cell.Type.Plan).content("content1").build());
@@ -62,10 +61,10 @@ public class CellRepositoryTest {
         memberRepository.save(john);
 
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title1").description("desc1").priority(1).member(john).build());
+                .title("title1").description("desc1").member(john).build());
 
         objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title2").description("desc2").priority(1).member(john).build());
+                .title("title2").description("desc2").member(john).build());
 
         planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").type(Cell.Type.Plan).content("content3").member(john).build());
@@ -77,10 +76,10 @@ public class CellRepositoryTest {
         memberRepository.save(julia);
 
         objectiveRepository.save(Objective.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title5").description("desc5").priority(1).member(julia).build());
+                .title("title5").description("desc5").member(julia).build());
 
         objectiveRepository.save(Objective.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title6").description("desc6").priority(1).member(julia).build());
+                .title("title6").description("desc6").member(julia).build());
 
         planRepository.save(Plan.builder().id(7L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").type(Cell.Type.Plan).content("content7").member(julia).build());
@@ -99,7 +98,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findById_normal() throws Exception {
+    public void findById_normal() {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").build());
@@ -132,7 +131,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByIdAndType_normal() throws Exception {
+    public void findByIdAndType_normal() {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build());

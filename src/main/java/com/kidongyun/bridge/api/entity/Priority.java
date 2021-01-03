@@ -4,8 +4,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -16,10 +17,10 @@ import javax.persistence.Id;
 @Entity
 public class Priority {
     @Id
-    @GeneratedValue
-    private Long id;
-
     private Integer level;
 
     private String description;
+
+    @OneToMany(mappedBy = "priority")
+    private Set<Objective> objectives;
 }
