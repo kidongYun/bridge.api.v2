@@ -16,6 +16,7 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 @Getter
 @Setter
+@ToString(exclude = {"priority", "plans", "parent", "children"})
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +41,7 @@ public class Objective extends Cell {
 
     @Getter
     @Setter
+    @ToString
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
@@ -66,6 +68,7 @@ public class Objective extends Cell {
 
     @Getter
     @Setter
+    @ToString
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

@@ -11,6 +11,7 @@ import java.util.Set;
 @Slf4j
 @Getter
 @Setter
+@ToString(exclude = "objectives")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

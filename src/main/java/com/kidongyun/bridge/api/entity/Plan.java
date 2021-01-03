@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 @Slf4j
 @Getter
 @Setter
+@ToString(exclude = "objective")
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
