@@ -5,7 +5,6 @@ import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
-import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -21,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

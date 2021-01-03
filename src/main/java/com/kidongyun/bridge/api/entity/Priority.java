@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Set;
+import javax.persistence.ManyToOne;
 
 @Slf4j
 @Getter
 @Setter
-@ToString(exclude = "objectives")
+@ToString(exclude = "member")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +21,9 @@ public class Priority {
 
     private String description;
 
-    @OneToMany(mappedBy = "priority")
-    private Set<Objective> objectives;
+    @ManyToOne
+    private Member member;
+
+//    @OneToMany(mappedBy = "priority")
+//    private Set<Objective> objectives;
 }

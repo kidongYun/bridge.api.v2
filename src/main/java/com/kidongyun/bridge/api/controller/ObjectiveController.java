@@ -39,15 +39,14 @@ public class ObjectiveController {
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR))));
     }
 
-    @ExecuteLog
     @PostMapping
     public ResponseEntity<?> postObjective(@RequestBody Objective.Post param) {
-        log.info("YKD : " + param);
-        log.info("YKD : " + param.toDomain());
+        log.info("YKD : " + param.toString());
+        log.info("YKD : " + param.toDomain().toString());
 
         Objective obj = objectiveRepository.save(param.toDomain());
 
-        log.info("YKD : " + obj);
+        log.info("YKD : " + obj.toString());
 
         return ResponseEntity.status(HttpStatus.OK).body(obj);
     }

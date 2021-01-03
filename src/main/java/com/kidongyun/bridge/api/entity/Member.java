@@ -26,4 +26,8 @@ public class Member {
     @Builder.Default
     @OneToMany(mappedBy = "member")
     private Set<Cell> cells = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member")
+    private Set<Priority> priorities = new HashSet<>();
 }

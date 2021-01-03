@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 @Slf4j
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

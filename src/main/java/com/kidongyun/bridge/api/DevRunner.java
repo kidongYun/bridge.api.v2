@@ -3,8 +3,10 @@ package com.kidongyun.bridge.api;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
+import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
+import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 public class DevRunner implements ApplicationRunner {
     private final MemberRepository memberRepository;
     private final ObjectiveRepository objectiveRepository;
+    private final PriorityRepository priorityRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

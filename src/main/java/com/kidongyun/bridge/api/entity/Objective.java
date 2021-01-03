@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 @Getter
 @Setter
-@ToString(exclude = {"priority", "plans", "parent", "children"})
+@ToString(exclude = {"priority", "plans", "parent", "children"}, callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
