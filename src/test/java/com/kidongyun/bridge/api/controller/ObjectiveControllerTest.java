@@ -5,7 +5,10 @@ import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
+import com.kidongyun.bridge.api.entity.Priority;
+import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
+import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,6 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ObjectiveControllerTest {
     @Mock
     ObjectiveRepository objectiveRepository;
+
+    @Mock
+    PriorityRepository priorityRepository;
+
+    @Mock
+    MemberRepository memberRepository;
 
     @InjectMocks
     ObjectiveController objectiveController;
@@ -63,6 +73,7 @@ public class ObjectiveControllerTest {
                 .status("prepared").title("title1").description("desc1").member(Member.builder().build()).build();
 
         stub.add(parent);
+
         stub.add(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title2").description("desc2").member(Member.builder().build()).parent(parent).build());
 
@@ -76,7 +87,7 @@ public class ObjectiveControllerTest {
     @Test
     public void getObjectiveById_normal() throws Exception {
         /* Arrange */
-        when(objectiveRepository.findByIdAndType(2L, Cell.Type.Objective)).thenReturn(Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+        when(objectiveRepository.findByIdAndType(anyLong(), any(Cell.Type.class))).thenReturn(Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build()));
 
         /* Act, Assert */
@@ -88,15 +99,7 @@ public class ObjectiveControllerTest {
     @Test(expected = Exception.class)
     public void getObjectiveById_cantFindObjective() throws Exception {
         /* Arrange */
-        when(objectiveRepository.findById(2L)).thenReturn(Optional.empty());
-
-        Objective.Post stub = Objective.Post.builder().endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30))
-                .status("completed").email("john@gmail.com").title("title from test").description("desc from test").build();
-        String content = objectMapper.writeValueAsString(stub);
-
-        when(objectiveRepository.save(stub.toDomain())).thenReturn(stub.toDomain());
-        Objective obj = objectiveRepository.save(stub.toDomain());
-        log.info("YKD : " + obj.getTitle());
+        when(objectiveRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
@@ -109,12 +112,13 @@ public class ObjectiveControllerTest {
         /* Arrange */
         Objective.Post stub = Objective.Post.builder().endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30))
                 .status("completed").email("john@gmail.com").title("title from test").description("desc from test").build();
+
         String content = objectMapper.writeValueAsString(stub);
 
-        when(objectiveRepository.save(stub.toDomain())).thenReturn(stub.toDomain());
-
-        Objective obj = objectiveRepository.save(stub.toDomain());
-        log.info("YKD : " + obj.getTitle());
+        when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(Priority.builder().build()));
+        when(objectiveRepository.findById(anyLong())).thenReturn(Optional.of(Objective.builder().build()));
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(Member.builder().build()));
+        when(objectiveRepository.save(any(Objective.class))).thenReturn(stub.toDomain(Priority.builder().build(), Member.builder().build(), Objective.builder().build()));
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")

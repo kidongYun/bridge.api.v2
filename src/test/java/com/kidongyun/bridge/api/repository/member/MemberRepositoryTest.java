@@ -8,20 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.transaction.Transactional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataJpaTest
 @Import(QuerydslConfig.class)
 public class MemberRepositoryTest {
     @Autowired
@@ -30,7 +29,6 @@ public class MemberRepositoryTest {
     PriorityRepository priorityRepository;
 
     @Test
-    @Transactional
     public void findByEmail_normal() {
         /* Arrange */
         memberRepository.save(Member.builder().email("john@gmail.com").password("q1w2e3r4").build());
@@ -46,7 +44,6 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    @Transactional
     public void findByEmail_prioritiesShouldBeNormal() {
         /* Arrange */
         Priority priority1 = Priority.builder().level(1).description("Important").build();

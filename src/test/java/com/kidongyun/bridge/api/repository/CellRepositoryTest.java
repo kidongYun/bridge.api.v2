@@ -114,7 +114,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findById_normal() {
+    public void findById_normal() throws Exception {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").build());
@@ -135,9 +135,9 @@ public class CellRepositoryTest {
                 .status("prepared").type(Cell.Type.Plan).content("content6").build());
 
         /* Act */
-        Objective objective = objectiveRepository.findById(2L).orElse(null);
+        Objective objective = objectiveRepository.findById(2L).orElseThrow(Exception::new);
 
-        Plan plan = planRepository.findById(5L).orElse(null);
+        Plan plan = planRepository.findById(5L).orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(objective).isNotNull();
@@ -147,7 +147,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByIdAndType_normal() {
+    public void findByIdAndType_normal() throws Exception {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build());
@@ -156,10 +156,10 @@ public class CellRepositoryTest {
                 .endDateTime(LocalDateTime.now()).status("prepared").content("content2").build());
 
         /* Act, Assert */
-        assertThat(objectiveRepository.findByIdAndType(1L, Cell.Type.Objective).orElse(null).getId()).isEqualTo(1L);
-        assertThat(objectiveRepository.findByIdAndType(2L, Cell.Type.Objective).orElse(null)).isNull();
+        assertThat(objectiveRepository.findByIdAndType(1L, Cell.Type.Objective).orElseThrow(Exception::new).getId()).isEqualTo(1L);
+        assertThat(objectiveRepository.findByIdAndType(2L, Cell.Type.Objective).orElseThrow(Exception::new)).isNull();
 
-        assertThat(planRepository.findByIdAndType(1L, Cell.Type.Plan).orElse(null)).isNull();
-        assertThat(planRepository.findByIdAndType(2L, Cell.Type.Plan).orElse(null).getId()).isEqualTo(2L);
+        assertThat(planRepository.findByIdAndType(1L, Cell.Type.Plan).orElseThrow(Exception::new)).isNull();
+        assertThat(planRepository.findByIdAndType(2L, Cell.Type.Plan).orElseThrow(Exception::new).getId()).isEqualTo(2L);
     }
 }

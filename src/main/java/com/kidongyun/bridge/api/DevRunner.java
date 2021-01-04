@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Slf4j
 @Component
 @Transactional
 @RequiredArgsConstructor
 public class DevRunner implements ApplicationRunner {
-    private final MemberRepository memberRepository;
     private final ObjectiveRepository objectiveRepository;
     private final PriorityRepository priorityRepository;
 
@@ -29,34 +29,58 @@ public class DevRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        memberRepository.save(john);
+        Priority priorityJohn1 = Priority.builder().level(1).description("Important").member(john).build();
+        priorityRepository.save(priorityJohn1);
 
-        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title1").description("desc1").member(john).build());
+        Priority priorityJohn2 = Priority.builder().level(2).description("Normal").member(john).build();
+        priorityRepository.save(priorityJohn2);
 
-        objectiveRepository.save(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).member(john).build());
+        Priority priorityJohn3 = Priority.builder().level(3).description("UnImportant").member(john).build();
+        priorityRepository.save(priorityJohn3);
 
-        objectiveRepository.save(Objective.builder().id(3L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).member(john).build());
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
 
-        objectiveRepository.save(Objective.builder().id(4L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).member(john).build());
+        Priority priorityJulia1 = Priority.builder().level(1).description("Important").member(julia).build();
+        priorityRepository.save(priorityJulia1);
 
-        Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
+        Priority priorityJulia2 = Priority.builder().level(2).description("Normal").member(julia).build();
+        priorityRepository.save(priorityJulia2);
 
-        memberRepository.save(julia);
+        Priority priorityJulia3 = Priority.builder().level(3).description("UnImportant").member(julia).build();
+        priorityRepository.save(priorityJulia3);
 
-        objectiveRepository.save(Objective.builder().id(5L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title5").description("desc5").parent(Objective.builder().id(3L).build()).member(julia).build());
+        Objective objectiveJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").member(john).priority(priorityJohn1).build();
+        objectiveRepository.save(objectiveJohn1);
 
-        objectiveRepository.save(Objective.builder().id(6L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title6").description("desc6").parent(Objective.builder().id(3L).build()).member(julia).build());
+        Objective objectiveJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title2").description("desc2").parent(objectiveJohn1).member(john).priority(priorityJohn1).build();
+        objectiveRepository.save(objectiveJohn2);
 
-        objectiveRepository.save(Objective.builder().id(7L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title7").description("desc7").parent(Objective.builder().id(4L).build()).member(julia).build());
+        Objective objectiveJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title3").description("desc3").parent(objectiveJohn1).member(john).priority(priorityJohn2).build();
+        objectiveRepository.save(objectiveJohn3);
 
-        objectiveRepository.save(Objective.builder().id(8L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title8").description("desc8").parent(Objective.builder().id(4L).build()).member(julia).build());
+        Objective objectiveJohn4 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title4").description("desc4").parent(objectiveJohn2).member(john).priority(priorityJohn3).build();
+        objectiveRepository.save(objectiveJohn4);
+
+        Objective objectiveJulia1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title5").description("desc5").member(julia).build();
+        objectiveRepository.save(objectiveJulia1);
+
+        Objective objectiveJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title6").description("desc6").parent(objectiveJulia1).member(julia).build();
+        objectiveRepository.save(objectiveJulia2);
+
+        Objective objectiveJulia3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title7").description("desc7").parent(objectiveJulia2).member(julia).build();
+        objectiveRepository.save(objectiveJulia3);
+
+        Objective objectiveJulia4 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("prepared").title("title8").description("desc8").parent(objectiveJulia3).member(julia).build();
+        objectiveRepository.save(objectiveJulia4);
+
+
     }
 }

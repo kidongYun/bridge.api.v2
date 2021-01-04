@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -18,6 +19,6 @@ import javax.persistence.ManyToOne;
 public class Plan extends Cell {
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Objective objective;
 }

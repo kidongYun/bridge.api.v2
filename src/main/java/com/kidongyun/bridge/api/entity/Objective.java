@@ -26,17 +26,18 @@ public class Objective extends Cell {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Priority priority;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "objective")
-    private Set<Plan> plans;
+    @Builder.Default
+    @OneToMany(mappedBy = "objective")
+    private Set<Plan> plans = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Objective parent;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    @OneToMany(mappedBy = "parent")
     private Set<Objective> children = new HashSet<>();
 
     @Getter
@@ -53,14 +54,14 @@ public class Objective extends Cell {
         private String email;
         private String title;
         private String description;
-        private Priority priority;
+        private Long priorityId;
         private Long parentId;
         private Set<Long> childrenId;
 
         public static Response of(Objective obj) {
             return Response.builder().id(obj.getId()).startDateTime(obj.getStartDateTime()).endDateTime(obj.getEndDateTime()).status(obj.status)
                     .type(obj.type).email(Objects.requireNonNullElse(obj.member, Member.builder().build()).getEmail())
-                    .title(obj.getTitle()).description(obj.getDescription()).priority(obj.getPriority())
+                    .title(obj.getTitle()).description(obj.getDescription()).priorityId(obj.getPriority().getId())
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
         }
@@ -78,13 +79,13 @@ public class Objective extends Cell {
         private String email;
         private String title;
         private String description;
-        private Integer priorityLevel;
-        private Long parentId;
+        private long priorityId;
+        private long parentId;
 
-        public Objective toDomain() {
+        public Objective toDomain(Priority priority, Member member, Objective parent) {
             return Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(endDateTime).status(status)
-                    .type(Type.Objective).member(Member.builder().email(email).build()).title(title).description(description)
-                    .priority(Priority.builder().level(priorityLevel).build()).parent(Objective.builder().id(parentId).build()).build();
+                    .type(Type.Objective).member(member).title(title).description(description)
+                    .priority(priority).parent(parent).build();
         }
     }
 }
