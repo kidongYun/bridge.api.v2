@@ -36,6 +36,17 @@ public class ObjectiveRepositoryTest {
     PriorityRepository priorityRepository;
 
     @Test
+    public void save_normal() {
+        /* Arrange, Act */
+        Objective obj = objectiveRepository.save(Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").title("title1").description("desc1").build());
+
+        assertThat(obj).isNotNull();
+        assertThat(obj.getTitle()).isEqualTo("title1");
+        assertThat(obj.getDescription()).isEqualTo("desc1");
+    }
+
+    @Test
     public void findByType_normal() {
         /* Arrange */
         objectiveRepository.save(Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())

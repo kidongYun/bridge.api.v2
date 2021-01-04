@@ -1,6 +1,5 @@
 package com.kidongyun.bridge.api.controller;
 
-import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;

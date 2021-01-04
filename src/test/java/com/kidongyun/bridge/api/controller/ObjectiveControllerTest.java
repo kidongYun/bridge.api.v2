@@ -90,6 +90,14 @@ public class ObjectiveControllerTest {
         /* Arrange */
         when(objectiveRepository.findById(2L)).thenReturn(Optional.empty());
 
+        Objective.Post stub = Objective.Post.builder().endDateTime(LocalDateTime.of(2021, 6, 21, 5, 30))
+                .status("completed").email("john@gmail.com").title("title from test").description("desc from test").build();
+        String content = objectMapper.writeValueAsString(stub);
+
+        when(objectiveRepository.save(stub.toDomain())).thenReturn(stub.toDomain());
+        Objective obj = objectiveRepository.save(stub.toDomain());
+        log.info("YKD : " + obj.getTitle());
+
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
                 .andDo(print())
@@ -104,6 +112,9 @@ public class ObjectiveControllerTest {
         String content = objectMapper.writeValueAsString(stub);
 
         when(objectiveRepository.save(stub.toDomain())).thenReturn(stub.toDomain());
+
+        Objective obj = objectiveRepository.save(stub.toDomain());
+        log.info("YKD : " + obj.getTitle());
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
