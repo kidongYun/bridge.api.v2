@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -59,9 +61,16 @@ public class Objective extends Cell {
         private Set<Long> childrenId;
 
         public static Response of(Objective obj) {
-            return Response.builder().id(obj.getId()).startDateTime(obj.getStartDateTime()).endDateTime(obj.getEndDateTime()).status(obj.status)
-                    .type(obj.type).email(Objects.requireNonNullElse(obj.member, Member.builder().build()).getEmail())
-                    .title(obj.getTitle()).description(obj.getDescription()).priorityId(obj.getPriority().getId())
+            return Response.builder()
+                    .id(obj.getId())
+                    .startDateTime(obj.getStartDateTime())
+                    .endDateTime(obj.getEndDateTime())
+                    .status(obj.status)
+                    .type(obj.type)
+                    .email(Objects.requireNonNull(obj.getMember()).getEmail())
+                    .title(obj.getTitle())
+                    .description(obj.getDescription())
+                    .priorityId(Objects.requireNonNull(obj.getPriority().getId()))
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
         }

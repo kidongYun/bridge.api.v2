@@ -80,7 +80,5 @@ public class DevRunner implements ApplicationRunner {
         Objective objectiveJulia4 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title8").description("desc8").parent(objectiveJulia3).member(julia).build();
         objectiveRepository.save(objectiveJulia4);
-
-
     }
 }

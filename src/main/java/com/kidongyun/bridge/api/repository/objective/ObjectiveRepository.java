@@ -16,5 +16,5 @@ public interface ObjectiveRepository extends CellRepository<Objective>, Objectiv
 
     Set<Objective> findByPriority(Priority priority);
 
-    Set<Objective> findByPriorityLevel(Integer level);
+    Set<Objective> findByPriorityId(Long id);
 }

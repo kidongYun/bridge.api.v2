@@ -69,13 +69,15 @@ public class ObjectiveControllerTest {
         /* Arrange */
         Set<Objective> stub = new HashSet<>();
 
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
+
         Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title1").description("desc1").member(Member.builder().build()).build();
+                .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
 
         stub.add(parent);
-
         stub.add(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").member(Member.builder().build()).parent(parent).build());
+                .status("prepared").title("title2").description("desc2").member(john).priority(priority).parent(parent).build());
 
         when(objectiveRepository.findByType(Cell.Type.Objective)).thenReturn(stub);
 
@@ -87,8 +89,11 @@ public class ObjectiveControllerTest {
     @Test
     public void getObjectiveById_normal() throws Exception {
         /* Arrange */
-        when(objectiveRepository.findByIdAndType(anyLong(), any(Cell.Type.class))).thenReturn(Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build()));
+        when(objectiveRepository.findByIdAndType(anyLong(), any(Cell.Type.class)))
+                .thenReturn(Optional.of(Objective.builder()
+                        .id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                        .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build())
+                        .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build()));
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
@@ -118,7 +123,8 @@ public class ObjectiveControllerTest {
         when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(Priority.builder().build()));
         when(objectiveRepository.findById(anyLong())).thenReturn(Optional.of(Objective.builder().build()));
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(Member.builder().build()));
-        when(objectiveRepository.save(any(Objective.class))).thenReturn(stub.toDomain(Priority.builder().build(), Member.builder().build(), Objective.builder().build()));
+        when(objectiveRepository.save(any(Objective.class)))
+                .thenReturn(stub.toDomain(Priority.builder().id(1L).build(), Member.builder().email("john@gmail.com").build(), Objective.builder().build()));
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
