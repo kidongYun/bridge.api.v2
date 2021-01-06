@@ -149,17 +149,19 @@ public class CellRepositoryTest {
     @Test
     public void findByIdAndType_normal() throws Exception {
         /* Arrange */
-        objectiveRepository.save(Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build());
+        Objective objective = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build();
+        objectiveRepository.save(objective);
 
-        planRepository.save(Plan.builder().id(2L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("prepared").content("content2").build());
+        Plan plan = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status("prepared").content("content2").build();
+        planRepository.save(plan);
 
         /* Act, Assert */
-        assertThat(objectiveRepository.findByIdAndType(1L, Cell.Type.Objective).orElseThrow(Exception::new).getId()).isEqualTo(1L);
-        assertThat(objectiveRepository.findByIdAndType(2L, Cell.Type.Objective).orElseThrow(Exception::new)).isNull();
+        assertThat(objectiveRepository.findByIdAndType(objective.getId(), Cell.Type.Objective).orElseThrow(Exception::new).getId()).isEqualTo(objective.getId());
+        assertThat(objectiveRepository.findByIdAndType(100L, Cell.Type.Objective).orElse(null)).isNull();
 
-        assertThat(planRepository.findByIdAndType(1L, Cell.Type.Plan).orElseThrow(Exception::new)).isNull();
-        assertThat(planRepository.findByIdAndType(2L, Cell.Type.Plan).orElseThrow(Exception::new).getId()).isEqualTo(2L);
+        assertThat(planRepository.findByIdAndType(100L, Cell.Type.Plan).orElse(null)).isNull();
+        assertThat(planRepository.findByIdAndType(plan.getId(), Cell.Type.Plan).orElseThrow(Exception::new).getId()).isEqualTo(plan.getId());
     }
 }
