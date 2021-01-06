@@ -1,13 +1,12 @@
 package com.kidongyun.bridge.api.repository;
 
 import com.kidongyun.bridge.api.config.QuerydslConfig;
-import com.kidongyun.bridge.api.entity.Cell;
-import com.kidongyun.bridge.api.entity.Member;
-import com.kidongyun.bridge.api.entity.Objective;
-import com.kidongyun.bridge.api.entity.Plan;
+import com.kidongyun.bridge.api.entity.*;
 import com.kidongyun.bridge.api.repository.cell.CellRepository;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
+import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +38,11 @@ public class CellRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    PriorityRepository priorityRepository;
+
     @Test
-    public void save_normal() {
+    public void save_normalCase_whenItIsNewOne() {
         /* Arrange, Act, Assert */
         objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
@@ -55,7 +58,19 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByType_normal() {
+    public void save_normalCase_whenObjectiveIsAlreadyExisted() throws Exception {
+        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status("completed").type(Cell.Type.Objective).title("before").description("desc1").build();
+        objectiveRepository.save(obj);
+        assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("before");
+
+        obj.setTitle("after");
+        objectiveRepository.save(obj);
+        assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("after");
+    }
+
+    @Test
+    public void findByType_normalCase() {
         /* Arrange */
         objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
@@ -71,7 +86,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByMember_normal() {
+    public void findByMember_normalCase() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
         memberRepository.save(john);
@@ -114,7 +129,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findById_normal() throws Exception {
+    public void findById_normalCase() throws Exception {
         /* Arrange */
         objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").title("title1").description("desc1").build());
@@ -147,7 +162,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByIdAndType_normal() throws Exception {
+    public void findByIdAndType_normalCase() throws Exception {
         /* Arrange */
         Objective objective = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build();

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -72,7 +70,8 @@ public class Objective extends Cell {
                     .description(obj.getDescription())
                     .priorityId(Objects.requireNonNull(obj.getPriority().getId()))
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
-                    .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet())).build();
+                    .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet()))
+                    .build();
         }
     }
 
@@ -83,6 +82,7 @@ public class Objective extends Cell {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
+        private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private String status;
         private String email;
@@ -92,9 +92,50 @@ public class Objective extends Cell {
         private long parentId;
 
         public Objective toDomain(Priority priority, Member member, Objective parent) {
-            return Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(endDateTime).status(status)
-                    .type(Type.Objective).member(member).title(title).description(description)
-                    .priority(priority).parent(parent).build();
+            return Objective.builder()
+                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
+                    .endDateTime(endDateTime)
+                    .status(status)
+                    .type(Type.Objective)
+                    .member(member)
+                    .title(title)
+                    .description(description)
+                    .priority(priority)
+                    .parent(parent)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Put {
+        private Long id;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private String status;
+        private String email;
+        private String title;
+        private String description;
+        private long priorityId;
+        private long parentId;
+
+        public Objective toDomain(Priority priority, Member member, Objective parent) {
+            return Objective.builder()
+                    .id(id)
+                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
+                    .endDateTime(endDateTime)
+                    .status(status)
+                    .type(Type.Objective)
+                    .member(member)
+                    .title(title)
+                    .description(description)
+                    .priority(priority)
+                    .parent(parent)
+                    .build();
         }
     }
 }

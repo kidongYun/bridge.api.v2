@@ -65,4 +65,21 @@ public class ObjectiveController {
 
         return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(param.toDomain(priority, member, parent))));
     }
+
+    @PutMapping
+    public ResponseEntity<?> putObjective(@RequestBody Objective.Put param) {
+        /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
+        Priority priority = priorityRepository.findByIdAndMemberEmail(param.getPriorityId(), param.getEmail())
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
+        Member member = memberRepository.findByEmail(param.getEmail())
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
+        Objective parent = objectiveRepository.findById(param.getParentId())
+                .orElse(null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(param.toDomain(priority, member, parent))));
+    }
 }

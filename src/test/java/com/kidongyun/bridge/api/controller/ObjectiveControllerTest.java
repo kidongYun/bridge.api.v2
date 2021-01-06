@@ -133,4 +133,9 @@ public class ObjectiveControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void putObjective_normal() throws Exception {
+
+    }
 }
