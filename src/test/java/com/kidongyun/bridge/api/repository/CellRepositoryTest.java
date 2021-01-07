@@ -44,23 +44,22 @@ public class CellRepositoryTest {
     @Test
     public void save_normalCase_whenItIsNewOne() {
         /* Arrange, Act, Assert */
-        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
+        Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build();
+        objectiveRepository.save(obj1);
         assertThat(cellRepository.findAll().size()).isEqualTo(1);
 
-        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").type(Cell.Type.Objective).title("title2").description("desc2").build());
+        Objective obj2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title2").description("desc2").build();
+        objectiveRepository.save(obj2);
         assertThat(cellRepository.findAll().size()).isEqualTo(2);
 
-        planRepository.save(Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content3").build());
+        Plan plan1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content3").build();
+        planRepository.save(plan1);
         assertThat(cellRepository.findAll().size()).isEqualTo(3);
     }
 
     @Test
     public void save_normalCase_whenObjectiveIsAlreadyExisted() throws Exception {
-        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").type(Cell.Type.Objective).title("before").description("desc1").build();
+        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("before").description("desc1").build();
         objectiveRepository.save(obj);
         assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("before");
 
@@ -72,51 +71,50 @@ public class CellRepositoryTest {
     @Test
     public void findByType_normalCase() {
         /* Arrange */
-        objectiveRepository.save(Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build());
+        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title1").description("desc1").build();
+        objectiveRepository.save(obj);
 
-        planRepository.save(Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content1").build());
+        Plan plan = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content1").build();
+        planRepository.save(plan);
 
         /* Act */
         Set<Objective> results = objectiveRepository.findByType(Cell.Type.Objective);
 
         /* Assert */
         assertThat(results.size()).isEqualTo(1);
+
     }
 
     @Test
     public void findByMember_normalCase() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
-        memberRepository.save(john);
 
-        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title1").description("desc1").member(john).build());
+        Objective objOfJohn1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
 
-        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title2").description("desc2").member(john).build());
+        Objective objOfJohn2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
 
-        planRepository.save(Plan.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content3").member(john).build());
+        Plan planOfJohn1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content3").member(john).build();
+        planRepository.save(planOfJohn1);
 
-        planRepository.save(Plan.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content4").member(john).build());
+        Plan planOfJohn2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content4").member(john).build();
+        planRepository.save(planOfJohn2);
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
-        memberRepository.save(julia);
 
-        objectiveRepository.save(Objective.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title5").description("desc5").member(julia).build());
+        Objective objOfJulia1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
+        objectiveRepository.save(objOfJulia1);
 
-        objectiveRepository.save(Objective.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective)
-                .title("title6").description("desc6").member(julia).build());
+        Objective objOfJulia2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
 
-        planRepository.save(Plan.builder().id(7L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content7").member(julia).build());
+        Plan planOfJulia1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content7").member(julia).build();
+        planRepository.save(planOfJulia1);
 
-        planRepository.save(Plan.builder().id(8L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content8").member(julia).build());
+        Plan planOfJulia2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content8").member(julia).build();
+        planRepository.save(planOfJulia2);
 
         /* Act */
         Set<Cell> results = cellRepository.findByMember(john);
@@ -131,52 +129,53 @@ public class CellRepositoryTest {
     @Test
     public void findById_normalCase() throws Exception {
         /* Arrange */
-        objectiveRepository.save(Objective.builder().id(1L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title1").description("desc1").build());
+        Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build();
+        objectiveRepository.save(obj1);
 
-        objectiveRepository.save(Objective.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build()).build());
+        Objective obj2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").title("title2").description("desc2").parent(obj1).build();
+        objectiveRepository.save(obj2);
 
-        objectiveRepository.save(Objective.builder().id(3L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title3").description("desc3").parent(Objective.builder().id(1L).build()).build());
+        Objective obj3 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").title("title3").description("desc3").parent(obj1).build();
+        objectiveRepository.save(obj3);
 
-        objectiveRepository.save(Objective.builder().id(4L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title4").description("desc4").parent(Objective.builder().id(2L).build()).build());
+        Objective obj4 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").title("title4").description("desc4").parent(obj2).build();
+        objectiveRepository.save(obj4);
 
-        planRepository.save(Plan.builder().id(5L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content5").build());
+        Plan plan1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content5").build();
+        planRepository.save(plan1);
 
-        planRepository.save(Plan.builder().id(6L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").type(Cell.Type.Plan).content("content6").build());
+        Plan plan2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").type(Cell.Type.Plan).content("content6").build();
+        planRepository.save(plan2);
 
         /* Act */
-        Objective objective = objectiveRepository.findById(2L).orElseThrow(Exception::new);
-
-        Plan plan = planRepository.findById(5L).orElseThrow(Exception::new);
+        Objective objective = objectiveRepository.findById(obj2.getId()).orElseThrow(Exception::new);
+        Plan plan = planRepository.findById(plan1.getId()).orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(objective).isNotNull();
-        assertThat(objective.getId()).isEqualTo(2L);
+        assertThat(objective.getId()).isEqualTo(obj2.getId());
         assertThat(plan).isNotNull();
-        assertThat(plan.getId()).isEqualTo(5L);
+        assertThat(plan.getId()).isEqualTo(plan1.getId());
     }
 
     @Test
     public void findByIdAndType_normalCase() throws Exception {
         /* Arrange */
-        Objective objective = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build();
-        objectiveRepository.save(objective);
+        Objective obj = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").title("title1").description("desc1").build();
+        objectiveRepository.save(obj);
 
-        Plan plan = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("prepared").content("content2").build();
+        Plan plan = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("prepared").content("content2").build();
         planRepository.save(plan);
 
         /* Act, Assert */
-        assertThat(objectiveRepository.findByIdAndType(objective.getId(), Cell.Type.Objective).orElseThrow(Exception::new).getId()).isEqualTo(objective.getId());
-        assertThat(objectiveRepository.findByIdAndType(100L, Cell.Type.Objective).orElse(null)).isNull();
+        assertThat(objectiveRepository.findByIdAndType(obj.getId(), Cell.Type.Objective).orElseThrow(Exception::new).getId()).isEqualTo(obj.getId());
+        assertThat(objectiveRepository.findByIdAndType(-1L, Cell.Type.Objective).orElse(null)).isNull();
 
-        assertThat(planRepository.findByIdAndType(100L, Cell.Type.Plan).orElse(null)).isNull();
+        assertThat(planRepository.findByIdAndType(-1L, Cell.Type.Plan).orElse(null)).isNull();
         assertThat(planRepository.findByIdAndType(plan.getId(), Cell.Type.Plan).orElseThrow(Exception::new).getId()).isEqualTo(plan.getId());
+    }
+
+    @Test
+    public void delete_normalCase() throws Exception {
     }
 }

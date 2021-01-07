@@ -31,16 +31,19 @@ public class MemberRepositoryTest {
     @Test
     public void findByEmail_normal() {
         /* Arrange */
-        memberRepository.save(Member.builder().email("john@gmail.com").password("q1w2e3r4").build());
-        memberRepository.save(Member.builder().email("julia@gmail.com").password("julia123").build());
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(john);
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+        memberRepository.save(julia);
 
         /* Act */
-        Member member = memberRepository.findByEmail("john@gmail.com")
+        Member member = memberRepository.findByEmail(john.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
         /* Assert */
-        assertThat(member.getEmail()).isEqualTo("john@gmail.com");
-        assertThat(member.getPassword()).isEqualTo("q1w2e3r4");
+        assertThat(member.getEmail()).isEqualTo(john.getEmail());
+        assertThat(member.getPassword()).isEqualTo(john.getPassword());
     }
 
     @Test
@@ -48,21 +51,23 @@ public class MemberRepositoryTest {
         /* Arrange */
         Priority priority1 = Priority.builder().level(1).description("Important").build();
         priorityRepository.save(priority1);
+
         Priority priority2 = Priority.builder().level(2).description("Normal").build();
         priorityRepository.save(priority2);
+
         Priority priority3 = Priority.builder().level(3).description("Unimportant").build();
         priorityRepository.save(priority3);
-        Set<Priority> priorities = Set.of(priority1, priority2, priority3);
 
-        memberRepository.save(Member.builder().email("john@gmail.com").password("q1w2e3r4").priorities(priorities).build());
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").priorities(Set.of(priority1, priority2, priority3)).build();
+        memberRepository.save(john);
 
         /* Act */
-        Member member = memberRepository.findByEmail("john@gmail.com")
+        Member member = memberRepository.findByEmail(john.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
         /* Assert */
-        assertThat(member.getEmail()).isEqualTo("john@gmail.com");
-        assertThat(member.getPassword()).isEqualTo("q1w2e3r4");
+        assertThat(member.getEmail()).isEqualTo(john.getEmail());
+        assertThat(member.getPassword()).isEqualTo(john.getPassword());
         assertThat(member.getPriorities().size()).isEqualTo(3);
     }
 }

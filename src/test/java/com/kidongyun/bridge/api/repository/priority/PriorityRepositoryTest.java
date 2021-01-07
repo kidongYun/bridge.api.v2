@@ -25,7 +25,8 @@ public class PriorityRepositoryTest {
     public void findByIdAndMember_normal() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
-        priorityRepository.save(Priority.builder().level(1).description("Important").member(john).build());
+        Priority priority = Priority.builder().level(1).description("Important").member(john).build();
+        priorityRepository.save(priority);
 
         /* Act */
         Priority result1 = priorityRepository.findByIdAndMember(1L, john).orElseThrow(Exception::new);

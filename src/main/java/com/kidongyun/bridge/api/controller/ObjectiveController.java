@@ -49,37 +49,24 @@ public class ObjectiveController {
     }
 
     @ExecuteLog
-    @PostMapping
-    public ResponseEntity<?> postObjective(@RequestBody Objective.Post param) {
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
+    public ResponseEntity<?> saveObjective(@RequestBody Objective.Request request) {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityRepository.findByIdAndMemberEmail(param.getPriorityId(), param.getEmail())
+        Priority priority = priorityRepository.findByIdAndMemberEmail(request.getPriorityId(), request.getEmail())
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberRepository.findByEmail(param.getEmail())
+        Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveRepository.findById(param.getParentId())
+        Objective parent = objectiveRepository.findById(request.getParentId())
                 .orElse(null);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(param.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(request.toDomain(priority, member, parent))));
     }
 
-    @PutMapping
-    public ResponseEntity<?> putObjective(@RequestBody Objective.Put param) {
-        /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityRepository.findByIdAndMemberEmail(param.getPriorityId(), param.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
-
-        /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberRepository.findByEmail(param.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
-
-        /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveRepository.findById(param.getParentId())
-                .orElse(null);
-
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(param.toDomain(priority, member, parent))));
+    public ResponseEntity<?> deleteObjective() {
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 }

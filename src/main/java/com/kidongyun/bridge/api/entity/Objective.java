@@ -81,38 +81,7 @@ public class Objective extends Cell {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Post {
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
-        private String status;
-        private String email;
-        private String title;
-        private String description;
-        private long priorityId;
-        private long parentId;
-
-        public Objective toDomain(Priority priority, Member member, Objective parent) {
-            return Objective.builder()
-                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
-                    .endDateTime(endDateTime)
-                    .status(status)
-                    .type(Type.Objective)
-                    .member(member)
-                    .title(title)
-                    .description(description)
-                    .priority(priority)
-                    .parent(parent)
-                    .build();
-        }
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Put {
+    public static class Request {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
