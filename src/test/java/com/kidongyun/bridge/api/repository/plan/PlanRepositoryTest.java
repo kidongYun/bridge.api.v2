@@ -64,33 +64,32 @@ public class PlanRepositoryTest {
     @Test
     public void findByObjectiveId_normal() {
         /* Arrange */
-        Objective objective1 = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective objective1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(objective1);
 
-        Objective objective2 = Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status(Cell.Status.Complete).title("title2").description("desc2").build();
+        Objective objective2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title2").description("desc2").build();
         objectiveRepository.save(objective2);
 
-        planRepository.save(Plan.builder().id(3L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status(Cell.Status.Complete).content("content3").objective(objective1).build());
 
-        planRepository.save(Plan.builder().id(4L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status(Cell.Status.Complete).content("content4").objective(objective1).build());
 
-        planRepository.save(Plan.builder().id(5L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status(Cell.Status.Complete).content("content5").objective(objective2).build());
 
-        planRepository.save(Plan.builder().id(6L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status(Cell.Status.Complete).content("content6").objective(objective2).build());
 
         /* Act */
-        Set<Plan> results = planRepository.findByObjectiveId(1L);
+        Set<Plan> results = planRepository.findByObjectiveId(objective2.getId());
 
+        assertThat(results.size()).isEqualTo(2);
         results.forEach(plan -> {
-            log.info("YKD : " + plan.getId());
-            log.info("YKD : " + plan.getContent());
-            log.info("YKD : " + plan.getObjective().getId());
+            assertThat(plan.getObjective().getId()).isEqualTo(objective2.getId());
         });
     }
 }

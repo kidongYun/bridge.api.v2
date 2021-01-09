@@ -118,6 +118,7 @@ public class Objective extends Cell {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Put {
+        @ApiModelProperty(example = "1")
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
