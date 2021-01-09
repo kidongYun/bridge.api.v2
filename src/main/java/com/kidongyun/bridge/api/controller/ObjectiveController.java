@@ -49,24 +49,44 @@ public class ObjectiveController {
     }
 
     @ExecuteLog
-    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public ResponseEntity<?> saveObjective(@RequestBody Objective.Request request) {
+    @PostMapping
+    public ResponseEntity<?> postObjective(@RequestBody Objective.Post post) {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityRepository.findByIdAndMemberEmail(request.getPriorityId(), request.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+        Priority priority = priorityRepository.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail())
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId', 'email' parameters are not appropriate."));
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(post.getEmail())
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveRepository.findById(request.getParentId())
+        Objective parent = objectiveRepository.findById(post.getParentId())
                 .orElse(null);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(request.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(post.toDomain(priority, member, parent))));
     }
 
-    public ResponseEntity<?> deleteObjective() {
+    @ExecuteLog
+    @PutMapping
+    public ResponseEntity<?> putObjective(@RequestBody Objective.Put put) {
+        /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
+        Priority priority = priorityRepository.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail())
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId', 'email' parameters are not appropriate."));
+
+        /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
+        Member member = memberRepository.findByEmail(put.getEmail())
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
+        Objective parent = objectiveRepository.findById(put.getParentId())
+                .orElse(null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(put.toDomain(priority, member, parent))));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteObjective(@PathVariable("id") Long id) {
+        objectiveRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 }

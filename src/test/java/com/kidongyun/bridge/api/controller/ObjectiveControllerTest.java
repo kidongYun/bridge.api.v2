@@ -112,7 +112,7 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void saveObjective_post_normalCase() throws Exception {
+    public void postObjective_normalCase() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
@@ -121,7 +121,7 @@ public class ObjectiveControllerTest {
         Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
 
-        Objective.Request stub = Objective.Request.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective.Post stub = Objective.Post.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);
@@ -149,7 +149,7 @@ public class ObjectiveControllerTest {
         Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
 
-        Objective.Request stub = Objective.Request.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective.Put stub = Objective.Put.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status("completed").email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);

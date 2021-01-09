@@ -19,6 +19,6 @@ public class Advice {
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<?> httpStatusCodeException(HttpStatusCodeException e) {
         e.printStackTrace();
-        return ResponseEntity.status(e.getStatusCode()).body(e.getStatusCode().getReasonPhrase());
+        return ResponseEntity.status(e.getStatusCode()).body(e.getStatusText());
     }
 }

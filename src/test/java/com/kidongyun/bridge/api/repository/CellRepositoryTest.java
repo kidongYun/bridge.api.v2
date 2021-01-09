@@ -59,13 +59,33 @@ public class CellRepositoryTest {
 
     @Test
     public void save_normalCase_whenObjectiveIsAlreadyExisted() throws Exception {
+        /* Arrange */
         Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("before").description("desc1").build();
         objectiveRepository.save(obj);
         assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("before");
 
+        /* Act */
         obj.setTitle("after");
         objectiveRepository.save(obj);
+
+        /* Assert */
         assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("after");
+    }
+
+    @Test
+    public void deleteById_normalCase() {
+        /* Arrange */
+        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now()).status("completed").type(Cell.Type.Objective).title("before").description("desc1").build();
+        objectiveRepository.save(obj);
+        List<Objective> objectives = objectiveRepository.findAll();
+        assertThat(objectives.size()).isEqualTo(1);
+
+        /* Act */
+        objectiveRepository.deleteById(obj.getId());
+        List<Objective> results = objectiveRepository.findAll();
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(0);
     }
 
     @Test

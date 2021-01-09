@@ -1,6 +1,7 @@
 package com.kidongyun.bridge.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -81,14 +82,50 @@ public class Objective extends Cell {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Request {
+    public static class Post {
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private String status;
+        @ApiModelProperty(example = "john@gmail.com")
+        private String email;
+        private String title;
+        @ApiModelProperty(example = "test description by swagger")
+        private String description;
+        @ApiModelProperty(example = "1")
+        private long priorityId;
+        private long parentId;
+
+        public Objective toDomain(Priority priority, Member member, Objective parent) {
+            return Objective.builder()
+                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
+                    .endDateTime(endDateTime)
+                    .status(status)
+                    .type(Type.Objective)
+                    .member(member)
+                    .title(title)
+                    .description(description)
+                    .priority(priority)
+                    .parent(parent)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Put {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
         private String status;
+        @ApiModelProperty(example = "john@gmail.com")
         private String email;
         private String title;
         private String description;
+        @ApiModelProperty(example = "1")
         private long priorityId;
         private long parentId;
 

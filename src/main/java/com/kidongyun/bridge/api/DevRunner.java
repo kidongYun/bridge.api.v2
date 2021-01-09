@@ -66,19 +66,19 @@ public class DevRunner implements ApplicationRunner {
         objectiveRepository.save(objectiveJohn4);
 
         Objective objectiveJulia1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").title("title5").description("desc5").member(julia).build();
+                .status("completed").title("title5").description("desc5").member(julia).priority(priorityJulia1).build();
         objectiveRepository.save(objectiveJulia1);
 
         Objective objectiveJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title6").description("desc6").parent(objectiveJulia1).member(julia).build();
+                .status("prepared").title("title6").description("desc6").parent(objectiveJulia1).member(julia).priority(priorityJulia2).build();
         objectiveRepository.save(objectiveJulia2);
 
         Objective objectiveJulia3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title7").description("desc7").parent(objectiveJulia2).member(julia).build();
+                .status("prepared").title("title7").description("desc7").parent(objectiveJulia2).member(julia).priority(priorityJohn2).build();
         objectiveRepository.save(objectiveJulia3);
 
         Objective objectiveJulia4 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title8").description("desc8").parent(objectiveJulia3).member(julia).build();
+                .status("prepared").title("title8").description("desc8").parent(objectiveJulia3).member(julia).priority(priorityJulia2).build();
         objectiveRepository.save(objectiveJulia4);
     }
 }
