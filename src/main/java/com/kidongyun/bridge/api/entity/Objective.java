@@ -50,7 +50,7 @@ public class Objective extends Cell {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private String status;
+        private Cell.Status status;
         private Type type;
         private String email;
         private String title;
@@ -85,11 +85,12 @@ public class Objective extends Cell {
     public static class Post {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private String status;
+        private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
+        @ApiModelProperty(example = "test default title by swagger")
         private String title;
-        @ApiModelProperty(example = "test description by swagger")
+        @ApiModelProperty(example = "test default description by swagger")
         private String description;
         @ApiModelProperty(example = "1")
         private long priorityId;
@@ -120,7 +121,7 @@ public class Objective extends Cell {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private String status;
+        private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         private String title;

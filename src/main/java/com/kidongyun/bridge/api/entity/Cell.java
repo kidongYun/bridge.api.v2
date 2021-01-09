@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Cell {
     public enum Type { Objective, Plan, Todo }
+    public enum Status { Complete, Progress, Prepared }
 
     @Id
     @GeneratedValue
@@ -28,7 +29,7 @@ public class Cell {
 
     protected LocalDateTime endDateTime;
 
-    protected String status;
+    protected Status status;
 
     protected Type type;
 

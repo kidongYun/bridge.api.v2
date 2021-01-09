@@ -71,10 +71,10 @@ public class ObjectiveControllerTest {
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
         Objective parent = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
+                .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
         Objective child = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title2").description("desc2").member(john).priority(priority).parent(parent).build();
+                .status(Cell.Status.Prepared).title("title2").description("desc2").member(john).priority(priority).parent(parent).build();
 
         Set<Objective> stub = Set.of(parent, child);
 
@@ -89,7 +89,7 @@ public class ObjectiveControllerTest {
     public void getObjectiveById_normal() throws Exception {
         /* Arrange */
         Optional<Objective> stub = Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status("prepared").title("title2").description("desc2").parent(Objective.builder().id(1L).build())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
                 .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build());
 
         when(objectiveRepository.findByIdAndType(anyLong(), any(Cell.Type.class))).thenReturn(stub);
@@ -119,10 +119,10 @@ public class ObjectiveControllerTest {
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
         Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
+                .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
         Objective.Post stub = Objective.Post.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
+                .status(Cell.Status.Complete).email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);
 
@@ -147,10 +147,10 @@ public class ObjectiveControllerTest {
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
         Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("prepared").title("title1").description("desc1").member(john).priority(priority).build();
+                .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
         Objective.Put stub = Objective.Put.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
-                .status("completed").email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
+                .status(Cell.Status.Complete).email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);
 
