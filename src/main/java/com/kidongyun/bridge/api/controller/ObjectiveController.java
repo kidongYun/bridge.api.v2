@@ -5,9 +5,8 @@ import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Priority;
-import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
-import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
+import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.PriorityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +27,15 @@ import static java.util.stream.Collectors.toSet;
 @RequestMapping("api/v1/objective")
 public class ObjectiveController {
     private ObjectiveRepository objectiveRepository;
-    private MemberRepository memberRepository;
 
     private PriorityService priorityService;
+    private MemberService memberService;
 
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityService priorityService, MemberRepository memberRepository) {
+    public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityService priorityService, MemberService memberService) {
         this.objectiveRepository = objectiveRepository;
         this.priorityService = priorityService;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     @GetMapping
@@ -62,8 +61,7 @@ public class ObjectiveController {
         Priority priority = priorityService.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberRepository.findByEmail(post.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter is not appropriate."));
+        Member member = memberService.findByEmail(post.getEmail());
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
         Objective parent = objectiveRepository.findById(post.getParentId())
@@ -79,8 +77,7 @@ public class ObjectiveController {
         Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberRepository.findByEmail(put.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+        Member member = memberService.findByEmail(put.getEmail());
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
         Objective parent = objectiveRepository.findById(put.getParentId())

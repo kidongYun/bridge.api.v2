@@ -21,7 +21,6 @@ public class PriorityService {
     }
 
     public Priority findByIdAndMemberEmail(Long priorityId, String email) throws Exception {
-
         if(Objects.isNull(priorityId) && Objects.isNull(email)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId' or 'email' parameters are not appropriate");
         }
