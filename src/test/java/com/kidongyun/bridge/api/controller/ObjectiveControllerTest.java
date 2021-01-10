@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
@@ -140,7 +141,7 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void putObjective_normal() throws Exception {
+    public void putObjective_normalCase() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 

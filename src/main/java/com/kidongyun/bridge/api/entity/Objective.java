@@ -88,9 +88,9 @@ public class Objective extends Cell {
         private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
-        @ApiModelProperty(example = "test default title by swagger")
+        @ApiModelProperty(example = "post default title by swagger")
         private String title;
-        @ApiModelProperty(example = "test default description by swagger")
+        @ApiModelProperty(example = "post default description by swagger")
         private String description;
         @ApiModelProperty(example = "1")
         private long priorityId;
@@ -125,7 +125,9 @@ public class Objective extends Cell {
         private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
+        @ApiModelProperty(example = "put default title by swagger")
         private String title;
+        @ApiModelProperty(example = "put default description by swagger")
         private String description;
         @ApiModelProperty(example = "1")
         private long priorityId;

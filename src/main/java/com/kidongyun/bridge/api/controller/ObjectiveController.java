@@ -14,9 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import javax.transaction.Transactional;
+
+import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -38,14 +39,18 @@ public class ObjectiveController {
 
     @GetMapping
     public ResponseEntity<?> getObjective() {
-        return ResponseEntity.status(HttpStatus.OK).body(objectiveRepository.findByType(Cell.Type.Objective)
-                .stream().map(Objective.Response::of).collect(toSet()));
+        /* OBJECTIVE 목록을 가져온다 */
+        Set<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(objectives.stream().map(Objective.Response::of).collect(toSet()));
     }
 
+    @ExecuteLog
     @GetMapping("/{id}")
     public ResponseEntity<?> getObjectiveById(@PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.findByIdAndType(id, Cell.Type.Objective)
-                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR))));
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'id' parameter is not appropriate."))));
     }
 
     @ExecuteLog
@@ -57,7 +62,7 @@ public class ObjectiveController {
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberRepository.findByEmail(post.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter is not appropriate."));
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
         Objective parent = objectiveRepository.findById(post.getParentId())
