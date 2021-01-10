@@ -3,9 +3,11 @@ package com.kidongyun.bridge.api;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
+import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
+import com.kidongyun.bridge.api.repository.plan.PlanRepository;
 import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DevRunner implements ApplicationRunner {
     private final ObjectiveRepository objectiveRepository;
+    private final PlanRepository planRepository;
     private final PriorityRepository priorityRepository;
 
     @Override
@@ -80,5 +83,68 @@ public class DevRunner implements ApplicationRunner {
         Objective objectiveJulia4 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
                 .status(Cell.Status.Prepared).title("title8").description("desc8").parent(objectiveJulia3).member(julia).priority(priorityJulia2).build();
         objectiveRepository.save(objectiveJulia4);
+
+        Plan planJohn1 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content1").member(john).objective(objectiveJohn1).build();
+        planRepository.save(planJohn1);
+
+        Plan planJohn2 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content2").member(john).objective(objectiveJohn1).build();
+        planRepository.save(planJohn2);
+
+        Plan planJohn3 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content3").member(john).objective(objectiveJohn2).build();
+        planRepository.save(planJohn3);
+        Plan planJohn4 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content4").member(john).objective(objectiveJohn2).build();
+        planRepository.save(planJohn4);
+
+        Plan planJohn5 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content5").member(john).objective(objectiveJohn3).build();
+        planRepository.save(planJohn5);
+
+        Plan planJohn6 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content6").member(john).objective(objectiveJohn3).build();
+        planRepository.save(planJohn6);
+
+        Plan planJohn7 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content7").member(john).objective(objectiveJohn4).build();
+        planRepository.save(planJohn7);
+
+        Plan planJohn8 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content8").member(john).objective(objectiveJohn4).build();
+        planRepository.save(planJohn8);
+
+        Plan planJulia1 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content9").member(julia).objective(objectiveJulia1).build();
+        planRepository.save(planJulia1);
+
+        Plan planJulia2 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content10").member(julia).objective(objectiveJulia1).build();
+        planRepository.save(planJulia2);
+
+        Plan planJulia3 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content11").member(julia).objective(objectiveJulia2).build();
+        planRepository.save(planJulia3);
+
+        Plan planJulia4 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content12").member(julia).objective(objectiveJulia2).build();
+        planRepository.save(planJulia4);
+
+        Plan planJulia5 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content13").member(julia).objective(objectiveJulia3).build();
+        planRepository.save(planJulia5);
+
+        Plan planJulia6 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content14").member(julia).objective(objectiveJulia3).build();
+        planRepository.save(planJulia6);
+
+        Plan planJulia7 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content15").member(julia).objective(objectiveJulia4).build();
+        planRepository.save(planJulia7);
+
+        Plan planJulia8 = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).content("content16").member(julia).objective(objectiveJulia4).build();
+        planRepository.save(planJulia8);
     }
 }

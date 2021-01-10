@@ -66,10 +66,10 @@ public class Objective extends Cell {
                     .endDateTime(obj.getEndDateTime())
                     .status(obj.status)
                     .type(obj.type)
-                    .email(Objects.requireNonNull(obj.getMember()).getEmail())
+                    .email(Objects.requireNonNull(obj.getMember(), "'member' field is null").getEmail())
                     .title(obj.getTitle())
                     .description(obj.getDescription())
-                    .priorityId(Objects.requireNonNull(obj.getPriority().getId()))
+                    .priorityId(Objects.requireNonNull(obj.getPriority(), "'priority' field is null").getId())
                     .parentId(Objects.requireNonNullElse(obj.getParent(), Objective.builder().build()).getId())
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet()))
                     .build();

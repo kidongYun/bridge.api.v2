@@ -38,5 +38,18 @@ public class Plan extends Cell {
         private String email;
         private String content;
         private Long objectiveId;
+
+        public static Response of(Plan plan) {
+            return Response.builder()
+                    .id(plan.getId())
+                    .startDateTime(plan.getStartDateTime())
+                    .endDateTime(plan.getEndDateTime())
+                    .status(plan.getStatus())
+                    .type(plan.getType())
+                    .email(plan.getMember().getEmail())
+                    .content(plan.getContent())
+                    .objectiveId(plan.getObjective().getId())
+                    .build();
+        }
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.transaction.Transactional;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1/plan")
@@ -25,12 +27,13 @@ public class PlanController {
     public PlanController(PlanRepository planRepository) {
         this.planRepository = planRepository;
     }
+
     @GetMapping
     public ResponseEntity<?> getPlan() {
         /* PLAN 목록을 가져온다 */
         Set<Plan> plans = planRepository.findByType(Cell.Type.Plan);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(HttpStatus.OK.getReasonPhrase());
+                .body(plans.stream().map(Plan.Response::of).collect(toSet()));
     }
 }

@@ -1,6 +1,5 @@
 package com.kidongyun.bridge.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.entity.Cell;
@@ -26,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -81,6 +79,7 @@ public class ObjectiveControllerTest {
 
         when(objectiveRepository.findByType(Cell.Type.Objective)).thenReturn(stub);
 
+        /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective"))
                 .andDo(print())
                 .andExpect(status().isOk());
