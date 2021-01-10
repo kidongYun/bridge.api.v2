@@ -1,6 +1,7 @@
 package com.kidongyun.bridge.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,28 @@ public class Plan extends Cell {
                     .email(plan.getMember().getEmail())
                     .content(plan.getContent())
                     .objectiveId(plan.getObjective().getId())
+                    .build();
+        }
+    }
+
+    public static class Post {
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private Cell.Status status;
+        @ApiModelProperty(example = "john@gmail.com")
+        private String email;
+        @ApiModelProperty(example = "post default content by swagger")
+        private String content;
+        private Long objectiveId;
+
+        public Plan toDomain(Member member, Objective obj) {
+            return Plan.builder()
+                    .startDateTime(startDateTime)
+                    .endDateTime(endDateTime)
+                    .status(status)
+                    .member(member)
+                    .content(content)
+                    .objective(obj)
                     .build();
         }
     }

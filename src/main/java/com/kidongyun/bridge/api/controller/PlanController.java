@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +37,11 @@ public class PlanController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(plans.stream().map(Plan.Response::of).collect(toSet()));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> postPlan(@RequestBody Plan.Post post) {
+        /* */
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 }
