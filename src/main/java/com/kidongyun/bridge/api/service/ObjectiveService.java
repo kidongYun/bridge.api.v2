@@ -17,6 +17,4 @@ public class ObjectiveService extends CellService<Objective> {
         super(cellRepository);
         this.objectiveRepository = objectiveRepository;
     }
-
-
 }

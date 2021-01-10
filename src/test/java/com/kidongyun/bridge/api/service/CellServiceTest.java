@@ -1,6 +1,8 @@
 package com.kidongyun.bridge.api.service;
 
 import com.kidongyun.bridge.api.config.QuerydslConfig;
+import com.kidongyun.bridge.api.entity.Cell;
+import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.repository.cell.CellRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -15,13 +17,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Optional;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Import(QuerydslConfig.class)
 public class CellServiceTest {
     @Mock
-    CellRepository cellRepository;
+    CellRepository cellRepositoryMock;
     @InjectMocks
     CellService cellServiceMock;
     @Autowired
@@ -39,7 +48,38 @@ public class CellServiceTest {
     }
 
     @Test
+    @SuppressWarnings(value = "unchecked")
     public void findByType_objective_normalCase() {
+        /* Arrange */
+        Objective stub = Objective.builder().description("findByType").build();
+        when(cellRepositoryMock.findByType(Cell.Type.Objective)).thenReturn(Set.of(stub));
 
+        /* Act */
+        Set<Objective> results = cellServiceMock.findByType(Cell.Type.Objective);
+
+        /* Assert */
+        for(Objective result : results) {
+            assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+        }
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void findById_idIsNull() throws Exception {
+        /* Arrange, Act, Assert */
+        cellService.findById(null);
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void findById_objective_normalCase() throws Exception {
+        /* Arrange */
+        Objective stub = Objective.builder().description("findByType").build();
+        when(cellRepositoryMock.findById(anyLong())).thenReturn(Optional.of(stub));
+
+        /* Act */
+        Objective result = (Objective) cellServiceMock.findById(anyLong());
+
+        /* Assert */
+        assertThat(result.getDescription()).isEqualTo(stub.getDescription());
     }
 }

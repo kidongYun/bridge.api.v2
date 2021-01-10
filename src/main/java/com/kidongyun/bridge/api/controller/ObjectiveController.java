@@ -5,15 +5,14 @@ import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Priority;
-import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import com.kidongyun.bridge.api.service.MemberService;
+import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PriorityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.transaction.Transactional;
 
@@ -26,14 +25,13 @@ import static java.util.stream.Collectors.toSet;
 @Transactional
 @RequestMapping("api/v1/objective")
 public class ObjectiveController {
-    private ObjectiveRepository objectiveRepository;
-
+    private ObjectiveService objectiveService;
     private PriorityService priorityService;
     private MemberService memberService;
 
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityService priorityService, MemberService memberService) {
-        this.objectiveRepository = objectiveRepository;
+    public ObjectiveController(ObjectiveService objectiveService, PriorityService priorityService, MemberService memberService) {
+        this.objectiveService = objectiveService;
         this.priorityService = priorityService;
         this.memberService = memberService;
     }
@@ -41,7 +39,7 @@ public class ObjectiveController {
     @GetMapping
     public ResponseEntity<?> getObjective() {
         /* OBJECTIVE 목록을 가져온다 */
-        Set<Objective> objectives = objectiveRepository.findByType(Cell.Type.Objective);
+        Set<Objective> objectives = objectiveService.findByType(Cell.Type.Objective);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(objectives.stream().map(Objective.Response::of).collect(toSet()));
@@ -49,9 +47,8 @@ public class ObjectiveController {
 
     @ExecuteLog
     @GetMapping("/{id}")
-    public ResponseEntity<?> getObjectiveById(@PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.findByIdAndType(id, Cell.Type.Objective)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'id' parameter is not appropriate."))));
+    public ResponseEntity<?> getObjectiveById(@PathVariable("id") Long id) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.findById(id)));
     }
 
     @ExecuteLog
@@ -64,10 +61,9 @@ public class ObjectiveController {
         Member member = memberService.findByEmail(post.getEmail());
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveRepository.findById(post.getParentId())
-                .orElse(null);
+        Objective parent = objectiveService.findById(post.getParentId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(post.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(post.toDomain(priority, member, parent))));
     }
 
     @ExecuteLog
@@ -80,15 +76,14 @@ public class ObjectiveController {
         Member member = memberService.findByEmail(put.getEmail());
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveRepository.findById(put.getParentId())
-                .orElse(null);
+        Objective parent = objectiveService.findById(put.getParentId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveRepository.save(put.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(put.toDomain(priority, member, parent))));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteObjective(@PathVariable("id") Long id) {
-        objectiveRepository.deleteById(id);
+        objectiveService.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 }
