@@ -8,6 +8,7 @@ import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
+import com.kidongyun.bridge.api.service.PriorityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,14 @@ import static java.util.stream.Collectors.toSet;
 @RequestMapping("api/v1/objective")
 public class ObjectiveController {
     private ObjectiveRepository objectiveRepository;
-    private PriorityRepository priorityRepository;
     private MemberRepository memberRepository;
 
+    private PriorityService priorityService;
+
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityRepository priorityRepository, MemberRepository memberRepository) {
+    public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityService priorityService, MemberRepository memberRepository) {
         this.objectiveRepository = objectiveRepository;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
         this.memberRepository = memberRepository;
     }
 
@@ -55,10 +57,9 @@ public class ObjectiveController {
 
     @ExecuteLog
     @PostMapping
-    public ResponseEntity<?> postObjective(@RequestBody Objective.Post post) {
+    public ResponseEntity<?> postObjective(@RequestBody Objective.Post post) throws Exception {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityRepository.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId', 'email' parameters are not appropriate."));
+        Priority priority = priorityService.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberRepository.findByEmail(post.getEmail())
@@ -73,10 +74,9 @@ public class ObjectiveController {
 
     @ExecuteLog
     @PutMapping
-    public ResponseEntity<?> putObjective(@RequestBody Objective.Put put) {
+    public ResponseEntity<?> putObjective(@RequestBody Objective.Put put) throws Exception {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityRepository.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail())
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId', 'email' parameters are not appropriate."));
+        Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberRepository.findByEmail(put.getEmail())

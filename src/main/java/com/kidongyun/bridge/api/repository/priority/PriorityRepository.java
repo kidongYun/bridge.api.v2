@@ -12,4 +12,8 @@ public interface PriorityRepository extends JpaRepository<Priority, Long>, Prior
     Optional<Priority> findByIdAndMember(Long id, Member member);
 
     Optional<Priority> findByIdAndMemberEmail(Long id, String email);
+
+    Optional<Priority> findByMember(Member member);
+
+    Optional<Priority> findByMemberEmail(String email);
 }

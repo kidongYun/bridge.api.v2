@@ -38,7 +38,7 @@ public class PlanControllerTest {
     @InjectMocks
     PlanController planController;
 
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Before
     public void setUp() {
@@ -63,5 +63,11 @@ public class PlanControllerTest {
         mockMvc.perform(get("/api/v1/plan"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void postPlan_normalCase() throws Exception {
+        /* Arrange */
+
     }
 }
