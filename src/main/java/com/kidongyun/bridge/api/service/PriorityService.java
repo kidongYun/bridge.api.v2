@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -34,5 +35,17 @@ public class PriorityService {
         }
 
         return priorityRepository.findByIdAndMemberEmail(priorityId, email).orElseThrow(Exception::new);
+    }
+
+    public Priority findByMemberEmail(String email) throws Exception {
+        if(Objects.isNull(email)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' should be not null");
+        }
+
+        return priorityRepository.findByMemberEmail(email).orElseThrow(Exception::new);
+    }
+
+    public List<Priority> findAll() {
+        return priorityRepository.findAll();
     }
 }

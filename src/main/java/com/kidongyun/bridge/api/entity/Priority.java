@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,4 +31,13 @@ public class Priority {
     @Builder.Default
     @OneToMany(mappedBy = "priority")
     private Set<Objective> objectives = new HashSet<>();
+
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Response {
+
+    }
 }

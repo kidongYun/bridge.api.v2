@@ -22,7 +22,7 @@ public class MemberService {
 
     public Member findByEmail(String email) throws Exception {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter is not appropriate");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter should be not null");
         }
 
         return memberRepository.findByEmail(email).orElseThrow(Exception::new);

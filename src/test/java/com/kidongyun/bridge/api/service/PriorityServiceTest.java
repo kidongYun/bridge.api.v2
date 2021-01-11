@@ -41,13 +41,32 @@ public class PriorityServiceTest {
     }
 
     @Test(expected = HttpClientErrorException.class)
-    public void find_priorityIdAndEmailAreNull() throws Exception {
+    public void findByMemberEmail_emailIsNull() throws Exception {
+        /* Arrange, Act, Assert */
+        priorityService.findByMemberEmail(null);
+    }
+
+    @Test
+    public void findByMemberEmail() throws Exception {
+        /* Arrange */
+        Priority stub = Priority.builder().description("findByMemberEmail").build();
+        when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Optional.of(stub));
+
+        /* Act */
+        Priority result = priorityServiceMock.findByMemberEmail(anyString());
+
+        /* Assert */
+        assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void findByIdAndMemberEmail_priorityIdAndEmailAreNull() throws Exception {
         /* Arrange, Act, Assert */
         priorityService.findByIdAndMemberEmail(null, null);
     }
 
     @Test
-    public void find_priorityIdIsNotNull_EmailIsNull() throws Exception {
+    public void findByIdAndMemberEmail_priorityIdIsNotNull_EmailIsNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findById").build();
         when(priorityRepository.findById(anyLong())).thenReturn(Optional.of(stub));
@@ -60,7 +79,7 @@ public class PriorityServiceTest {
     }
 
     @Test
-    public void find_priorityIdIsNull_EmailIsNotNull() throws Exception {
+    public void findByIdAndMemberEmail_priorityIdIsNull_EmailIsNotNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findByMemberEmail").build();
         when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Optional.of(stub));
@@ -73,7 +92,7 @@ public class PriorityServiceTest {
     }
 
     @Test
-    public void find_priorityIdAndEmailAreNotNull() throws Exception {
+    public void findByIdAndMemberEmail_priorityIdAndEmailAreNotNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findByIdAndMemberEmail").build();
         when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(stub));
