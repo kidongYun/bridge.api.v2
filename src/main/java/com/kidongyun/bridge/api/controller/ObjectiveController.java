@@ -63,7 +63,7 @@ public class ObjectiveController {
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
         Objective parent = objectiveService.findById(post.getParentId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(post.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(Objective.of(post, priority, member, parent))));
     }
 
     @ExecuteLog
@@ -78,7 +78,7 @@ public class ObjectiveController {
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
         Objective parent = objectiveService.findById(put.getParentId());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(put.toDomain(priority, member, parent))));
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(Objective.of(put, priority, member, parent))));
     }
 
     @DeleteMapping("/{id}")

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.Set;
 
 @Transactional
 public interface PriorityRepository extends JpaRepository<Priority, Long>, PriorityRepositoryCustom {
@@ -15,5 +16,5 @@ public interface PriorityRepository extends JpaRepository<Priority, Long>, Prior
 
     Optional<Priority> findByMember(Member member);
 
-    Optional<Priority> findByMemberEmail(String email);
+    Set<Priority> findByMemberEmail(String email);
 }

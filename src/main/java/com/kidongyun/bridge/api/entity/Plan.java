@@ -84,21 +84,6 @@ public class Plan extends Cell {
         private String content;
         @ApiModelProperty(example = "9")
         private Long objectiveId;
-
-        public Plan toDomain(Member member, Objective parent) {
-            if(Objects.isNull(member) || Objects.isNull(parent)) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
-            }
-
-            return Plan.builder()
-                    .startDateTime(startDateTime)
-                    .endDateTime(endDateTime)
-                    .status(status)
-                    .member(member)
-                    .content(content)
-                    .objective(parent)
-                    .build();
-        }
     }
 
     @Getter
@@ -117,21 +102,36 @@ public class Plan extends Cell {
         private String content;
         @ApiModelProperty(example = "9")
         private Long objectiveId;
+    }
 
-        public Plan toDomain(Member member, Objective parent) {
-            if(Objects.isNull(member) || Objects.isNull(parent)) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
-            }
-
-            return Plan.builder()
-                    .id(id)
-                    .startDateTime(startDateTime)
-                    .endDateTime(endDateTime)
-                    .status(status)
-                    .member(member)
-                    .content(content)
-                    .objective(parent)
-                    .build();
+    public static Plan of(Post post, Member member, Objective parent) {
+        if(Objects.isNull(member) || Objects.isNull(parent)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
         }
+
+        return Plan.builder()
+                .startDateTime(post.getStartDateTime())
+                .endDateTime(post.getEndDateTime())
+                .status(post.getStatus())
+                .member(member)
+                .content(post.getContent())
+                .objective(parent)
+                .build();
+    }
+
+    public static Plan of(Put put, Member member, Objective parent) {
+        if(Objects.isNull(member) || Objects.isNull(parent)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
+        }
+
+        return Plan.builder()
+                .id(put.getId())
+                .startDateTime(put.getStartDateTime())
+                .endDateTime(put.getEndDateTime())
+                .status(put.getStatus())
+                .member(member)
+                .content(put.getContent())
+                .objective(parent)
+                .build();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -31,18 +32,18 @@ public class PriorityService {
         }
 
         if(Objects.isNull(priorityId)) {
-            return priorityRepository.findByMemberEmail(email).orElseThrow(Exception::new);
+            return priorityRepository.findByMemberEmail(email).iterator().next();
         }
 
         return priorityRepository.findByIdAndMemberEmail(priorityId, email).orElseThrow(Exception::new);
     }
 
-    public Priority findByMemberEmail(String email) throws Exception {
+    public Set<Priority> findByMemberEmail(String email) throws Exception {
         if(Objects.isNull(email)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' should be not null");
         }
 
-        return priorityRepository.findByMemberEmail(email).orElseThrow(Exception::new);
+        return priorityRepository.findByMemberEmail(email);
     }
 
     public List<Priority> findAll() {

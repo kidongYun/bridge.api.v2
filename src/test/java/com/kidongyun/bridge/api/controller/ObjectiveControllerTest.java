@@ -9,6 +9,9 @@ import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
 import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
+import com.kidongyun.bridge.api.service.MemberService;
+import com.kidongyun.bridge.api.service.ObjectiveService;
+import com.kidongyun.bridge.api.service.PriorityService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,13 +43,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(QuerydslConfig.class)
 public class ObjectiveControllerTest {
     @Mock
-    ObjectiveRepository objectiveRepository;
+    ObjectiveService objectiveService;
 
     @Mock
-    PriorityRepository priorityRepository;
+    PriorityService priorityService;
 
     @Mock
-    MemberRepository memberRepository;
+    MemberService memberService;
 
     @InjectMocks
     ObjectiveController objectiveController;
@@ -77,7 +80,7 @@ public class ObjectiveControllerTest {
 
         Set<Objective> stub = Set.of(parent, child);
 
-        when(objectiveRepository.findByType(Cell.Type.Objective)).thenReturn(stub);
+        when(objectiveService.findByType(Cell.Type.Objective)).thenReturn(stub);
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective"))
@@ -88,11 +91,11 @@ public class ObjectiveControllerTest {
     @Test
     public void getObjectiveById_normal() throws Exception {
         /* Arrange */
-        Optional<Objective> stub = Optional.of(Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+        Objective stub = Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
-                .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build());
+                .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build();
 
-        when(objectiveRepository.findByIdAndType(anyLong(), any(Cell.Type.class))).thenReturn(stub);
+        when(objectiveService.findById(anyLong())).thenReturn(stub);
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
@@ -103,7 +106,7 @@ public class ObjectiveControllerTest {
     @Test(expected = Exception.class)
     public void getObjectiveById_cannotFindObjective() throws Exception {
         /* Arrange */
-        when(objectiveRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(objectiveService.findById(anyLong())).thenReturn(null);
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/2"))
@@ -126,10 +129,10 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(priority));
-        when(objectiveRepository.findById(anyLong())).thenReturn(Optional.of(parent));
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(john));
-        when(objectiveRepository.save(any(Objective.class))).thenReturn(stub.toDomain(priority, john, parent));
+        when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(objectiveService.findById(anyLong())).thenReturn(parent);
+        when(memberService.findByEmail(anyString())).thenReturn(john);
+        when(objectiveService.save(any(Objective.class))).thenReturn(Objective.of(stub, priority, john, parent));
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
@@ -154,10 +157,10 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(priority));
-        when(objectiveRepository.findById(anyLong())).thenReturn(Optional.of(parent));
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(john));
-        when(objectiveRepository.save(any(Objective.class))).thenReturn(stub.toDomain(priority, john, parent));
+        when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(objectiveService.findById(anyLong())).thenReturn(parent);
+        when(memberService.findByEmail(anyString())).thenReturn(john);
+        when(objectiveService.save(any(Objective.class))).thenReturn(Objective.of(stub, priority, john, parent));
 
         /* Act, Assert */
         mockMvc.perform(put("/api/v1/objective")

@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,16 +48,19 @@ public class PriorityServiceTest {
     }
 
     @Test
-    public void findByMemberEmail() throws Exception {
+    public void findByMemberEmail_normalCase() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findByMemberEmail").build();
-        when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Optional.of(stub));
+        when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Set.of(stub));
 
         /* Act */
-        Priority result = priorityServiceMock.findByMemberEmail(anyString());
+        Set<Priority> results = priorityServiceMock.findByMemberEmail(anyString());
 
         /* Assert */
-        assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+        assertThat(results.size()).isEqualTo(1);
+        for(Priority result : results) {
+            assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+        }
     }
 
     @Test(expected = HttpClientErrorException.class)
@@ -82,7 +86,7 @@ public class PriorityServiceTest {
     public void findByIdAndMemberEmail_priorityIdIsNull_EmailIsNotNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findByMemberEmail").build();
-        when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Optional.of(stub));
+        when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Set.of(stub));
 
         /* Act */
         Priority result = priorityServiceMock.findByIdAndMemberEmail(null, anyString());

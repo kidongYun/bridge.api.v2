@@ -49,7 +49,7 @@ public class PlanController {
 
         Objective parent = objectiveService.findById(post.getObjectiveId());
 
-        Plan plan = planService.save(post.toDomain(member, parent));
+        Plan plan = planService.save(Plan.of(post, member, parent));
 
         return ResponseEntity.status(HttpStatus.OK).body(Plan.Response.of(plan));
     }
@@ -60,7 +60,7 @@ public class PlanController {
 
         Objective parent = objectiveService.findById(put.getObjectiveId());
 
-        Plan plan = planService.save(put.toDomain(member, parent));
+        Plan plan = planService.save(Plan.of(put, member, parent));
 
         return ResponseEntity.status(HttpStatus.OK).body(Plan.Response.of(plan));
     }

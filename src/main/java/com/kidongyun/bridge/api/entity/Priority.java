@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+
 @Slf4j
 @Getter
 @Setter
@@ -38,6 +40,38 @@ public class Priority {
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
+        private Long id;
+        private Integer level;
+        private String description;
+        private String email;
+        private Set<Long> objectiveIds;
 
+        public static Response of(Priority priority) {
+            return Response.builder()
+                    .id(priority.getId())
+                    .level(priority.getLevel())
+                    .description(priority.getDescription())
+                    .email(priority.getMember().getEmail())
+                    .objectiveIds(priority.getObjectives().stream().map(Cell::getId).collect(toSet()))
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    public static class Post {
+        private Integer level;
+        private String description;
+        private String email;
+
+        public static Priority toDomain(Post post, Member member) {
+            return Priority.builder()
+                    .level(post.getLevel())
+                    .description(post.getDescription())
+                    .member(member)
+                    .build();
+        }
     }
 }

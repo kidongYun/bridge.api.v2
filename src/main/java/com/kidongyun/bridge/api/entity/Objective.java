@@ -95,20 +95,6 @@ public class Objective extends Cell {
         @ApiModelProperty(example = "1")
         private long priorityId;
         private long parentId;
-
-        public Objective toDomain(Priority priority, Member member, Objective parent) {
-            return Objective.builder()
-                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
-                    .endDateTime(endDateTime)
-                    .status(status)
-                    .type(Type.Objective)
-                    .member(member)
-                    .title(title)
-                    .description(description)
-                    .priority(priority)
-                    .parent(parent)
-                    .build();
-        }
     }
 
     @Getter
@@ -132,20 +118,34 @@ public class Objective extends Cell {
         @ApiModelProperty(example = "1")
         private long priorityId;
         private long parentId;
+    }
 
-        public Objective toDomain(Priority priority, Member member, Objective parent) {
-            return Objective.builder()
-                    .id(id)
-                    .startDateTime(Objects.requireNonNullElse(startDateTime, LocalDateTime.now()))
-                    .endDateTime(endDateTime)
-                    .status(status)
-                    .type(Type.Objective)
-                    .member(member)
-                    .title(title)
-                    .description(description)
-                    .priority(priority)
-                    .parent(parent)
-                    .build();
-        }
+    public static Objective of(Post post, Priority priority, Member member, Objective parent) {
+        return Objective.builder()
+                .startDateTime(Objects.requireNonNullElse(post.getStartDateTime(), LocalDateTime.now()))
+                .endDateTime(post.getEndDateTime())
+                .status(post.getStatus())
+                .type(Type.Objective)
+                .member(member)
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .priority(priority)
+                .parent(parent)
+                .build();
+    }
+
+    public static Objective of(Put put, Priority priority, Member member, Objective parent) {
+        return Objective.builder()
+                .id(put.getId())
+                .startDateTime(Objects.requireNonNullElse(put.getStartDateTime(), LocalDateTime.now()))
+                .endDateTime(put.getEndDateTime())
+                .status(put.getStatus())
+                .type(Type.Objective)
+                .member(member)
+                .title(put.getTitle())
+                .description(put.getDescription())
+                .priority(priority)
+                .parent(parent)
+                .build();
     }
 }
