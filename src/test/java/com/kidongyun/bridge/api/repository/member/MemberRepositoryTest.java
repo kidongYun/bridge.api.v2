@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +30,39 @@ public class MemberRepositoryTest {
     PriorityRepository priorityRepository;
 
     @Test
-    public void findByEmail_normal() {
+    public void save_normalCase() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Member resultJohn = memberRepository.save(john);
+        Member resultJulia = memberRepository.save(julia);
+        List<Member> results = memberRepository.findAll();
+
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(resultJohn.getEmail()).isEqualTo(john.getEmail());
+        assertThat(resultJulia.getEmail()).isEqualTo(julia.getEmail());
+    }
+
+    @Test
+    public void existsById_normalCase() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        memberRepository.save(john);
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        /* Act */
+        boolean resultJohn = memberRepository.existsById(john.getEmail());
+        boolean resultJulia = memberRepository.existsById(julia.getEmail());
+
+        /* Assert */
+        assertThat(resultJohn).isEqualTo(true);
+        assertThat(resultJulia).isEqualTo(false);
+    }
+
+    @Test
+    public void findByEmail_normalCase() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
         memberRepository.save(john);

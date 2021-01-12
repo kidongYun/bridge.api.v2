@@ -46,15 +46,15 @@ public class Plan extends Cell {
 
         public static Response of(Plan plan) {
             if(Objects.isNull(plan)) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan' parameter should not be null");
+                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan' parameter must not be null");
             }
 
             if(Objects.isNull(plan.getMember())) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.member' should not be null");
+                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.member' must not be null");
             }
 
             if(Objects.isNull(plan.getObjective())) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.objective' should not be null");
+                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.objective' must not be null");
             }
 
             return Response.builder()

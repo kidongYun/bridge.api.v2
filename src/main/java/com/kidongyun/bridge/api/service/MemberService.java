@@ -22,9 +22,29 @@ public class MemberService {
 
     public Member findByEmail(String email) throws Exception {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter should be not null");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
         }
 
         return memberRepository.findByEmail(email).orElseThrow(Exception::new);
+    }
+
+    public Member save(Member member) {
+        if(Objects.isNull(member)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member' parameter must not be null");
+        }
+
+        return memberRepository.save(member);
+    }
+
+    public boolean isExist(String email) {
+        if(Objects.isNull(email)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
+        }
+
+        return memberRepository.existsById(email);
+    }
+
+    public boolean isNotExist(String email) {
+        return !this.isExist(email);
     }
 }

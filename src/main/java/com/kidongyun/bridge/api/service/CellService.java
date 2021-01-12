@@ -23,7 +23,7 @@ class CellService<T extends Cell> {
 
     public Set<T> findByType(Cell.Type type) {
         if(Objects.isNull(type)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'type' parameter is not appropriate");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'type' parameter must not be null");
         }
 
         return cellRepository.findByType(type);
@@ -31,7 +31,7 @@ class CellService<T extends Cell> {
 
     public T findById(Long id) throws Exception {
         if(Objects.isNull(id)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter is not appropriate");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter must not be null");
         }
 
         return cellRepository.findById(id).orElseThrow(Exception::new);
@@ -39,7 +39,7 @@ class CellService<T extends Cell> {
 
     public T save(T cell) {
         if(Objects.isNull(cell)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'cell' is not appropriate");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'cell' parameter must not be null");
         }
 
         return cellRepository.save(cell);
@@ -47,7 +47,7 @@ class CellService<T extends Cell> {
 
     public void deleteById(Long id) {
         if(Objects.isNull(id)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter should not be null");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter must not be null");
         }
 
         cellRepository.deleteById(id);

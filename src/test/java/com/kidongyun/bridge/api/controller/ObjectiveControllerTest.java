@@ -6,9 +6,6 @@ import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Priority;
-import com.kidongyun.bridge.api.repository.member.MemberRepository;
-import com.kidongyun.bridge.api.repository.objective.ObjectiveRepository;
-import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PriorityService;
@@ -28,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
