@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.util.Objects;
 
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/sign")
 @Transactional

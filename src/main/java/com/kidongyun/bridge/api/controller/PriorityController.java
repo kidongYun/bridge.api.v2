@@ -14,6 +14,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/priority")
 @Transactional
