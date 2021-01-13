@@ -6,10 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
@@ -32,14 +35,15 @@ public class SignController {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' is already existed");
         }
 
-        /* 회원가입 */
-        Member member = memberService.save(Member.of(post));
+        /* 권한 설정 */
+        Member member = Member.of(post);
+        member.setAuth("USER");
 
-        return ResponseEntity.status(HttpStatus.OK).body(member.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.save(member).getEmail());
     }
 
     @PostMapping("/in")
-    public ResponseEntity<?> signIn(HttpSession session, @RequestBody Member.Post post) throws Exception {
+    public ResponseEntity<?> signIn(@RequestBody Member.Post post) throws Exception {
         if(Objects.isNull(post) || Objects.isNull(post.getEmail()) || Objects.isNull(post.getPassword())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email', 'password' must not be null");
         }
@@ -55,9 +59,14 @@ public class SignController {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'password' is not matched");
         }
 
-        /* 로그인 성공 */
-        session.setAttribute("SIGN", true);
-
         return ResponseEntity.status(HttpStatus.OK).body(member.getEmail());
+    }
+
+    @GetMapping("/out")
+    public ResponseEntity<?> signOut(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler()
+                .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 }

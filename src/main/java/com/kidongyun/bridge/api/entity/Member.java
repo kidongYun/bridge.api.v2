@@ -82,9 +82,11 @@ public class Member implements UserDetails {
         private String email;
         @ApiModelProperty(example = "john123123")
         private String password;
+        @ApiModelProperty(hidden = true)
+        private String auth;
     }
 
     public static Member of(Post post) {
-        return Member.builder().email(post.getEmail()).password(post.getPassword()).build();
+        return Member.builder().email(post.getEmail()).password(post.getPassword()).auth(post.getAuth()).build();
     }
 }

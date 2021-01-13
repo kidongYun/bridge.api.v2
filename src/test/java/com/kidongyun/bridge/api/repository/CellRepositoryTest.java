@@ -162,6 +162,55 @@ public class CellRepositoryTest {
     }
 
     @Test
+    public void findByMemberEmail_normalCase() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Objective objOfJohn1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Plan planOfJohn1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
+        planRepository.save(planOfJohn1);
+
+        Plan planOfJohn2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
+        planRepository.save(planOfJohn2);
+
+        Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
+
+        Objective objOfJulia1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
+        objectiveRepository.save(objOfJulia1);
+
+        Objective objOfJulia2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        Plan planOfJulia1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
+        planRepository.save(planOfJulia1);
+
+        Plan planOfJulia2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
+        planRepository.save(planOfJulia2);
+
+        /* Act */
+        Set<Cell> results = cellRepository.findByMemberEmail(john.getEmail());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+        for(Cell result : results) {
+            assertThat(result.getMember().getEmail()).isEqualTo("john@gmail.com");
+        }
+    }
+
+    @Test
     public void findById_normalCase() throws Exception {
         /* Arrange */
         Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())

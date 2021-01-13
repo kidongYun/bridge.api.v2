@@ -22,6 +22,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -81,5 +82,27 @@ public class CellServiceTest {
 
         /* Assert */
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void findByMemberEmail_emailIsNull() throws Exception {
+        /* Arrange, Act, Assert */
+        cellService.findByMemberEmail(null);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void findByMemberEmail_normalCase() {
+        /* Arrange */
+        Objective stub = Objective.builder().description("findByMemberEmail").build();
+        when(cellRepositoryMock.findByMemberEmail(anyString())).thenReturn(Set.of(stub));
+
+        /* Act */
+        Set<Objective> results = cellServiceMock.findByMemberEmail(anyString());
+
+        /* Assert */
+        for(Objective result : results) {
+            assertThat(result.getDescription()).isEqualTo(stub.getDescription());
+        }
     }
 }

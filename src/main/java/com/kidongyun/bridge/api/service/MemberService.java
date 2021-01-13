@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -17,10 +19,12 @@ import java.util.Objects;
 @Service
 public class MemberService implements UserDetailsService {
     private MemberRepository memberRepository;
+    private PasswordEncoder encoder;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder encoder) {
         this.memberRepository = memberRepository;
+        this.encoder = encoder;
     }
 
     public Member findByEmail(String email) throws Exception {
@@ -35,6 +39,9 @@ public class MemberService implements UserDetailsService {
         if(Objects.isNull(member)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member' parameter must not be null");
         }
+
+        /* 패스워드 암호화 */
+        member.setPassword(encoder.encode(member.getPassword()));
 
         return memberRepository.save(member);
     }

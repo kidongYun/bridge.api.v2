@@ -37,6 +37,14 @@ class CellService<T extends Cell> {
         return cellRepository.findById(id).orElseThrow(Exception::new);
     }
 
+    public Set<T> findByMemberEmail(String email) {
+        if(Objects.isNull(email)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
+        }
+
+        return cellRepository.findByMemberEmail(email);
+    }
+
     public T save(T cell) {
         if(Objects.isNull(cell)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'cell' parameter must not be null");
