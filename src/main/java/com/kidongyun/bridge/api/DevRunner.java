@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -30,7 +31,9 @@ public class DevRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        Member john = Member.builder().email("john@gmail.com").password(encoder.encode("q1w2e3r4")).auth("USER").build();
 
         Priority priorityJohn1 = Priority.builder().level(1).description("Important").member(john).build();
         priorityRepository.save(priorityJohn1);
@@ -41,7 +44,7 @@ public class DevRunner implements ApplicationRunner {
         Priority priorityJohn3 = Priority.builder().level(3).description("UnImportant").member(john).build();
         priorityRepository.save(priorityJohn3);
 
-        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+        Member julia = Member.builder().email("julia@gmail.com").password(encoder.encode("julia123")).auth("USER").build();
 
         Priority priorityJulia1 = Priority.builder().level(1).description("Important").member(julia).build();
         priorityRepository.save(priorityJulia1);

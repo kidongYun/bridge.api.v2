@@ -3,10 +3,14 @@ package com.kidongyun.bridge.api.entity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,11 +22,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member {
+public class Member implements UserDetails {
     @Id
     private String email;
 
     private String password;
+
+    private String auth;
 
     @Builder.Default
     @OneToMany(mappedBy = "member")
@@ -31,6 +37,41 @@ public class Member {
     @Builder.Default
     @OneToMany(mappedBy = "member")
     private Set<Priority> priorities = new HashSet<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> roles = new HashSet<>();
+        for(String role : auth.split(",")) {
+            roles.add(new SimpleGrantedAuthority(role));
+        }
+
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     @Getter
     @Setter
