@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.Objects;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class SignController {
     }
 
     @PostMapping("/up")
-    public ResponseEntity<?> signUp(@RequestBody Member.Post post) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody Member.Post post) {
         /* 이미 존재하는 email 일 경우 */
         if(memberService.isExist(post.getEmail())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' is already existed");

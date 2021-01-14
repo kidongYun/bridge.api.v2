@@ -14,7 +14,7 @@ public class Advice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> exception(Exception e) {
         e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     /** Custom Exception Handler */

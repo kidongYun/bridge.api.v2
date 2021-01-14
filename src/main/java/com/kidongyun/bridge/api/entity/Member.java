@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,6 +79,7 @@ public class Member implements UserDetails {
     @ToString
     @Builder
     public static class Post {
+        @NotBlank(message = "'email' must not be null")
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         @ApiModelProperty(example = "john123123")
