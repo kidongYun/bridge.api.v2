@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class Member implements UserDetails {
     @ToString
     @Builder
     public static class Post {
-        @NotBlank(message = "'email' must not be null")
+        @NotNull
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         @ApiModelProperty(example = "john123123")

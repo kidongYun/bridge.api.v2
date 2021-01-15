@@ -15,6 +15,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.DefaultMessageCodesResolver;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
