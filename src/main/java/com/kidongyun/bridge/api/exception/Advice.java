@@ -8,7 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.util.NestedServletException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ public class Advice {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
-    /** Custom Exception Handler */
+    /** HttpStatus Exception Handler */
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<?> httpStatusCodeException(HttpStatusCodeException e) {
         log.info(e.getStatusCode() + " : " + e.getStatusText());

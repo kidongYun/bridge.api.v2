@@ -31,29 +31,29 @@ public class SignController {
     }
 
     @PostMapping("/up")
-    public ResponseEntity<?> signUp(@Valid @RequestBody Member.Post post) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody Member.SignUp up) {
         /* 이미 존재하는 email 일 경우 */
-        if(memberService.isExist(post.getEmail())) {
+        if(memberService.isExist(up.getEmail())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' is already existed");
         }
 
         /* 권한 설정 */
-        Member member = Member.of(post);
+        Member member = Member.of(up);
         member.setAuth("USER");
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.save(member).getEmail());
     }
 
     @PostMapping("/in")
-    public ResponseEntity<?> signIn(@RequestBody Member.Post post) throws Exception {
+    public ResponseEntity<?> signIn(@Valid @RequestBody Member.SignIn in) throws Exception {
         /* 없는 이메일인 경우 */
-        if(memberService.isNotExist(post.getEmail())) {
+        if(memberService.isNotExist(in.getEmail())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' is not existed");
         }
 
         /* 비밀번호가 안 맞는 경우 */
-        Member member = memberService.findByEmail(post.getEmail());
-        if(!Objects.equals(post.getPassword(), member.getPassword())) {
+        Member member = memberService.findByEmail(in.getEmail());
+        if(!Objects.equals(in.getPassword(), member.getPassword())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'password' is not matched");
         }
 

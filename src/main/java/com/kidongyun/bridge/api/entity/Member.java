@@ -81,7 +81,7 @@ public class Member implements UserDetails {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Post {
+    public static class SignUp {
         @NotBlank(message = "'email' must not be empty")
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
@@ -92,7 +92,28 @@ public class Member implements UserDetails {
         private String auth;
     }
 
-    public static Member of(Post post) {
-        return Member.builder().email(post.getEmail()).password(post.getPassword()).auth(post.getAuth()).build();
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignIn {
+        @NotBlank(message = "'email' must not be empty")
+        @ApiModelProperty(example = "john@gmail.com")
+        private String email;
+        @NotBlank(message = "'password' must not be empty")
+        @ApiModelProperty(example = "john123123")
+        private String password;
+        @ApiModelProperty(hidden = true)
+        private String auth;
+    }
+
+    public static Member of(SignUp up) {
+        return Member.builder().email(up.getEmail()).password(up.getPassword()).auth(up.getAuth()).build();
+    }
+
+    public static Member of(SignIn in) {
+        return Member.builder().email(in.getEmail()).password(in.getPassword()).auth(in.getAuth()).build();
     }
 }

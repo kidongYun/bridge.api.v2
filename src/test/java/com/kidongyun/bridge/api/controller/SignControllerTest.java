@@ -50,7 +50,7 @@ public class SignControllerTest {
     @Test
     public void signUp_whenEmailIsEmpty_thenReturn400() throws Exception {
         /* Arrange */
-        Member.Post stub = Member.Post.builder().email("").password("123123").build();
+        Member.SignUp stub = Member.SignUp.builder().email("").password("123123").build();
         String content = objectMapper.writeValueAsString(stub);
 
         /* Act, Assert */
@@ -69,10 +69,10 @@ public class SignControllerTest {
     @Test
     public void signIn_whenEmailDoesNotExist_thenReturn400() throws Exception {
         /* Arrange */
-        String content = objectMapper.writeValueAsString(Member.Post.builder().email("").build());
+        String content = objectMapper.writeValueAsString(Member.SignIn.builder().email("").build());
         when(memberServiceMock.isNotExist(anyString())).thenReturn(true);
 
-        /* Act */
+        /* Act, Assert  */
         String response = mockMvc.perform(post("/api/v1/sign/in")
                 .characterEncoding("utf-8")
                 .content(content)
@@ -81,18 +81,19 @@ public class SignControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
+        /* Assert */
         assertThat(response).isEqualTo("'email' is not existed");
     }
 
     @Test
     public void signIn_whenPasswordDoesNotMatch_thenReturn400() throws Exception {
         /* Arrange */
-        Member.Post post = Member.Post.builder().email("test").password("1").build();
-        String content = objectMapper.writeValueAsString(post);
+        Member.SignIn in = Member.SignIn.builder().email("test").password("1").build();
+        String content = objectMapper.writeValueAsString(in);
         when(memberServiceMock.isNotExist(anyString())).thenReturn(false);
         when(memberServiceMock.findByEmail(anyString())).thenReturn(Member.builder().email("test").password("2").build());
 
-        /* Act */
+        /* Act, Assert  */
         String response = mockMvc.perform(post("/api/v1/sign/in")
                 .characterEncoding("utf-8")
                 .content(content)
@@ -101,6 +102,7 @@ public class SignControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
+        /* Assert */
         assertThat(response).isEqualTo("'password' is not matched");
     }
 }
