@@ -1,0 +1,106 @@
+package com.kidongyun.bridge.api.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kidongyun.bridge.api.config.QuerydslConfig;
+import com.kidongyun.bridge.api.entity.Member;
+import com.kidongyun.bridge.api.exception.Advice;
+import com.kidongyun.bridge.api.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@Import(QuerydslConfig.class)
+public class SignControllerTest {
+    @Mock
+    MemberService memberServiceMock;
+    @InjectMocks
+    SignController signControllerMock;
+    @Autowired
+    ObjectMapper objectMapper;
+
+    MockMvc mockMvc;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(signControllerMock).setControllerAdvice(new Advice()).build();
+    }
+
+    @Test
+    public void signUp_whenEmailIsEmpty_thenReturn400() throws Exception {
+        /* Arrange */
+        Member.Post stub = Member.Post.builder().email("").password("123123").build();
+        String content = objectMapper.writeValueAsString(stub);
+
+        /* Act, Assert */
+        String response = mockMvc.perform(post("/api/v1/sign/up")
+                .characterEncoding("utf-8")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        /* Assert */
+        assertThat(response).isEqualTo("'email' must not be empty");
+    }
+
+    @Test
+    public void signIn_whenEmailDoesNotExist_thenReturn400() throws Exception {
+        /* Arrange */
+        String content = objectMapper.writeValueAsString(Member.Post.builder().email("").build());
+        when(memberServiceMock.isNotExist(anyString())).thenReturn(true);
+
+        /* Act */
+        String response = mockMvc.perform(post("/api/v1/sign/in")
+                .characterEncoding("utf-8")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(response).isEqualTo("'email' is not existed");
+    }
+
+    @Test
+    public void signIn_whenPasswordDoesNotMatch_thenReturn400() throws Exception {
+        /* Arrange */
+        Member.Post post = Member.Post.builder().email("test").password("1").build();
+        String content = objectMapper.writeValueAsString(post);
+        when(memberServiceMock.isNotExist(anyString())).thenReturn(false);
+        when(memberServiceMock.findByEmail(anyString())).thenReturn(Member.builder().email("test").password("2").build());
+
+        /* Act */
+        String response = mockMvc.perform(post("/api/v1/sign/in")
+                .characterEncoding("utf-8")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(response).isEqualTo("'password' is not matched");
+    }
+}

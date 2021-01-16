@@ -79,10 +79,13 @@ public class Member implements UserDetails {
     @Setter
     @ToString
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
-        @NotNull
+        @NotBlank(message = "'email' must not be empty")
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
+        @NotBlank(message = "'password' must not be empty")
         @ApiModelProperty(example = "john123123")
         private String password;
         @ApiModelProperty(hidden = true)

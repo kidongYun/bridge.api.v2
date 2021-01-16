@@ -23,7 +23,7 @@ import java.util.Objects;
 @RequestMapping("api/v1/sign")
 @Transactional
 public class SignController {
-    MemberService memberService;
+    private MemberService memberService;
 
     @Autowired
     public SignController(MemberService memberService) {
@@ -46,10 +46,6 @@ public class SignController {
 
     @PostMapping("/in")
     public ResponseEntity<?> signIn(@RequestBody Member.Post post) throws Exception {
-        if(Objects.isNull(post) || Objects.isNull(post.getEmail()) || Objects.isNull(post.getPassword())) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email', 'password' must not be null");
-        }
-
         /* 없는 이메일인 경우 */
         if(memberService.isNotExist(post.getEmail())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' is not existed");

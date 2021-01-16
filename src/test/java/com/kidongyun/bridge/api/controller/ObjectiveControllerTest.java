@@ -40,16 +40,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ObjectiveControllerTest {
     @Mock
     ObjectiveService objectiveService;
-
     @Mock
     PriorityService priorityService;
-
     @Mock
     MemberService memberService;
-
     @InjectMocks
-    ObjectiveController objectiveController;
-
+    ObjectiveController objectiveControllerMock;
     @Autowired
     ObjectMapper objectMapper;
 
@@ -58,7 +54,7 @@ public class ObjectiveControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(objectiveController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(objectiveControllerMock).build();
     }
 
     @Test
@@ -132,6 +128,7 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
+                .characterEncoding("utf-8")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

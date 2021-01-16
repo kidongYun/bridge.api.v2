@@ -1,14 +1,17 @@
 package com.kidongyun.bridge.api.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.util.NestedServletException;
 
 import javax.validation.ConstraintViolationException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -36,6 +39,7 @@ public class Advice {
     /** Validation Exception Handler */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("'email' should not be null");
+        String messages = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList()).get(0);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
     }
 }
