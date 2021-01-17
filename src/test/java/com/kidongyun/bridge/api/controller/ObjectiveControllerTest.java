@@ -6,6 +6,7 @@ import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Priority;
+import com.kidongyun.bridge.api.exception.Advice;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PriorityService;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -39,22 +41,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(QuerydslConfig.class)
 public class ObjectiveControllerTest {
     @Mock
-    ObjectiveService objectiveService;
+    private ObjectiveService objectiveService;
     @Mock
-    PriorityService priorityService;
+    private PriorityService priorityService;
     @Mock
-    MemberService memberService;
+    private MemberService memberService;
     @InjectMocks
-    ObjectiveController objectiveControllerMock;
+    private ObjectiveController objectiveControllerMock;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+    @Autowired
+    private Advice advice;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(objectiveControllerMock).build();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(objectiveControllerMock)
+                .setControllerAdvice(advice)
+                .build();
     }
 
     @Test
@@ -75,7 +82,8 @@ public class ObjectiveControllerTest {
         when(objectiveService.findByType(Cell.Type.Objective)).thenReturn(stub);
 
         /* Act, Assert */
-        mockMvc.perform(get("/api/v1/objective"))
+        mockMvc.perform(get("/api/v1/objective")
+                .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -90,20 +98,25 @@ public class ObjectiveControllerTest {
         when(objectiveService.findById(anyLong())).thenReturn(stub);
 
         /* Act, Assert */
-        mockMvc.perform(get("/api/v1/objective/2"))
+        mockMvc.perform(get("/api/v1/objective/email/2")
+                .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void getObjectiveById_cannotFindObjective() throws Exception {
         /* Arrange */
         when(objectiveService.findById(anyLong())).thenReturn(null);
 
         /* Act, Assert */
-        mockMvc.perform(get("/api/v1/objective/2"))
+        String response = mockMvc.perform(get("/api/v1/objective/id/2")
+                .characterEncoding("utf-8"))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(response).isEqualTo("'obj', 'obj.member', 'obj.priority' must not be null");
     }
 
     @Test
