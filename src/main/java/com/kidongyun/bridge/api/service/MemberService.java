@@ -4,6 +4,7 @@ import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,13 +48,32 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member);
     }
 
-    @ExecuteLog
     public boolean isExist(String email) {
         if(Objects.isNull(email)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
         }
 
         return memberRepository.existsById(email);
+    }
+
+    public String encode(String plain) {
+        if(Strings.isEmpty(plain)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'plain' parameter must not be empty");
+        }
+
+        return encoder.encode(plain);
+    }
+
+    public boolean isMatch(String plain, String encoded) {
+        if(Strings.isEmpty(plain) || Strings.isEmpty(encoded)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'plain', 'encoded' parameter must not be empty");
+        }
+
+        return encoder.matches(plain, encoded);
+    }
+
+    public boolean isNotMatch(String plain, String encoded) {
+        return !isMatch(plain, encoded);
     }
 
     public boolean isNotExist(String email) {

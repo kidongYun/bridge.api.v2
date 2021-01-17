@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Objects;
 
 @Slf4j
@@ -53,11 +54,19 @@ public class SignController {
 
         /* 비밀번호가 안 맞는 경우 */
         Member member = memberService.findByEmail(in.getEmail());
-        if(!Objects.equals(in.getPassword(), member.getPassword())) {
+        if(memberService.isNotMatch(in.getPassword(), member.getPassword())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'password' is not matched");
         }
 
+        /* 로그인 상태로 등록하기 */
+        memberService.loadUserByUsername(member.getEmail());
+
         return ResponseEntity.status(HttpStatus.OK).body(member.getEmail());
+    }
+
+    @GetMapping
+    public ResponseEntity<?> sign(Principal principal) {
+        return ResponseEntity.status(HttpStatus.OK).body(principal.getName());
     }
 
     @GetMapping("/out")

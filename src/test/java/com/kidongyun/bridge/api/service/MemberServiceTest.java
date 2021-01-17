@@ -68,4 +68,14 @@ public class MemberServiceTest {
         assertThat(result.getEmail()).isEqualTo(john.getEmail());
         assertThat(result.getPassword()).isEqualTo(john.getPassword());
     }
+
+    @Test
+    public void isMatch_whenGiveTwoPlainTexts_thenReturnSameEncodedTexts() {
+        /* Arrange, Act */
+        String plain = "q1w2e3r4";
+        String encoded = memberService.encode("q1w2e3r4");
+
+        /* Assert */
+        assertThat(memberService.isMatch(plain, encoded)).isEqualTo(true);
+    }
 }
