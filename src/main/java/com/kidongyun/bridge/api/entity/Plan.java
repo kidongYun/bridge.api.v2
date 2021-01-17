@@ -1,6 +1,7 @@
 package com.kidongyun.bridge.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -74,6 +75,8 @@ public class Plan extends Cell {
     @Setter
     @ToString
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
@@ -90,6 +93,8 @@ public class Plan extends Cell {
     @Setter
     @ToString
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Put {
         @ApiModelProperty(example = "15")
         private Long id;

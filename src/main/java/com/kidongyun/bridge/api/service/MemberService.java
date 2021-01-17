@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api.service;
 
+import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ public class MemberService implements UserDetailsService {
         return memberRepository.save(member);
     }
 
+    @ExecuteLog
     public boolean isExist(String email) {
         if(Objects.isNull(email)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");

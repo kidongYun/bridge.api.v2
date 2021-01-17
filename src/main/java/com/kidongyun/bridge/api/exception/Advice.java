@@ -29,13 +29,13 @@ public class Advice {
         return ResponseEntity.status(e.getStatusCode()).body(e.getStatusText());
     }
 
-    /** Validation Exception Handler */
+    /** RequestParam Validation Exception Handler */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationException(ConstraintViolationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    /** Validation Exception Handler */
+    /** RequestBody Validation Exception Handler */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         String messages = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList()).get(0);

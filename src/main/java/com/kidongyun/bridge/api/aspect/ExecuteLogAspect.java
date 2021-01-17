@@ -16,17 +16,26 @@ import java.util.Arrays;
 public class ExecuteLogAspect {
     @Around(value = "@annotation(ExecuteLog)")
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
-        long start = System.currentTimeMillis();
-        Object result = joinPoint.proceed();
-        long end = System.currentTimeMillis();
-
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
 
         log.info("Method Name : " + method.getName());
         log.info("Input : " + Arrays.toString(signature.getParameterNames()));
-        log.info("Output : " + result.toString());
-        log.info("Execute Time : " + (end - start) + " ms");
+
+        long start = System.currentTimeMillis();
+        Object result = null;
+
+        try {
+            result = joinPoint.proceed();
+            log.info("Output : " + result.toString());
+
+        } catch(Exception e) {
+            log.info("Output : " + e.getClass().getSimpleName() + " - " + e.getMessage());
+            throw e;
+
+        } finally {
+            log.info("Execute Time : " + (System.currentTimeMillis() - start) + " ms");
+        }
 
         return result;
     }

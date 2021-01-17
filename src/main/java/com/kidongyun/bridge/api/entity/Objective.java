@@ -1,13 +1,13 @@
 package com.kidongyun.bridge.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -27,17 +27,13 @@ public class Objective extends Cell {
     private String title;
 
     private String description;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Priority priority;
-
     @Builder.Default
     @OneToMany(mappedBy = "objective")
     private Set<Plan> plans = new HashSet<>();
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Objective parent;
-
     @Builder.Default
     @OneToMany(mappedBy = "parent")
     private Set<Objective> children = new HashSet<>();
