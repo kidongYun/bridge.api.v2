@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Objects;
 
 @Slf4j
 @CrossOrigin
