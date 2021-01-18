@@ -24,9 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/api/v1/sign/up", "/api/v1/sign/in").permitAll()
                 .anyRequest().authenticated()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .and().cors().and().httpBasic();
     }
 
