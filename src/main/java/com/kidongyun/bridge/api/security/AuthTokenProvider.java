@@ -7,5 +7,5 @@ import java.util.Date;
 public interface AuthTokenProvider<T> {
     T createAuthToken(String id, String role, Date expiredDate);
     T convertAuthToken(String token);
-    Authentication getAuthentication(T authToken);
+    Authentication getAuthentication(T authToken) throws Exception;
 }

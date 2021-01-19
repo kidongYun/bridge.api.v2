@@ -2,6 +2,7 @@ package com.kidongyun.bridge.api.security;
 
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -19,6 +20,10 @@ public class JwtFilter extends GenericFilterBean {
 
     private JwtAuthTokenProvider jwtAuthTokenProvider;
 
+    JwtFilter(JwtAuthTokenProvider jwtAuthTokenProvider) {
+        this.jwtAuthTokenProvider = jwtAuthTokenProvider;
+    }
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -29,9 +34,16 @@ public class JwtFilter extends GenericFilterBean {
             JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
 
             if(jwtAuthToken.validate()) {
-                Authentication authentication = jwtAuthTokenProvider
+                try {
+                    Authentication authentication = jwtAuthTokenProvider.getAuthentication(jwtAuthToken);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private Optional<String> resolveToken(HttpServletRequest request) {

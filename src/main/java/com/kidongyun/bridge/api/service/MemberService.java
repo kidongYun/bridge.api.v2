@@ -3,10 +3,19 @@ package com.kidongyun.bridge.api.service;
 import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
+import com.kidongyun.bridge.api.security.AuthToken;
+import com.kidongyun.bridge.api.security.JwtAuthToken;
+import com.kidongyun.bridge.api.security.JwtAuthTokenProvider;
+import com.kidongyun.bridge.api.security.Role;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,16 +24,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Objects;
 
 @Slf4j
 @Service
 public class MemberService implements UserDetailsService {
+    private AuthenticationManagerBuilder authenticationManagerBuilder;
+    private JwtAuthTokenProvider authTokenProvider;
     private MemberRepository memberRepository;
     private PasswordEncoder encoder;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository, PasswordEncoder encoder) {
+    public MemberService(
+            AuthenticationManagerBuilder authenticationManagerBuilder,
+            JwtAuthTokenProvider authTokenProvider,
+            MemberRepository memberRepository,
+            PasswordEncoder encoder
+    ) {
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.authTokenProvider = authTokenProvider;
         this.memberRepository = memberRepository;
         this.encoder = encoder;
     }
@@ -78,6 +100,19 @@ public class MemberService implements UserDetailsService {
 
     public boolean isNotExist(String email) {
         return !this.isExist(email);
+    }
+
+    public void registerAuthentication(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    public JwtAuthToken createAuthToken(String email, Role role) {
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        return authTokenProvider.createAuthToken(email, role.getCode(), expiredDate);
     }
 
     @Override

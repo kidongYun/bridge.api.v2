@@ -1,11 +1,14 @@
 package com.kidongyun.bridge.api.controller;
 
 import com.kidongyun.bridge.api.entity.Member;
+import com.kidongyun.bridge.api.security.JwtAuthToken;
+import com.kidongyun.bridge.api.security.Role;
 import com.kidongyun.bridge.api.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -57,10 +60,10 @@ public class SignController {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'password' is not matched");
         }
 
-        /* 로그인 상태로 등록하기 */
-        memberService.loadUserByUsername(member.getEmail());
+        /* 인증 정보 저장 */
+        JwtAuthToken jwtAuthToken = memberService.createAuthToken(member.getEmail(), Role.USER);
 
-        return ResponseEntity.status(HttpStatus.OK).body(member.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(jwtAuthToken);
     }
 
     @GetMapping
