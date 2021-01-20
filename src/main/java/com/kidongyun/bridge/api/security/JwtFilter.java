@@ -1,9 +1,9 @@
 package com.kidongyun.bridge.api.security;
 
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -12,47 +12,25 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Objects;
 
+@Slf4j
+@RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private static final String AUTHORIZATION_HEADER = "x-auth-token";
-
-    private JwtAuthTokenProvider jwtAuthTokenProvider;
-
-    JwtFilter(JwtAuthTokenProvider jwtAuthTokenProvider) {
-        this.jwtAuthTokenProvider = jwtAuthTokenProvider;
-    }
+    private final TokenProvider tokenProvider;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String token = tokenProvider.resolveToken((HttpServletRequest) request);
 
-        Optional<String> token = resolveToken(httpServletRequest);
+        log.info("YKD : " + token);
 
-        if(token.isPresent()) {
-            JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token.get());
-
-            if(jwtAuthToken.validate()) {
-                try {
-                    Authentication authentication = jwtAuthTokenProvider.getAuthentication(jwtAuthToken);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        if(Objects.nonNull(token) && tokenProvider.isValid(token)) {
+            Authentication authentication = tokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    private Optional<String> resolveToken(HttpServletRequest request) {
-        String authToken = request.getHeader(AUTHORIZATION_HEADER);
-
-        if(StringUtils.hasText(authToken)) {
-            return Optional.of(authToken);
-        } else {
-            return Optional.empty();
-        }
+        chain.doFilter(request, response);
     }
 }

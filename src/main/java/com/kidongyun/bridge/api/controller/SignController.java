@@ -1,14 +1,12 @@
 package com.kidongyun.bridge.api.controller;
 
 import com.kidongyun.bridge.api.entity.Member;
-import com.kidongyun.bridge.api.security.JwtAuthToken;
-import com.kidongyun.bridge.api.security.Role;
+import com.kidongyun.bridge.api.security.JwtTokenProvider;
 import com.kidongyun.bridge.api.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin
@@ -42,7 +41,7 @@ public class SignController {
 
         /* 권한 설정 */
         Member member = Member.of(up);
-        member.setAuth("USER");
+        member.setRoles(List.of("USER"));
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.save(member).getEmail());
     }
@@ -61,9 +60,9 @@ public class SignController {
         }
 
         /* 인증 정보 저장 */
-        JwtAuthToken jwtAuthToken = memberService.createAuthToken(member.getEmail(), Role.USER);
+        String token = memberService.createToken(in.getEmail(), member.getRoles());
 
-        return ResponseEntity.status(HttpStatus.OK).body(jwtAuthToken);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 
     @GetMapping

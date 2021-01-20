@@ -7,14 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Getter
@@ -30,7 +29,9 @@ public class Member implements UserDetails {
 
     private String password;
 
-    private String auth;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member")
@@ -42,12 +43,9 @@ public class Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> roles = new HashSet<>();
-        for(String role : auth.split(",")) {
-            roles.add(new SimpleGrantedAuthority(role));
-        }
-
-        return roles;
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(toList());
     }
 
     @Override
@@ -89,7 +87,7 @@ public class Member implements UserDetails {
         @ApiModelProperty(example = "john123123")
         private String password;
         @ApiModelProperty(hidden = true)
-        private String auth;
+        private List<String> roles;
     }
 
     @Getter
@@ -106,14 +104,14 @@ public class Member implements UserDetails {
         @ApiModelProperty(example = "john123123")
         private String password;
         @ApiModelProperty(hidden = true)
-        private String auth;
+        private List<String> roles;
     }
 
     public static Member of(SignUp up) {
-        return Member.builder().email(up.getEmail()).password(up.getPassword()).auth(up.getAuth()).build();
+        return Member.builder().email(up.getEmail()).password(up.getPassword()).roles(up.getRoles()).build();
     }
 
     public static Member of(SignIn in) {
-        return Member.builder().email(in.getEmail()).password(in.getPassword()).auth(in.getAuth()).build();
+        return Member.builder().email(in.getEmail()).password(in.getPassword()).roles(in.getRoles()).build();
     }
 }

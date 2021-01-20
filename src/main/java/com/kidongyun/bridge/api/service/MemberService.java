@@ -1,54 +1,33 @@
 package com.kidongyun.bridge.api.service;
 
-import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
-import com.kidongyun.bridge.api.security.AuthToken;
-import com.kidongyun.bridge.api.security.JwtAuthToken;
-import com.kidongyun.bridge.api.security.JwtAuthTokenProvider;
-import com.kidongyun.bridge.api.security.Role;
-import io.jsonwebtoken.Jwts;
+import com.kidongyun.bridge.api.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.security.Key;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @Service
 public class MemberService implements UserDetailsService {
-    private AuthenticationManagerBuilder authenticationManagerBuilder;
-    private JwtAuthTokenProvider authTokenProvider;
     private MemberRepository memberRepository;
     private PasswordEncoder encoder;
+    private TokenProvider tokenProvider;
 
     @Autowired
-    public MemberService(
-            AuthenticationManagerBuilder authenticationManagerBuilder,
-            JwtAuthTokenProvider authTokenProvider,
-            MemberRepository memberRepository,
-            PasswordEncoder encoder
-    ) {
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.authTokenProvider = authTokenProvider;
+    public MemberService(MemberRepository memberRepository, PasswordEncoder encoder, TokenProvider tokenProvider) {
         this.memberRepository = memberRepository;
         this.encoder = encoder;
+        this.tokenProvider = tokenProvider;
     }
 
     public Member findByEmail(String email) throws Exception {
@@ -87,7 +66,7 @@ public class MemberService implements UserDetailsService {
     }
 
     public boolean isMatch(String plain, String encoded) {
-        if(Strings.isEmpty(plain) || Strings.isEmpty(encoded)) {
+        if(Strings.isBlank(plain) || Strings.isBlank(encoded)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'plain', 'encoded' parameter must not be empty");
         }
 
@@ -102,17 +81,8 @@ public class MemberService implements UserDetailsService {
         return !this.isExist(email);
     }
 
-    public void registerAuthentication(String email, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    public JwtAuthToken createAuthToken(String email, Role role) {
-        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
-        return authTokenProvider.createAuthToken(email, role.getCode(), expiredDate);
+    public String createToken(String email, List<String> roles) {
+        return tokenProvider.createToken(email, roles);
     }
 
     @Override

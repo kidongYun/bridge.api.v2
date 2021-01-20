@@ -19,6 +19,7 @@ import org.springframework.validation.DefaultMessageCodesResolver;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class DevRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        Member john = Member.builder().email("john@gmail.com").password(encoder.encode("q1w2e3r4")).auth("USER").build();
+        Member john = Member.builder().email("john@gmail.com").password(encoder.encode("q1w2e3r4")).roles(List.of("USER")).build();
 
         Priority priorityJohn1 = Priority.builder().level(1).description("Important").member(john).build();
         priorityRepository.save(priorityJohn1);
@@ -45,7 +46,7 @@ public class DevRunner implements ApplicationRunner {
         Priority priorityJohn3 = Priority.builder().level(3).description("UnImportant").member(john).build();
         priorityRepository.save(priorityJohn3);
 
-        Member julia = Member.builder().email("julia@gmail.com").password(encoder.encode("julia123")).auth("USER").build();
+        Member julia = Member.builder().email("julia@gmail.com").password(encoder.encode("julia123")).roles(List.of("USER")).build();
 
         Priority priorityJulia1 = Priority.builder().level(1).description("Important").member(julia).build();
         priorityRepository.save(priorityJulia1);
