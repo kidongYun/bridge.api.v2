@@ -1,7 +1,6 @@
 package com.kidongyun.bridge.api.controller;
 
 import com.kidongyun.bridge.api.entity.Member;
-import com.kidongyun.bridge.api.security.JwtTokenProvider;
 import com.kidongyun.bridge.api.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @CrossOrigin
@@ -62,7 +62,7 @@ public class SignController {
         /* 인증 정보 저장 */
         String token = memberService.createToken(in.getEmail(), member.getRoles());
 
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("email", member.getEmail(), "token", token));
     }
 
     @GetMapping

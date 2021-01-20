@@ -103,8 +103,6 @@ public class Member implements UserDetails {
         @NotBlank(message = "'password' must not be empty")
         @ApiModelProperty(example = "john123123")
         private String password;
-        @ApiModelProperty(hidden = true)
-        private List<String> roles;
     }
 
     public static Member of(SignUp up) {
@@ -112,6 +110,6 @@ public class Member implements UserDetails {
     }
 
     public static Member of(SignIn in) {
-        return Member.builder().email(in.getEmail()).password(in.getPassword()).roles(in.getRoles()).build();
+        return Member.builder().email(in.getEmail()).password(in.getPassword()).build();
     }
 }
