@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.transaction.Transactional;
 
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -50,7 +53,14 @@ public class ObjectiveController {
     @ExecuteLog
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getObjectiveById(@PathVariable("id") Long id) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.findById(id)));
+        if(Objects.isNull(id)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "parameter 'id' must not be null");
+        }
+
+        Objective objective = objectiveService.findById(id).orElseThrow(
+                () -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'id' 에 해당하는 'objective' 객체를 찾을 수 없습니다"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objective));
     }
 
     @ExecuteLog
@@ -72,7 +82,10 @@ public class ObjectiveController {
         Member member = memberService.findByEmail(post.getEmail());
 
         /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveService.findById(post.getParentId());
+        Objective parent = Objective.builder().build();
+        if(Objects.isNull(post.getParentId())) {
+            parent = objectiveService.findById(post.getParentId()).orElse(Objective.builder().build());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(Objective.of(post, priority, member, parent))));
     }

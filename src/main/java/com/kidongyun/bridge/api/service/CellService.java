@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -23,40 +25,38 @@ class CellService<T extends Cell> {
 
     public Set<T> findByType(Cell.Type type) {
         if(Objects.isNull(type)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'type' parameter must not be null");
+            return Set.of();
         }
 
         return cellRepository.findByType(type);
     }
 
-    public T findById(Long id) throws Exception {
+    public Optional<T> findById(Long id) throws Exception {
         if(Objects.isNull(id)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter must not be null");
+            return Optional.empty();
         }
 
-        return cellRepository.findById(id).orElseThrow(Exception::new);
+        return cellRepository.findById(id);
     }
 
     public Set<T> findByMemberEmail(String email) {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
+            return Set.of();
         }
 
         return cellRepository.findByMemberEmail(email);
     }
 
-    public T save(T cell) {
+    public Optional<T> save(T cell) {
         if(Objects.isNull(cell)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'cell' parameter must not be null");
+            return Optional.empty();
         }
 
-        return cellRepository.save(cell);
+        return Optional.of(cellRepository.save(cell));
     }
 
     public void deleteById(Long id) {
-        if(Objects.isNull(id)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' parameter must not be null");
-        }
+        Assert.notNull(id, "'id' parameter must not be null");
 
         cellRepository.deleteById(id);
     }

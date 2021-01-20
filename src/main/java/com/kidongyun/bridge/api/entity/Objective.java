@@ -95,8 +95,8 @@ public class Objective extends Cell {
         @ApiModelProperty(example = "post default description by swagger")
         private String description;
         @ApiModelProperty(example = "1")
-        private long priorityId;
-        private long parentId;
+        private Long priorityId;
+        private Long parentId;
     }
 
     @Getter
@@ -118,15 +118,15 @@ public class Objective extends Cell {
         @ApiModelProperty(example = "put default description by swagger")
         private String description;
         @ApiModelProperty(example = "1")
-        private long priorityId;
-        private long parentId;
+        private Long priorityId;
+        private Long parentId;
     }
 
     public static Objective of(Post post, Priority priority, Member member, Objective parent) {
         return Objective.builder()
                 .startDateTime(Objects.requireNonNullElse(post.getStartDateTime(), LocalDateTime.now()))
                 .endDateTime(post.getEndDateTime())
-                .status(post.getStatus())
+                .status(Objects.requireNonNullElse(post.getStatus(), Status.Prepared))
                 .type(Type.Objective)
                 .member(member)
                 .title(post.getTitle())
