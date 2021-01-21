@@ -150,4 +150,8 @@ public class Objective extends Cell {
                 .parent(parent)
                 .build();
     }
+
+    public static Objective empty() {
+        return Objective.builder().build();
+    }
 }

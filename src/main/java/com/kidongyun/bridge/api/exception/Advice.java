@@ -29,6 +29,13 @@ public class Advice {
         return ResponseEntity.status(e.getStatusCode()).body(e.getStatusText());
     }
 
+    /** Assert Exception Handler */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> illegalArgumentException(IllegalArgumentException e) {
+        log.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
     /** RequestParam Validation Exception Handler */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> constraintViolationException(ConstraintViolationException e) {

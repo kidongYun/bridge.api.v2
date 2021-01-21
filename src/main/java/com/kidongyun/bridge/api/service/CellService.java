@@ -4,11 +4,8 @@ import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.repository.cell.CellRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.web.client.HttpClientErrorException;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;

@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,28 +31,28 @@ public class MemberService implements UserDetailsService {
         this.tokenProvider = tokenProvider;
     }
 
-    public Member findByEmail(String email) throws Exception {
+    public Optional<Member> findByEmail(String email) throws Exception {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
+            return Optional.empty();
         }
 
-        return memberRepository.findByEmail(email).orElseThrow(Exception::new);
+        return memberRepository.findByEmail(email);
     }
 
-    public Member save(Member member) {
+    public Optional<Member> save(Member member) {
         if(Objects.isNull(member)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member' parameter must not be null");
+            return Optional.empty();
         }
 
         /* 패스워드 암호화 */
         member.setPassword(encoder.encode(member.getPassword()));
 
-        return memberRepository.save(member);
+        return Optional.of(memberRepository.save(member));
     }
 
     public boolean isExist(String email) {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' parameter must not be null");
+            return false;
         }
 
         return memberRepository.existsById(email);
@@ -59,7 +60,7 @@ public class MemberService implements UserDetailsService {
 
     public String encode(String plain) {
         if(Strings.isEmpty(plain)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'plain' parameter must not be empty");
+            return null;
         }
 
         return encoder.encode(plain);
@@ -67,7 +68,7 @@ public class MemberService implements UserDetailsService {
 
     public boolean isMatch(String plain, String encoded) {
         if(Strings.isBlank(plain) || Strings.isBlank(encoded)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'plain', 'encoded' parameter must not be empty");
+            return false;
         }
 
         return encoder.matches(plain, encoded);

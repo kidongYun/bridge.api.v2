@@ -56,13 +56,13 @@ public class MemberServiceTest {
     }
 
     @Test
-    public void save_normalCase() {
+    public void save_normalCase() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
         when(memberRepositoryMock.save(any(Member.class))).thenReturn(john);
 
         /* Act */
-        Member result = memberServiceMock.save(john);
+        Member result = memberServiceMock.save(john).orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(result.getEmail()).isEqualTo(john.getEmail());

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,7 +96,7 @@ public class ObjectiveControllerTest {
                 .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
                 .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build();
 
-        when(objectiveService.findById(anyLong())).thenReturn(stub);
+        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(stub));
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/email/2")
@@ -135,9 +136,9 @@ public class ObjectiveControllerTest {
         String content = objectMapper.writeValueAsString(stub);
 
         when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
-        when(objectiveService.findById(anyLong())).thenReturn(parent);
-        when(memberService.findByEmail(anyString())).thenReturn(john);
-        when(objectiveService.save(any(Objective.class))).thenReturn(Objective.of(stub, priority, john, parent));
+        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(parent));
+        when(memberService.findByEmail(anyString())).thenReturn(Optional.of(john));
+        when(objectiveService.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
@@ -164,9 +165,9 @@ public class ObjectiveControllerTest {
         String content = objectMapper.writeValueAsString(stub);
 
         when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
-        when(objectiveService.findById(anyLong())).thenReturn(parent);
-        when(memberService.findByEmail(anyString())).thenReturn(john);
-        when(objectiveService.save(any(Objective.class))).thenReturn(Objective.of(stub, priority, john, parent));
+        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(parent));
+        when(memberService.findByEmail(anyString())).thenReturn(Optional.of(john));
+        when(objectiveService.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
         /* Act, Assert */
         mockMvc.perform(put("/api/v1/objective")

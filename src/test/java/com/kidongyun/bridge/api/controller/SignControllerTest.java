@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -91,7 +93,7 @@ public class SignControllerTest {
         Member.SignIn in = Member.SignIn.builder().email("test").password("1").build();
         String content = objectMapper.writeValueAsString(in);
         when(memberServiceMock.isNotExist(anyString())).thenReturn(false);
-        when(memberServiceMock.findByEmail(anyString())).thenReturn(Member.builder().email("test").password("2").build());
+        when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(Member.builder().email("test").password("2").build()));
 
         /* Act, Assert  */
         String response = mockMvc.perform(post("/api/v1/sign/in")

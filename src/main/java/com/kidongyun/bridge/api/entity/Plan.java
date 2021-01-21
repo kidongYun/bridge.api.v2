@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -109,10 +110,10 @@ public class Plan extends Cell {
         private Long objectiveId;
     }
 
-    public static Plan of(Post post, Member member, Objective parent) {
-        if(Objects.isNull(member) || Objects.isNull(parent)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
-        }
+    public static Plan of(Post post, Member member, Objective objective) {
+        Assert.notNull(post, "파라미터 'Post' 객체는 필수 값입니다");
+        Assert.notNull(member, "파라미터 'Member' 객체는 필수 값입니다");
+        Assert.notNull(objective, "파라미터 'Objective' 객체는 필수 값입니다");
 
         return Plan.builder()
                 .startDateTime(post.getStartDateTime())
@@ -120,14 +121,14 @@ public class Plan extends Cell {
                 .status(post.getStatus())
                 .member(member)
                 .content(post.getContent())
-                .objective(parent)
+                .objective(objective)
                 .build();
     }
 
-    public static Plan of(Put put, Member member, Objective parent) {
-        if(Objects.isNull(member) || Objects.isNull(parent)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'member', 'parent' parameters should be not null");
-        }
+    public static Plan of(Put put, Member member, Objective objective) {
+        Assert.notNull(put, "파라미터 'Put' 객체는 필수 값입니다");
+        Assert.notNull(member, "파라미터 'Member' 객체는 필수 값입니다");
+        Assert.notNull(objective, "파라미터 'Objective' 객체는 필수 값입니다");
 
         return Plan.builder()
                 .id(put.getId())
@@ -136,7 +137,7 @@ public class Plan extends Cell {
                 .status(put.getStatus())
                 .member(member)
                 .content(put.getContent())
-                .objective(parent)
+                .objective(objective)
                 .build();
     }
 }

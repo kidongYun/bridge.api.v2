@@ -72,13 +72,13 @@ public class CellServiceTest {
 
     @Test
     @SuppressWarnings(value = "unchecked")
-    public void findById_objective_normalCase() throws Exception {
+    public void findById_objective_normalCase() throws Throwable {
         /* Arrange */
         Objective stub = Objective.builder().description("findByType").build();
         when(cellRepositoryMock.findById(anyLong())).thenReturn(Optional.of(stub));
 
         /* Act */
-        Objective result = (Objective) cellServiceMock.findById(anyLong());
+        Objective result = (Objective) cellServiceMock.findById(anyLong()).orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());

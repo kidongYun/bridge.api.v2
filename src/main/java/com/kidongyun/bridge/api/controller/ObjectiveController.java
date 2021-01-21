@@ -79,15 +79,17 @@ public class ObjectiveController {
         Priority priority = priorityService.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberService.findByEmail(post.getEmail());
+        Member member = memberService.findByEmail(post.getEmail())
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + post.getEmail() + "' 에 해당하는 'Member' 객체를 가져오지 못했습니다"));
 
-        /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = Objective.builder().build();
-        if(Objects.isNull(post.getParentId())) {
-            parent = objectiveService.findById(post.getParentId()).orElse(Objective.builder().build());
-        }
+        /* 부모 OBJECTIVE 를 가져온다. 없다면 빈 Objective 생성 */
+        Objective parent = objectiveService.findById(post.getParentId()).orElse(Objective.empty());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(Objective.of(post, priority, member, parent))));
+        /* 새로운 OBJECTIVE 객체 데이터베이스에 저장 */
+        Objective result = objectiveService.save(Objective.of(post, priority, member, parent))
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스에 새로운 Objective 객체를 저장하는 데에 문제가 발생했습니다"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(result));
     }
 
     @ExecuteLog
@@ -97,12 +99,17 @@ public class ObjectiveController {
         Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail());
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Member member = memberService.findByEmail(put.getEmail());
+        Member member = memberService.findByEmail(put.getEmail())
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + put.getEmail() + "' 에 해당하는 'Member' 객체를 가져오지 못했습니다"));
 
-        /* PARENT 로 연결한 OBJECTIVE 를 가져온다. 없다면 없는 상태로 Objective 생성 */
-        Objective parent = objectiveService.findById(put.getParentId());
+        /* 부모 OBJECTIVE 를 가져온다. 없다면 빈 Objective 생성 */
+        Objective parent = objectiveService.findById(put.getParentId()).orElse(Objective.empty());
 
-        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(objectiveService.save(Objective.of(put, priority, member, parent))));
+        /* 수정 된 OBJECTIVE 객체 데이터베이스에 업데이트 */
+        Objective result = objectiveService.save(Objective.of(put, priority, member, parent))
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스에 수정된 Objective 객체를 적용하는 데에 문제가 발생했습니다"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(Objective.Response.of(result));
     }
 
     @ExecuteLog
