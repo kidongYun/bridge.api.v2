@@ -80,11 +80,11 @@ public class Member implements UserDetails {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SignUp {
-        @NotBlank(message = "'email' must not be empty")
+        @NotBlank(message = "'email' 항목은 필수 값입니다")
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
-        @NotBlank(message = "'password' must not be empty")
-        @ApiModelProperty(example = "john123123")
+        @NotBlank(message = "'password' 항목은 필수 값입니다")
+        @ApiModelProperty(example = "q1w2e3r4")
         private String password;
         @ApiModelProperty(hidden = true)
         private List<String> roles;
@@ -97,10 +97,10 @@ public class Member implements UserDetails {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SignIn {
-        @NotBlank(message = "'email' must not be empty")
+        @NotBlank(message = "'email' 항목은 필수 값입니다")
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
-        @NotBlank(message = "'password' must not be empty")
+        @NotBlank(message = "'password' 항목은 필수 값입니다")
         @ApiModelProperty(example = "john123123")
         private String password;
     }
