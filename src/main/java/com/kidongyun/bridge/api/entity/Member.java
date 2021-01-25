@@ -101,7 +101,7 @@ public class Member implements UserDetails {
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         @NotBlank(message = "'password' 항목은 필수 값입니다")
-        @ApiModelProperty(example = "john123123")
+        @ApiModelProperty(example = "q1w2e3r4")
         private String password;
     }
 

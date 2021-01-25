@@ -7,6 +7,7 @@ import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PlanService;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,11 @@ public class PlanController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(plans.stream().map(Plan.Response::of).collect(toSet()));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getPlanByEmail(@ApiParam(example = "john@gmail.com") @PathVariable("email") String email) {
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 
     @PostMapping

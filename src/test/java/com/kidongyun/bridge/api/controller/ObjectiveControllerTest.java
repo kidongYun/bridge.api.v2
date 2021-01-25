@@ -1,12 +1,13 @@
 package com.kidongyun.bridge.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kidongyun.bridge.api.config.QuerydslConfig;
+import com.kidongyun.bridge.api.config.SecurityConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.exception.Advice;
+import com.kidongyun.bridge.api.security.TokenProvider;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PriorityService;
@@ -15,11 +16,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,15 +39,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@Import(QuerydslConfig.class)
+@WebMvcTest(controllers = ObjectiveController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class ObjectiveControllerTest {
-    @Mock
-    private ObjectiveService objectiveService;
-    @Mock
-    private PriorityService priorityService;
-    @Mock
-    private MemberService memberService;
+    @MockBean
+    private SecurityConfig securityConfigMock;
+    @MockBean
+    private TokenProvider tokenProviderMock;
+    @MockBean
+    private ObjectiveService objectiveServiceMock;
+    @MockBean
+    private PriorityService priorityServiceMock;
+    @MockBean
+    private MemberService memberServiceMock;
     @InjectMocks
     private ObjectiveController objectiveControllerMock;
     @Autowired
@@ -80,7 +84,7 @@ public class ObjectiveControllerTest {
 
         Set<Objective> stub = Set.of(parent, child);
 
-        when(objectiveService.findByType(Cell.Type.Objective)).thenReturn(stub);
+        when(objectiveServiceMock.findByType(Cell.Type.Objective)).thenReturn(stub);
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective")
@@ -96,7 +100,7 @@ public class ObjectiveControllerTest {
                 .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
                 .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build();
 
-        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(stub));
+        when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(stub));
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/email/2")
@@ -108,7 +112,7 @@ public class ObjectiveControllerTest {
     @Test
     public void getObjectiveById_cannotFindObjective() throws Exception {
         /* Arrange */
-        when(objectiveService.findById(anyLong())).thenReturn(null);
+        when(objectiveServiceMock.findById(anyLong())).thenReturn(null);
 
         /* Act, Assert */
         String response = mockMvc.perform(get("/api/v1/objective/id/2")
@@ -135,10 +139,10 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
-        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(parent));
-        when(memberService.findByEmail(anyString())).thenReturn(Optional.of(john));
-        when(objectiveService.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
+        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(parent));
+        when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(john));
+        when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
@@ -164,10 +168,10 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityService.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
-        when(objectiveService.findById(anyLong())).thenReturn(Optional.of(parent));
-        when(memberService.findByEmail(anyString())).thenReturn(Optional.of(john));
-        when(objectiveService.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
+        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(parent));
+        when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(john));
+        when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
         /* Act, Assert */
         mockMvc.perform(put("/api/v1/objective")

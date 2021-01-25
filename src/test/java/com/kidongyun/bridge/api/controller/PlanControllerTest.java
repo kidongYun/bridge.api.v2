@@ -3,12 +3,16 @@ package com.kidongyun.bridge.api.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidongyun.bridge.api.config.QuerydslConfig;
+import com.kidongyun.bridge.api.config.SecurityConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.exception.Advice;
 import com.kidongyun.bridge.api.repository.plan.PlanRepository;
+import com.kidongyun.bridge.api.security.TokenProvider;
+import com.kidongyun.bridge.api.service.MemberService;
+import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
@@ -19,7 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,18 +45,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@Import(QuerydslConfig.class)
+@WebMvcTest(controllers = PlanController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class PlanControllerTest {
-    @Mock
+    @MockBean
+    private SecurityConfig securityConfigMock;
+    @MockBean
+    private TokenProvider tokenProviderMock;
+    @MockBean
     private PlanService planServiceMock;
+    @MockBean
+    private ObjectiveService objectiveServiceMock;
+    @MockBean
+    private MemberService memberServiceMock;
     @InjectMocks
     private PlanController planControllerMock;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private Advice advice;
-
+    @Autowired
     private MockMvc mockMvc;
 
     @Before
@@ -84,6 +98,11 @@ public class PlanControllerTest {
         /* Assert */
         assertThat(result.get(0).getId()).isEqualTo(stub.getId());
         assertThat(result.get(0).getContent()).isEqualTo(stub.getContent());
+    }
+
+    @Test
+    public void getPlanByEmail_when_then() {
+
     }
 
     @Test
