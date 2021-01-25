@@ -63,8 +63,10 @@ public class SignControllerTest {
         /* Act, Assert */
         String response = mockMvc.perform(post("/api/v1/sign/up")
                 .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
@@ -82,8 +84,10 @@ public class SignControllerTest {
         /* Act, Assert  */
         String response = mockMvc.perform(post("/api/v1/sign/in")
                 .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
@@ -103,8 +107,10 @@ public class SignControllerTest {
         /* Act, Assert  */
         String response = mockMvc.perform(post("/api/v1/sign/in")
                 .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();

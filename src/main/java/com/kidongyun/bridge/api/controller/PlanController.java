@@ -1,5 +1,6 @@
 package com.kidongyun.bridge.api.controller;
 
+import com.kidongyun.bridge.api.aspect.ExecuteLog;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
@@ -37,6 +38,7 @@ public class PlanController {
         this.memberService = memberService;
     }
 
+    @ExecuteLog
     @GetMapping
     public ResponseEntity<?> getPlan() {
         /* PLAN 목록을 가져온다 */
@@ -46,11 +48,17 @@ public class PlanController {
                 .body(plans.stream().map(Plan.Response::of).collect(toSet()));
     }
 
+    @ExecuteLog
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getPlanByEmail(@ApiParam(example = "john@gmail.com") @PathVariable("email") String email) {
-        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
+        /* PLAN 목록을 가져온다 */
+        Set<Plan.Response> response =
+                planService.findByMemberEmail(email).stream().map(Plan.Response::of).collect(toSet());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @ExecuteLog
     @PostMapping
     public ResponseEntity<?> postPlan(@RequestBody Plan.Post post) throws Exception {
         Member member = memberService.findByEmail(post.getEmail())
@@ -65,8 +73,9 @@ public class PlanController {
         return ResponseEntity.status(HttpStatus.OK).body(Plan.Response.of(plan));
     }
 
-    @PutMapping
-    public ResponseEntity<?> putPlan(@RequestBody Plan.Put put) throws Exception {
+    @ExecuteLog
+    @PutMapping("/{id}")
+    public ResponseEntity<?> putPlan(@PathVariable("id") Long id, @RequestBody Plan.Put put) throws Exception {
         Member member = memberService.findByEmail(put.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + put.getEmail() + "' 에 해당하는 'Member' 객체를 가져오지 못했습니다"));
 
@@ -79,6 +88,7 @@ public class PlanController {
         return ResponseEntity.status(HttpStatus.OK).body(Plan.Response.of(plan));
     }
 
+    @ExecuteLog
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePlan(@PathVariable("id") Long id) throws Exception {
         planService.deleteById(id);

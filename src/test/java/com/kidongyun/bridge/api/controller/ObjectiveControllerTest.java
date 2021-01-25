@@ -88,7 +88,10 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective")
-                .characterEncoding("utf-8"))
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -104,7 +107,10 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective/email/2")
-                .characterEncoding("utf-8"))
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -116,7 +122,10 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         String response = mockMvc.perform(get("/api/v1/objective/id/2")
-                .characterEncoding("utf-8"))
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
@@ -147,8 +156,10 @@ public class ObjectiveControllerTest {
         /* Act, Assert */
         mockMvc.perform(post("/api/v1/objective")
                 .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -175,8 +186,11 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(put("/api/v1/objective")
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andDo(print())
                 .andExpect(status().isOk());
     }

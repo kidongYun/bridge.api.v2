@@ -28,6 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -89,7 +91,10 @@ public class PlanControllerTest {
 
         /* Act, Assert */
         String response = mockMvc.perform(get("/api/v1/plan")
-                .characterEncoding("utf-8"))
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -101,8 +106,38 @@ public class PlanControllerTest {
     }
 
     @Test
-    public void getPlanByEmail_when_then() {
+    public void getPlanByEmail_when_then() throws Exception {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
+        Objective objStub = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title1").description("desc1").member(john).build();
+
+        Plan planStub1 = Plan.builder().id(2L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).member(john).content("test content1").objective(objStub).build();
+
+        Plan planStub2 = Plan.builder().id(3L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).member(john).content("test content2").objective(objStub).build();
+
+        when(planServiceMock.findByMemberEmail(anyString())).thenReturn(Set.of(planStub1, planStub2));
+
+        /* Act */
+        String response = mockMvc.perform(get("/api/v1/plan/email/" + john.getEmail())
+                .characterEncoding("utf-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        List<Plan.Response> results = Arrays.asList(objectMapper.readValue(response, Plan.Response[].class));
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Plan.Response result : results) {
+            assertThat(result.getEmail()).isEqualTo(john.getEmail());
+            assertThat(result.getType()).isEqualTo(Cell.Type.Plan);
+        }
     }
 
     @Test

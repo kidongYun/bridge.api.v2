@@ -95,8 +95,8 @@ public class ObjectiveController {
     }
 
     @ExecuteLog
-    @PutMapping
-    public ResponseEntity<?> putObjective(@RequestBody Objective.Put put) throws Exception {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> putObjective(@PathVariable("id") Long id, @RequestBody Objective.Put put) throws Exception {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail());
 
