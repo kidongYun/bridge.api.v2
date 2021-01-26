@@ -13,11 +13,17 @@ import java.util.Set;
 public interface CellRepository<T extends Cell> extends JpaRepository<T, Long>, CellRepositoryCustom<T> {
     Set<T> findByType(Cell.Type type);
 
+    Set<T> findByTypeOrderByStartDateTime(Cell.Type type);
+
+    Set<T> findByTypeOrderByEndDateTime(Cell.Type type);
+
     Set<T> findByMember(Member member);
 
     Set<T> findByMemberEmail(String email);
 
     Set<T> findByMemberEmailOrderByStartDateTime(String email);
+
+    Set<T> findByMemberEmailOrderByEndDateTime(String email);
 
     Optional<T> findByIdAndType(Long id, Cell.Type type);
 }
