@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+import java.util.function.BiPredicate;
 
 @Slf4j
 @Service
@@ -56,5 +56,14 @@ class CellService<T extends Cell> {
         Assert.notNull(id, "'id' parameter must not be null");
 
         cellRepository.deleteById(id);
+    }
+
+    public Set<T> orderBy(Set<T> srcSet, BiPredicate<T, T> criteria) {
+        Set<T> orderedSet = new LinkedHashSet<>();
+
+        for(T src : srcSet) {
+        }
+
+        return orderedSet;
     }
 }

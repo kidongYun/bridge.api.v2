@@ -34,4 +34,8 @@ public class Cell {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     protected Member member;
+
+    public static Cell empty() {
+        return new Cell();
+    }
 }

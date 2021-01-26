@@ -211,6 +211,80 @@ public class CellRepositoryTest {
     }
 
     @Test
+    public void findByMemberEmailOrderByStartDateTime_when_then() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Objective objOfJohn1 = Objective.builder()
+                .startDateTime(LocalDateTime.of(2021,2,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,2,20,0,0,0))
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder()
+                .startDateTime(LocalDateTime.of(2021,1,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,1,20,0,0,0))
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Plan planOfJohn1 = Plan.builder()
+                .startDateTime(LocalDateTime.of(2021,4,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2020,4,20,0,0,0))
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
+        planRepository.save(planOfJohn1);
+
+        Plan planOfJohn2 = Plan.builder()
+                .startDateTime(LocalDateTime.of(2021,3,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2020,3,20,0,0,0))
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
+        planRepository.save(planOfJohn2);
+
+        Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
+
+        Objective objOfJulia1 = Objective.builder()
+                .startDateTime(LocalDateTime.of(2021,7,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,7,20,0,0,0))
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
+        objectiveRepository.save(objOfJulia1);
+
+        Objective objOfJulia2 = Objective.builder()
+                .startDateTime(LocalDateTime.of(2021,6,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,6,20,0,0,0))
+                .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        Plan planOfJulia1 = Plan.builder()
+                .startDateTime(LocalDateTime.of(2021,5,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,5,20,0,0,0))
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
+        planRepository.save(planOfJulia1);
+
+        Plan planOfJulia2 = Plan.builder()
+                .startDateTime(LocalDateTime.of(2021,8,20,0,0,0))
+                .endDateTime(LocalDateTime.of(2022,8,20,0,0,0))
+                .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
+        planRepository.save(planOfJulia2);
+
+        /* Act */
+        Set<Cell> results = cellRepository.findByMemberEmailOrderByStartDateTime(john.getEmail());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+        Cell prev = Cell.empty();
+        boolean first = true;
+        for(Cell result : results) {
+            if(first) {
+                prev = result;
+                first = false;
+                continue;
+            }
+
+            assertThat(result.getStartDateTime()).isAfter(prev.getStartDateTime());
+            prev = result;
+        }
+    }
+
+    @Test
     public void findById_normalCase() throws Exception {
         /* Arrange */
         Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
