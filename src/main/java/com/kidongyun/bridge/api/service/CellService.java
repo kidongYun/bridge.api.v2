@@ -36,12 +36,32 @@ class CellService<T extends Cell> {
         return cellRepository.findById(id);
     }
 
+    public Set<T> searchByMemberEmail(String email) {
+        return Set.of();
+    }
+
     public Set<T> findByMemberEmail(String email) {
         if(Objects.isNull(email)) {
             return Set.of();
         }
 
         return cellRepository.findByMemberEmail(email);
+    }
+
+    public Set<T> findByMemberEmailOrderByStartDateTime(String email) {
+        if(Objects.isNull(email)) {
+            return Set.of();
+        }
+
+        return cellRepository.findByMemberEmailOrderByStartDateTime(email);
+    }
+
+    public Set<T> findByMemberEmailOrderByEndDateTime(String email) {
+        if(Objects.isNull(email)) {
+            return Set.of();
+        }
+
+        return cellRepository.findByMemberEmailOrderByEndDateTime(email);
     }
 
     public Optional<T> save(T cell) {
