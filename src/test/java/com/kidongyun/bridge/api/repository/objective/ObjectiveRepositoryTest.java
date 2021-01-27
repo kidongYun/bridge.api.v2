@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -184,5 +185,44 @@ public class ObjectiveRepositoryTest {
             assertThat(result.getPriority().getLevel()).isEqualTo(priorityOfJohn1.getLevel());
             assertThat(result.getPriority().getDescription()).isEqualTo(priorityOfJohn1.getDescription());
         }
+    }
+
+    @Test
+    public void findByObjective_when_then() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").parent(objOfJohn1).member(john).build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia1").description("descOfJulia1").member(julia).build();
+        objectiveRepository.save(objOfJulia1);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").parent(objOfJulia1).member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        Objective objOfJulia3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJulia3").description("descOfJulia3").parent(objOfJulia1).member(julia).build();
+        objectiveRepository.save(objOfJulia3);
+
+        /* Act */
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().status(Cell.Status.Complete).build());
+
+        /* Assert */
+        log.info("YKD : " + results.toString());
+        assertThat(results.size()).isEqualTo(3);
     }
 }

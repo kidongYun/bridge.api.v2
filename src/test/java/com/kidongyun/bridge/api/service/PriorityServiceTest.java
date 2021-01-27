@@ -63,33 +63,38 @@ public class PriorityServiceTest {
         }
     }
 
-    @Test(expected = HttpClientErrorException.class)
-    public void findByIdAndMemberEmail_priorityIdAndEmailAreNull() throws Exception {
-        /* Arrange, Act, Assert */
-        priorityService.findByIdAndMemberEmail(null, null);
+    @Test
+    public void findByIdAndMemberEmail_whempPriorityIdAndEmailAreNull_thenReturnOptionalEmpty() {
+        /* Arrange, Act */
+        Optional<Priority> result = priorityService.findByIdAndMemberEmail(null, null);
+
+        /* Assert */
+        assertThat(result.isPresent()).isFalse();
     }
 
     @Test
-    public void findByIdAndMemberEmail_priorityIdIsNotNull_EmailIsNull() throws Exception {
+    public void findByIdAndMemberEmail_whenPriorityIdIsNotNull_thenEmailIsNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findById").build();
         when(priorityRepository.findById(anyLong())).thenReturn(Optional.of(stub));
 
         /* Act */
-        Priority result = priorityServiceMock.findByIdAndMemberEmail(anyLong(), null);
+        Priority result = priorityServiceMock.findByIdAndMemberEmail(anyLong(), null)
+                .orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());
     }
 
     @Test
-    public void findByIdAndMemberEmail_priorityIdIsNull_EmailIsNotNull() throws Exception {
+    public void findByIdAndMemberEmail_whenPriorityIdIsNull_thenEmailIsNotNull() throws Exception {
         /* Arrange */
         Priority stub = Priority.builder().description("findByMemberEmail").build();
         when(priorityRepository.findByMemberEmail(anyString())).thenReturn(Set.of(stub));
 
         /* Act */
-        Priority result = priorityServiceMock.findByIdAndMemberEmail(null, anyString());
+        Priority result = priorityServiceMock.findByIdAndMemberEmail(null, anyString())
+                .orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());
@@ -102,7 +107,8 @@ public class PriorityServiceTest {
         when(priorityRepository.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(stub));
 
         /* Act */
-        Priority result = priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString());
+        Priority result = priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())
+                .orElseThrow(Exception::new);
 
         /* Assert */
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());

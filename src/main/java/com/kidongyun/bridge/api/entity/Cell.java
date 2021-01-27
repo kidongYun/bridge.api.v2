@@ -27,7 +27,7 @@ public class Cell {
     protected LocalDateTime startDateTime;
 
     protected LocalDateTime endDateTime;
-
+    @Enumerated(EnumType.STRING)
     protected Status status;
 
     protected Type type;

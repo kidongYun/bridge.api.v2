@@ -10,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -22,20 +23,20 @@ public class PriorityService {
         this.priorityRepository = priorityRepository;
     }
 
-    public Priority findByIdAndMemberEmail(Long priorityId, String email) throws Exception {
+    public Optional<Priority> findByIdAndMemberEmail(Long priorityId, String email) {
         if(Objects.isNull(priorityId) && Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'priorityId' or 'email' parameters are not appropriate");
+            return Optional.empty();
         }
 
         if(Objects.nonNull(priorityId) && Objects.isNull(email)) {
-            return priorityRepository.findById(priorityId).orElseThrow(Exception::new);
+            return priorityRepository.findById(priorityId);
         }
 
         if(Objects.isNull(priorityId)) {
-            return priorityRepository.findByMemberEmail(email).iterator().next();
+            return Optional.of(priorityRepository.findByMemberEmail(email).iterator().next());
         }
 
-        return priorityRepository.findByIdAndMemberEmail(priorityId, email).orElseThrow(Exception::new);
+        return priorityRepository.findByIdAndMemberEmail(priorityId, email);
     }
 
     public Set<Priority> findByMemberEmail(String email) throws Exception {
@@ -48,5 +49,15 @@ public class PriorityService {
 
     public List<Priority> findAll() {
         return priorityRepository.findAll();
+    }
+
+    public Optional<Priority> findAnyOne() {
+        List<Priority> priorities = priorityRepository.findAll();
+
+        if(priorities.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(priorities.get(0));
     }
 }

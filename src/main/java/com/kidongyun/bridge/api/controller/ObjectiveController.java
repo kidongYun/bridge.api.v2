@@ -41,9 +41,21 @@ public class ObjectiveController {
         this.memberService = memberService;
     }
 
+    @ExecuteLog
     @GetMapping
-    public ResponseEntity<?> getObjective(Objective.Get get) {
-        log.info("YKD : " + get.toString());
+    public ResponseEntity<?> getObjective(Objective.Get get) throws Exception {
+        /* PRIORITY 정보를 가져온다. */
+        Priority priority = priorityService.findByIdAndMemberEmail(get.getPriorityId(), get.getEmail()).orElse(null);
+
+        /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
+        Member member = memberService.findByEmail(get.getEmail()).orElse(null);
+
+        Objective filter = Objective.of(get, priority, member);
+
+        log.info("YKD : " + filter.toString());
+
+        objectiveService.findByObjective(filter);
+
         return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
 
@@ -82,8 +94,9 @@ public class ObjectiveController {
     @ExecuteLog
     @PostMapping
     public ResponseEntity<?> postObjective(@RequestBody Objective.Post post) throws Exception {
-        /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityService.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail());
+        /* PRIORITY 정보를 가져온다. */
+        Priority priority = priorityService.findByIdAndMemberEmail(post.getPriorityId(), post.getEmail())
+                .orElse(priorityService.findAnyOne().orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'Priority' 정보가 존재하지 않습니다")));
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberService.findByEmail(post.getEmail())
@@ -103,7 +116,8 @@ public class ObjectiveController {
     @PutMapping("/{id}")
     public ResponseEntity<?> putObjective(@PathVariable("id") Long id, @RequestBody Objective.Put put) throws Exception {
         /* PRIORITY 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
-        Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail());
+        Priority priority = priorityService.findByIdAndMemberEmail(put.getPriorityId(), put.getEmail())
+                .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + put.getPriorityId() + "' 에 해당하는 'Priority' 객체를 가져오지 못했습니다"));
 
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberService.findByEmail(put.getEmail())

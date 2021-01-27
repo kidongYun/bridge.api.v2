@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,10 +47,14 @@ public class CellServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
+    @SuppressWarnings("unchecked")
     public void findByType_typeIsNull() {
-        /* Arrange, Act, Assert */
-        cellService.findByType(null);
+        /* Arrange, Act */
+        Set<Cell> result = cellService.findByType(null);
+
+        /* Assert */
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
@@ -67,10 +73,14 @@ public class CellServiceTest {
         }
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
+    @SuppressWarnings("unchecked")
     public void findById_idIsNull() throws Exception {
-        /* Arrange, Act, Assert */
-        cellService.findById(null);
+        /* Arrange, Act */
+        Optional<Cell> result = cellService.findById(null);
+
+        /* Assert */
+        assertThat(result.isPresent()).isFalse();
     }
 
     @Test
@@ -87,10 +97,14 @@ public class CellServiceTest {
         assertThat(result.getDescription()).isEqualTo(stub.getDescription());
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
+    @SuppressWarnings("unchecked")
     public void findByMemberEmail_emailIsNull() throws Exception {
-        /* Arrange, Act, Assert */
-        cellService.findByMemberEmail(null);
+        /* Arrange, Act */
+        Set<Cell> result = cellService.findByMemberEmail(null);
+
+        /* Assert */
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
@@ -110,9 +124,9 @@ public class CellServiceTest {
     }
 
     @Test
-    public void order_when_then() {
+    public void order_whenCriteriaIsId_thenReturnOrderedListBasedId() {
         /* Arrange */
-        List<Objective> stub = List.of(
+        Set<Objective> stub = Set.of(
                 Objective.builder().id(2L).build(),
                 Objective.builder().id(4L).build(),
                 Objective.builder().id(3L).build(),
@@ -120,15 +134,54 @@ public class CellServiceTest {
         );
 
         /* Act */
-        List<Objective> results =
-                objectiveService.order(stub, (obj1, obj2) -> obj1.getId() > obj2.getId());
+        Set<Objective> results = objectiveService.order(stub, Comparator.comparingLong(Objective::getId));
 
         /* Assert */
-        log.info("YKD : " + results.toString());
         assertThat(results.size()).isEqualTo(4);
-        assertThat(results.get(0).getId()).isEqualTo(1L);
-        assertThat(results.get(1).getId()).isEqualTo(2L);
-        assertThat(results.get(2).getId()).isEqualTo(3L);
-        assertThat(results.get(3).getId()).isEqualTo(4L);
+
+        Objective target = Objective.empty();
+        boolean first = true;
+
+        for(Objective result : results) {
+            if(first) {
+                target = result;
+                first = false;
+                continue;
+            }
+
+            assertThat(target.getId()).isLessThan(result.getId());
+            target = result;
+        }
+    }
+
+    @Test
+    public void order_when_then() {
+        /* Arrange */
+        Set<Objective> stub = Set.of(
+                Objective.builder().id(1L).startDateTime(LocalDateTime.of(2021,7,20,0,0,0)).build(),
+                Objective.builder().id(2L).startDateTime(LocalDateTime.of(2022,6,12,0,0,0)).build(),
+                Objective.builder().id(3L).startDateTime(LocalDateTime.of(2020,4,2,0,0,0)).build(),
+                Objective.builder().id(4L).startDateTime(LocalDateTime.of(2019,7,7,0,0,0)).build()
+        );
+
+        /* Act */
+        Set<Objective> results = objectiveService.order(stub, Comparator.comparing(Objective::getStartDateTime));
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+
+        Objective target = Objective.empty();
+        boolean first = true;
+
+        for(Objective result : results) {
+            if(first) {
+                target = result;
+                first = false;
+                continue;
+            }
+
+            assertThat(target.getStartDateTime()).isBefore(result.getStartDateTime());
+            target = result;
+        }
     }
 }

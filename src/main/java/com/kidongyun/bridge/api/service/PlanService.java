@@ -23,7 +23,7 @@ public class PlanService extends CellService<Plan> {
 
     public Set<Plan> findByObjectiveId(Long id) {
         if(Objects.isNull(id)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'id' should be not null");
+            return Set.of();
         }
 
         return planRepository.findByObjectiveId(id);

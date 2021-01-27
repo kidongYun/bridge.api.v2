@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -78,25 +78,7 @@ class CellService<T extends Cell> {
         cellRepository.deleteById(id);
     }
 
-    public List<T> order(List<T> srcList, BiPredicate<T, T> criteria) {
-        List<T> ordered = new ArrayList<>();
-
-        for(int i$=0; i$<srcList.size(); i$++) {
-            T target = srcList.get(i$);
-            log.info("YKD : target - " + target.toString());
-
-            for(int j$=i$; j$<srcList.size(); j$++) {
-                if(criteria.test(target, srcList.get(j$))) {
-                    log.info("YKD : j$ - " + j$);
-                    target = srcList.get(j$);
-                    log.info("YKD : changed target - " + target);
-                }
-            }
-
-            ordered.add(target);
-            log.info("YKD : ordered - " + ordered.toString());
-        }
-
-        return ordered;
+    public Set<T> order(Set<T> src, Comparator<T> criteria) {
+        return src.stream().sorted(criteria).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

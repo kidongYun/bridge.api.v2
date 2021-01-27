@@ -87,11 +87,9 @@ public class Objective extends Cell {
     public static class Get {
         private Long id;
         private Status status;
-        private Type type;
         private String email;
-        private String title;
-        private String description;
         private Long priorityId;
+        private Long parentId;
     }
 
     @Getter
@@ -136,6 +134,12 @@ public class Objective extends Cell {
         @ApiModelProperty(example = "1")
         private Long priorityId;
         private Long parentId;
+    }
+
+    public static Objective of(Get get, Priority priority, Member member) {
+        return Objective.builder()
+                .id(get.getId())
+                .build();
     }
 
     public static Objective of(Post post, Priority priority, Member member, Objective parent) {

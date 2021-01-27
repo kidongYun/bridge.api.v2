@@ -88,6 +88,7 @@ public class ObjectiveControllerTest {
 
         /* Act, Assert */
         mockMvc.perform(get("/api/v1/objective")
+                .param("id", "5")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +149,7 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(priority));
         when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(parent));
         when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(john));
         when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
@@ -179,7 +180,7 @@ public class ObjectiveControllerTest {
 
         String content = objectMapper.writeValueAsString(stub);
 
-        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(priority);
+        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(priority));
         when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(parent));
         when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(john));
         when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));

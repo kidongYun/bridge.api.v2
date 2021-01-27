@@ -26,4 +26,8 @@ public interface CellRepository<T extends Cell> extends JpaRepository<T, Long>, 
     Set<T> findByMemberEmailOrderByEndDateTime(String email);
 
     Optional<T> findByIdAndType(Long id, Cell.Type type);
+
+    Set<T> findByStatus(Cell.Status status);
+
+    Set<T> findByMemberEmailAndStatus(String email, Cell.Status status);
 }
