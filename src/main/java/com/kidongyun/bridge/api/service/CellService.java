@@ -77,13 +77,4 @@ class CellService<T extends Cell> {
 
         cellRepository.deleteById(id);
     }
-
-    public Set<T> orderBy(Set<T> srcSet, BiPredicate<T, T> criteria) {
-        Set<T> orderedSet = new LinkedHashSet<>();
-
-        for(T src : srcSet) {
-        }
-
-        return orderedSet;
-    }
 }
