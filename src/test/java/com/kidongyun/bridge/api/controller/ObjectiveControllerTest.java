@@ -70,7 +70,7 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void getObjective_normal() throws Exception {
+    public void getObjective_whenItIsNormal_then() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 

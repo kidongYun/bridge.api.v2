@@ -41,15 +41,21 @@ public class ObjectiveController {
         this.memberService = memberService;
     }
 
-    @ExecuteLog
     @GetMapping
-    public ResponseEntity<?> getObjective() {
-        /* OBJECTIVE 목록을 가져온다 */
-        Set<Objective> objectives = objectiveService.findByType(Cell.Type.Objective);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(objectives.stream().map(Objective.Response::of).collect(toSet()));
+    public ResponseEntity<?> getObjective(Objective.Get get) {
+        log.info("YKD : " + get.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
     }
+
+//    @ExecuteLog
+//    @GetMapping
+//    public ResponseEntity<?> getObjective() {
+//        /* OBJECTIVE 목록을 가져온다 */
+//        Set<Objective> objectives = objectiveService.findByType(Cell.Type.Objective);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(objectives.stream().map(Objective.Response::of).collect(toSet()));
+//    }
 
     @ExecuteLog
     @GetMapping("/id/{id}")

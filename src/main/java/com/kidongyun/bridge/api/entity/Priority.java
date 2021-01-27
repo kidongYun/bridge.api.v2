@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toSet;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Priority {
+public class    Priority {
     @Id
     @GeneratedValue
     private Long id;

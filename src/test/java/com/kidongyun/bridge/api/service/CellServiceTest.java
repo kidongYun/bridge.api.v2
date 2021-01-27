@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class CellServiceTest {
     CellService cellServiceMock;
     @Autowired
     CellService cellService;
+    @Autowired
+    CellService<Objective> objectiveService;
 
     @Before
     public void setUp() {
@@ -104,5 +107,28 @@ public class CellServiceTest {
         for(Objective result : results) {
             assertThat(result.getDescription()).isEqualTo(stub.getDescription());
         }
+    }
+
+    @Test
+    public void order_when_then() {
+        /* Arrange */
+        List<Objective> stub = List.of(
+                Objective.builder().id(2L).build(),
+                Objective.builder().id(4L).build(),
+                Objective.builder().id(3L).build(),
+                Objective.builder().id(1L).build()
+        );
+
+        /* Act */
+        List<Objective> results =
+                objectiveService.order(stub, (obj1, obj2) -> obj1.getId() > obj2.getId());
+
+        /* Assert */
+        log.info("YKD : " + results.toString());
+        assertThat(results.size()).isEqualTo(4);
+        assertThat(results.get(0).getId()).isEqualTo(1L);
+        assertThat(results.get(1).getId()).isEqualTo(2L);
+        assertThat(results.get(2).getId()).isEqualTo(3L);
+        assertThat(results.get(3).getId()).isEqualTo(4L);
     }
 }

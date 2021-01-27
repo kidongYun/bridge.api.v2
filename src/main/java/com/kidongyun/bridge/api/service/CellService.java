@@ -77,4 +77,26 @@ class CellService<T extends Cell> {
 
         cellRepository.deleteById(id);
     }
+
+    public List<T> order(List<T> srcList, BiPredicate<T, T> criteria) {
+        List<T> ordered = new ArrayList<>();
+
+        for(int i$=0; i$<srcList.size(); i$++) {
+            T target = srcList.get(i$);
+            log.info("YKD : target - " + target.toString());
+
+            for(int j$=i$; j$<srcList.size(); j$++) {
+                if(criteria.test(target, srcList.get(j$))) {
+                    log.info("YKD : j$ - " + j$);
+                    target = srcList.get(j$);
+                    log.info("YKD : changed target - " + target);
+                }
+            }
+
+            ordered.add(target);
+            log.info("YKD : ordered - " + ordered.toString());
+        }
+
+        return ordered;
+    }
 }

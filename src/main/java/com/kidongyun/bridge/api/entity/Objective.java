@@ -48,7 +48,7 @@ public class Objective extends Cell {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private Cell.Status status;
+        private Status status;
         private Type type;
         private String email;
         private String title;
@@ -84,10 +84,26 @@ public class Objective extends Cell {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class Get {
+        private Long id;
+        private Status status;
+        private Type type;
+        private String email;
+        private String title;
+        private String description;
+        private Long priorityId;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private Cell.Status status;
+        private Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         @ApiModelProperty(example = "post default title by swagger")
@@ -110,7 +126,7 @@ public class Objective extends Cell {
         private Long id;
         private LocalDateTime startDateTime;
         private LocalDateTime endDateTime;
-        private Cell.Status status;
+        private Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
         @ApiModelProperty(example = "put default title by swagger")
