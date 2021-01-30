@@ -6,7 +6,6 @@ import com.kidongyun.bridge.api.repository.cell.CellRepository;
 import com.kidongyun.bridge.api.repository.member.MemberRepository;
 import com.kidongyun.bridge.api.repository.priority.PriorityRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -44,17 +44,17 @@ public class CellRepositoryTest {
     @Test
     public void save_normalCase_whenItIsNewOne() {
         /* Arrange, Act, Assert */
-        Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").build();
         objectiveRepository.save(obj1);
         assertThat(cellRepository.findAll().size()).isEqualTo(1);
 
-        Objective obj2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").build();
         objectiveRepository.save(obj2);
         assertThat(cellRepository.findAll().size()).isEqualTo(2);
 
-        Plan plan1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan plan1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").build();
         planRepository.save(plan1);
         assertThat(cellRepository.findAll().size()).isEqualTo(3);
@@ -63,7 +63,7 @@ public class CellRepositoryTest {
     @Test
     public void save_normalCase_whenObjectiveIsAlreadyExisted() throws Exception {
         /* Arrange */
-        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("before").description("desc1").build();
         objectiveRepository.save(obj);
         assertThat(objectiveRepository.findById(obj.getId()).orElseThrow(Exception::new).getTitle()).isEqualTo("before");
@@ -79,7 +79,7 @@ public class CellRepositoryTest {
     @Test
     public void deleteById_normalCase() {
         /* Arrange */
-        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("before").description("desc1").build();
         objectiveRepository.save(obj);
         List<Objective> objectives = objectiveRepository.findAll();
@@ -96,11 +96,11 @@ public class CellRepositoryTest {
     @Test
     public void findByType_normalCase() {
         /* Arrange */
-        Objective obj = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").build();
         objectiveRepository.save(obj);
 
-        Plan plan = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan plan = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content1").build();
         planRepository.save(plan);
 
@@ -112,33 +112,33 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByTypeOrderByStartDateTime_whenItIsNormalCase_thenReturnObjOrderedAsc() {
+    public void findByTypeOrderByStartDate_whenItIsNormalCase_thenReturnObjOrderedAsc() {
         /* Arrange */
         Objective obj1 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021,2,20,0,0,0))
+                .startDate(LocalDate.of(2021,2,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").build();
         objectiveRepository.save(obj1);
 
         Objective obj2 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021, 1, 20,0,0,0))
+                .startDate(LocalDate.of(2021, 1, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").build();
         objectiveRepository.save(obj2);
 
         Objective obj3 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2022, 10, 20,0,0,0))
+                .startDate(LocalDate.of(2022, 10, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title3").description("desc3").build();
         objectiveRepository.save(obj3);
 
         Objective obj4 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2019, 5, 20,0,0,0))
+                .startDate(LocalDate.of(2019, 5, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title4").description("desc4").build();
         objectiveRepository.save(obj4);
 
-        Plan plan1 = Plan.builder().startDateTime(LocalDateTime.of(2020,10,20,0,0,0))
+        Plan plan1 = Plan.builder().startDate(LocalDate.of(2020,10,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content1").build();
         planRepository.save(plan1);
 
-        Plan plan2 = Plan.builder().startDateTime(LocalDateTime.of(2019,1,15,0,0,0))
+        Plan plan2 = Plan.builder().startDate(LocalDate.of(2019,1,15))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content2").build();
         planRepository.save(plan2);
 
@@ -156,41 +156,41 @@ public class CellRepositoryTest {
                 continue;
             }
 
-            assertThat(result.getStartDateTime()).isAfter(prev.getStartDateTime());
+            assertThat(result.getStartDate()).isAfter(prev.getStartDate());
             prev = result;
         }
     }
 
     @Test
-    public void findByTypeOrderByEndDateTime_whenItIsNormalCase_thenReturnObjOrderedAsc() {
+    public void findByTypeOrderByEndDate_whenItIsNormalCase_thenReturnObjOrderedAsc() {
         /* Arrange */
         Objective obj1 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2021,2,20,0,0,0))
+                .endDate(LocalDate.of(2021,2,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").build();
         objectiveRepository.save(obj1);
 
         Objective obj2 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2021, 1, 20,0,0,0))
+                .endDate(LocalDate.of(2021, 1, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").build();
         objectiveRepository.save(obj2);
 
         Objective obj3 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2022, 10, 20,0,0,0))
+                .endDate(LocalDate.of(2022, 10, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title3").description("desc3").build();
         objectiveRepository.save(obj3);
 
         Objective obj4 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2019, 5, 20,0,0,0))
+                .endDate(LocalDate.of(2019, 5, 20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title4").description("desc4").build();
         objectiveRepository.save(obj4);
 
         Plan plan1 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2020,10,20,0,0,0))
+                .endDate(LocalDate.of(2020,10,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content1").build();
         planRepository.save(plan1);
 
         Plan plan2 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2019,1,15,0,0,0))
+                .endDate(LocalDate.of(2019,1,15))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content2").build();
         planRepository.save(plan2);
 
@@ -208,7 +208,7 @@ public class CellRepositoryTest {
                 continue;
             }
 
-            assertThat(result.getEndDateTime()).isAfter(prev.getEndDateTime());
+            assertThat(result.getEndDate()).isAfter(prev.getEndDate());
             prev = result;
         }
     }
@@ -218,37 +218,37 @@ public class CellRepositoryTest {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        Objective objOfJohn1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJohn1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJohn2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
         objectiveRepository.save(objOfJohn2);
 
-        Plan planOfJohn1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJohn1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
         planRepository.save(planOfJohn1);
 
-        Plan planOfJohn2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJohn2 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
         planRepository.save(planOfJohn2);
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
 
-        Objective objOfJulia1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJulia1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
         objectiveRepository.save(objOfJulia1);
 
-        Objective objOfJulia2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJulia2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
-        Plan planOfJulia1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJulia1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
         planRepository.save(planOfJulia1);
 
-        Plan planOfJulia2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJulia2 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
         planRepository.save(planOfJulia2);
 
@@ -267,37 +267,37 @@ public class CellRepositoryTest {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        Objective objOfJohn1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJohn1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJohn2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
         objectiveRepository.save(objOfJohn2);
 
-        Plan planOfJohn1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJohn1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
         planRepository.save(planOfJohn1);
 
-        Plan planOfJohn2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJohn2 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
         planRepository.save(planOfJohn2);
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
 
-        Objective objOfJulia1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJulia1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
         objectiveRepository.save(objOfJulia1);
 
-        Objective objOfJulia2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective objOfJulia2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
-        Plan planOfJulia1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJulia1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
         planRepository.save(planOfJulia1);
 
-        Plan planOfJulia2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan planOfJulia2 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
         planRepository.save(planOfJulia2);
 
@@ -312,49 +312,49 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByMemberEmailOrderByStartDateTime_whenItIsNormalCase_thenReturnObjOrderedAsc() {
+    public void findByMemberEmailOrderByStartDate_whenItIsNormalCase_thenReturnObjOrderedAsc() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
         Objective objOfJohn1 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021,2,20,0,0,0))
+                .startDate(LocalDate.of(2021,2,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
         Objective objOfJohn2 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021,1,20,0,0,0))
+                .startDate(LocalDate.of(2021,1,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
         objectiveRepository.save(objOfJohn2);
 
         Plan planOfJohn1 = Plan.builder()
-                .startDateTime(LocalDateTime.of(2021,4,20,0,0,0))
+                .startDate(LocalDate.of(2021,4,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
         planRepository.save(planOfJohn1);
 
         Plan planOfJohn2 = Plan.builder()
-                .startDateTime(LocalDateTime.of(2021,3,20,0,0,0))
+                .startDate(LocalDate.of(2021,3,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
         planRepository.save(planOfJohn2);
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
 
         Objective objOfJulia1 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021,7,20,0,0,0))
+                .startDate(LocalDate.of(2021,7,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
         objectiveRepository.save(objOfJulia1);
 
         Objective objOfJulia2 = Objective.builder()
-                .startDateTime(LocalDateTime.of(2021,6,20,0,0,0))
+                .startDate(LocalDate.of(2021,6,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
         Plan planOfJulia1 = Plan.builder()
-                .startDateTime(LocalDateTime.of(2021,5,20,0,0,0))
+                .startDate(LocalDate.of(2021,5,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
         planRepository.save(planOfJulia1);
 
         Plan planOfJulia2 = Plan.builder()
-                .startDateTime(LocalDateTime.of(2021,8,20,0,0,0))
+                .startDate(LocalDate.of(2021,8,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
         planRepository.save(planOfJulia2);
 
@@ -372,55 +372,55 @@ public class CellRepositoryTest {
                 continue;
             }
 
-            assertThat(result.getStartDateTime()).isAfter(prev.getStartDateTime());
+            assertThat(result.getStartDate()).isAfter(prev.getStartDate());
             prev = result;
         }
     }
 
     @Test
-    public void findByMemberEmailOrderByEndDateTime_whenItIsNormalCase_thenReturnObjOrderedAsc() {
+    public void findByMemberEmailOrderByEndDate_whenItIsNormalCase_thenReturnObjOrderedAsc() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
         Objective objOfJohn1 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2022,2,20,0,0,0))
+                .endDate(LocalDate.of(2022,2,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title1").description("desc1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
         Objective objOfJohn2 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2022,1,20,0,0,0))
+                .endDate(LocalDate.of(2022,1,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title2").description("desc2").member(john).build();
         objectiveRepository.save(objOfJohn2);
 
         Plan planOfJohn1 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2020,4,20,0,0,0))
+                .endDate(LocalDate.of(2020,4,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content3").member(john).build();
         planRepository.save(planOfJohn1);
 
         Plan planOfJohn2 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2020,3,20,0,0,0))
+                .endDate(LocalDate.of(2020,3,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content4").member(john).build();
         planRepository.save(planOfJohn2);
 
         Member julia = Member.builder().email("julia@gmail.com").password("q1w2e3r4").build();
 
         Objective objOfJulia1 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2022,7,20,0,0,0))
+                .endDate(LocalDate.of(2022,7,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title5").description("desc5").member(julia).build();
         objectiveRepository.save(objOfJulia1);
 
         Objective objOfJulia2 = Objective.builder()
-                .endDateTime(LocalDateTime.of(2022,6,20,0,0,0))
+                .endDate(LocalDate.of(2022,6,20))
                 .status(Cell.Status.Complete).type(Cell.Type.Objective).title("title6").description("desc6").member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
         Plan planOfJulia1 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2022,5,20,0,0,0))
+                .endDate(LocalDate.of(2022,5,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content7").member(julia).build();
         planRepository.save(planOfJulia1);
 
         Plan planOfJulia2 = Plan.builder()
-                .endDateTime(LocalDateTime.of(2022,8,20,0,0,0))
+                .endDate(LocalDate.of(2022,8,20))
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content8").member(julia).build();
         planRepository.save(planOfJulia2);
 
@@ -438,7 +438,7 @@ public class CellRepositoryTest {
                 continue;
             }
 
-            assertThat(result.getEndDateTime()).isAfter(prev.getEndDateTime());
+            assertThat(result.getEndDate()).isAfter(prev.getEndDate());
             prev = result;
         }
     }
@@ -446,27 +446,27 @@ public class CellRepositoryTest {
     @Test
     public void findById_normalCase() throws Exception {
         /* Arrange */
-        Objective obj1 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj1 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(obj1);
 
-        Objective obj2 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj2 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title2").description("desc2").parent(obj1).build();
         objectiveRepository.save(obj2);
 
-        Objective obj3 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj3 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title3").description("desc3").parent(obj1).build();
         objectiveRepository.save(obj3);
 
-        Objective obj4 = Objective.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective obj4 = Objective.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title4").description("desc4").parent(obj2).build();
         objectiveRepository.save(obj4);
 
-        Plan plan1 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan plan1 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content5").build();
         planRepository.save(plan1);
 
-        Plan plan2 = Plan.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Plan plan2 = Plan.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).type(Cell.Type.Plan).content("content6").build();
         planRepository.save(plan2);
 
@@ -484,12 +484,12 @@ public class CellRepositoryTest {
     @Test
     public void findByIdAndType_normalCase() throws Exception {
         /* Arrange */
-        Objective obj = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective obj = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(obj);
 
-        Plan plan = Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).content("content2").build();
+        Plan plan = Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).content("content2").build();
         planRepository.save(plan);
 
         /* Act, Assert */

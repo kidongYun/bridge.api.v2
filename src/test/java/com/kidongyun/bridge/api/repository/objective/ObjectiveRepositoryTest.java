@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -37,8 +36,8 @@ public class ObjectiveRepositoryTest {
     @Test
     public void save_normalCase() {
         /* Arrange, Act */
-        Objective obj = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective obj = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         Objective result = objectiveRepository.save(obj);
 
         assertThat(result).isNotNull();
@@ -50,16 +49,16 @@ public class ObjectiveRepositoryTest {
     @Test
     public void findByParent_normalCase() {
         /* Arrange */
-        Objective obj1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective obj1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(obj1);
 
-        Objective obj2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(obj1).build();
+        Objective obj2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(obj1).build();
         objectiveRepository.save(obj2);
 
-        Objective obj3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title3").description("desc3").parent(obj1).build();
+        Objective obj3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title3").description("desc3").parent(obj1).build();
         objectiveRepository.save(obj3);
 
         /* Act */
@@ -81,28 +80,28 @@ public class ObjectiveRepositoryTest {
 
         Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
 
-        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
         objectiveRepository.save(objOfJohn2);
 
-        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").parent(objOfJohn1).member(john).build();
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").parent(objOfJohn1).member(john).build();
         objectiveRepository.save(objOfJohn3);
 
-        Objective objOfJulia1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia1").description("descOfJulia1").member(julia).build();
+        Objective objOfJulia1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia1").description("descOfJulia1").member(julia).build();
         objectiveRepository.save(objOfJulia1);
 
-        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").parent(objOfJulia1).member(julia).build();
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").parent(objOfJulia1).member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
-        Objective objOfJulia3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJulia3").description("descOfJulia3").parent(objOfJulia1).member(julia).build();
+        Objective objOfJulia3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJulia3").description("descOfJulia3").parent(objOfJulia1).member(julia).build();
         objectiveRepository.save(objOfJulia3);
 
         /* Act */
@@ -129,16 +128,16 @@ public class ObjectiveRepositoryTest {
         Priority priorityOfJohn2 = Priority.builder().level(2).description("Normal").member(john).build();
         priorityRepository.save(priorityOfJohn2);
 
-        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).priority(priorityOfJohn1).build();
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).priority(priorityOfJohn1).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).priority(priorityOfJohn1).build();
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).priority(priorityOfJohn1).build();
         objectiveRepository.save(objOfJohn2);
 
-        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn3").description("descOfJohn3").member(john).priority(priorityOfJohn2).build();
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn3").description("descOfJohn3").member(john).priority(priorityOfJohn2).build();
         objectiveRepository.save(objOfJohn3);
 
         /* Act */
@@ -164,16 +163,16 @@ public class ObjectiveRepositoryTest {
         Priority priorityOfJohn2 = Priority.builder().level(2).description("Normal").member(john).build();
         priorityRepository.save(priorityOfJohn2);
 
-        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).priority(priorityOfJohn1).build();
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).priority(priorityOfJohn1).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).priority(priorityOfJohn1).build();
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).priority(priorityOfJohn1).build();
         objectiveRepository.save(objOfJohn2);
 
-        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).priority(priorityOfJohn2).build();
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).priority(priorityOfJohn2).build();
         objectiveRepository.save(objOfJohn3);
 
         /* Act */
@@ -193,12 +192,12 @@ public class ObjectiveRepositoryTest {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
         objectiveRepository.save(objOfJohn2);
 
         /* Act */
@@ -209,46 +208,46 @@ public class ObjectiveRepositoryTest {
         assertThat(results.get(0).getId()).isEqualTo(objOfJohn1.getId());
         assertThat(results.get(0).getTitle()).isEqualTo(objOfJohn1.getTitle());
         assertThat(results.get(0).getDescription()).isEqualTo(objOfJohn1.getDescription());
-        assertThat(results.get(0).getStartDateTime()).isEqualTo(objOfJohn1.getStartDateTime());
-        assertThat(results.get(0).getEndDateTime()).isEqualTo(objOfJohn1.getEndDateTime());
+        assertThat(results.get(0).getStartDate()).isEqualTo(objOfJohn1.getStartDate());
+        assertThat(results.get(0).getEndDate()).isEqualTo(objOfJohn1.getEndDate());
     }
 
     @Test
-    public void findByObjective_whenStartDateTimeIsOffered_thenReturnObjectivesHaveSameStartDateTime() {
+    public void findByObjective_whenStartDateIsOffered_thenReturnObjectivesHaveSameStartDate() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
         Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
 
-        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
         objectiveRepository.save(objOfJohn1);
 
-        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now().minusDays(3))
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now().minusDays(3))
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
         objectiveRepository.save(objOfJohn2);
 
-        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now().plusDays(1))
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now().plusDays(1))
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
         objectiveRepository.save(objOfJohn3);
 
-        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
         objectiveRepository.save(objOfJulia2);
 
         /* Act */
-        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().startDateTime(LocalDate.now().atStartOfDay()).build());
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().startDate(LocalDate.now()).build());
 
         /* Assert */
         assertThat(results.size()).isEqualTo(2);
         for(Objective result : results) {
-            assertThat(result.getStartDateTime()).isBefore(LocalDateTime.now().plusDays(1));
-            assertThat(result.getStartDateTime()).isAfter(LocalDateTime.now().minusDays(1));
+            assertThat(result.getStartDate()).isBefore(LocalDate.now().plusDays(1));
+            assertThat(result.getStartDate()).isAfter(LocalDate.now().minusDays(1));
         }
     }
 
     @Test
-    public void findByObjective_whenEndDateTimeIsOffered_thenReturnObjectivesHaveSameEndDateTime() {
+    public void findByObjective_whenEndDateIsOffered_thenReturnObjectivesHaveSameEndDate() {
 
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -155,17 +156,17 @@ public class CellServiceTest {
     }
 
     @Test
-    public void order_when_then() {
+    public void order_whenCriteriaIsStartDate_thenRetrunOrderedListBasedStartDate() {
         /* Arrange */
         Set<Objective> stub = Set.of(
-                Objective.builder().id(1L).startDateTime(LocalDateTime.of(2021,7,20,0,0,0)).build(),
-                Objective.builder().id(2L).startDateTime(LocalDateTime.of(2022,6,12,0,0,0)).build(),
-                Objective.builder().id(3L).startDateTime(LocalDateTime.of(2020,4,2,0,0,0)).build(),
-                Objective.builder().id(4L).startDateTime(LocalDateTime.of(2019,7,7,0,0,0)).build()
+                Objective.builder().id(1L).startDate(LocalDate.of(2021,7,20)).build(),
+                Objective.builder().id(2L).startDate(LocalDate.of(2022,6,12)).build(),
+                Objective.builder().id(3L).startDate(LocalDate.of(2020,4,2)).build(),
+                Objective.builder().id(4L).startDate(LocalDate.of(2019,7,7)).build()
         );
 
         /* Act */
-        Set<Objective> results = objectiveService.order(stub, Comparator.comparing(Objective::getStartDateTime));
+        Set<Objective> results = objectiveService.order(stub, Comparator.comparing(Objective::getStartDate));
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
@@ -180,7 +181,7 @@ public class CellServiceTest {
                 continue;
             }
 
-            assertThat(target.getStartDateTime()).isBefore(result.getStartDateTime());
+            assertThat(target.getStartDate()).isBefore(result.getStartDate());
             target = result;
         }
     }

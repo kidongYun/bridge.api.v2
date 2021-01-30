@@ -5,7 +5,9 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Slf4j
 @Getter
@@ -24,9 +26,12 @@ public class Cell {
     @GeneratedValue
     protected Long id;
 
-    protected LocalDateTime startDateTime;
+    protected LocalDate startDate;
+    protected LocalTime startTime;
 
-    protected LocalDateTime endDateTime;
+    protected LocalDate endDate;
+    protected LocalTime endTime;
+
     @Enumerated(EnumType.STRING)
     protected Status status;
 

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.DefaultMessageCodesResolver;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -58,145 +59,121 @@ public class DevRunner implements ApplicationRunner {
         priorityRepository.save(priorityJulia3);
 
         Objective objectiveJohn1 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,1,20, 0,0,0))
-                .endDateTime(LocalDateTime.of(2022, 1, 20, 0,0,0))
+                .startDate(LocalDate.of(2021,1,20)).endDate(LocalDate.of(2022, 1, 20))
                 .status(Cell.Status.Complete).title("I would like to be a CTO in really big company like Google").description("I would like to be a CTO in really big company like Google. I would like to be a CTO in really big company like Google").member(john).priority(priorityJohn1).build();
         objectiveRepository.save(objectiveJohn1);
 
         Objective objectiveJohn2 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021, 2, 20, 0,0,0))
-                .endDateTime(LocalDateTime.of(2022,2,20,0,0,0))
+                .startDate(LocalDate.of(2021, 2, 20)).endDate(LocalDate.of(2022,2,20))
                 .status(Cell.Status.Prepared).title("I would like to travel all over the world for my life time").description("I would like to travel all over the world for my life time. I would like to travel all over the world for my life time").parent(objectiveJohn1).member(john).priority(priorityJohn1).build();
         objectiveRepository.save(objectiveJohn2);
 
         Objective objectiveJohn3 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,3,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,3,20,0,0,0))
+                .startDate(LocalDate.of(2021,3,20)).endDate(LocalDate.of(2022,3,20))
                 .status(Cell.Status.Prepared).title("I would like to make some service which could give convenience to people").description("I would like to make some service which could give convenience to people. I would like to make some service which could give convenience to people").parent(objectiveJohn1).member(john).priority(priorityJohn2).build();
         objectiveRepository.save(objectiveJohn3);
 
         Objective objectiveJohn4 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,4,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,4,20,0,0,0))
+                .startDate(LocalDate.of(2021,4,20)).endDate(LocalDate.of(2022,4,20))
                 .status(Cell.Status.Prepared).title("I would like to read the science book enough until i could reach the truth in the world").description("I would like to read the science book enough until i could reach the truth in the world. I would like to read the science book enough until i could reach the truth in the world").parent(objectiveJohn2).member(john).priority(priorityJohn3).build();
         objectiveRepository.save(objectiveJohn4);
 
         Objective objectiveJulia1 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,5,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,5,20,0,0,0))
+                .startDate(LocalDate.of(2021,5,20)).endDate(LocalDate.of(2022,5,20))
                 .status(Cell.Status.Complete).title("title5").description("desc5").member(julia).priority(priorityJulia1).build();
         objectiveRepository.save(objectiveJulia1);
 
         Objective objectiveJulia2 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,6,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2020,6,20,0,0,0))
+                .startDate(LocalDate.of(2021,6,20)).endDate(LocalDate.of(2020,6,20))
                 .status(Cell.Status.Prepared).title("title6").description("desc6").parent(objectiveJulia1).member(julia).priority(priorityJulia2).build();
         objectiveRepository.save(objectiveJulia2);
 
         Objective objectiveJulia3 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,7,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,7,20,0,0,0))
+                .startDate(LocalDate.of(2021,7,20)).endDate(LocalDate.of(2022,7,20))
                 .status(Cell.Status.Prepared).title("title7").description("desc7").parent(objectiveJulia2).member(julia).priority(priorityJohn2).build();
         objectiveRepository.save(objectiveJulia3);
 
         Objective objectiveJulia4 = Objective.builder().type(Cell.Type.Objective)
-                .startDateTime(LocalDateTime.of(2021,8,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,8,20,0,0,0))
+                .startDate(LocalDate.of(2021,8,20)).endDate(LocalDate.of(2022,8,20))
                 .status(Cell.Status.Prepared).title("title8").description("desc8").parent(objectiveJulia3).member(julia).priority(priorityJulia2).build();
         objectiveRepository.save(objectiveJulia4);
 
         Plan planJohn1 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,1,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,1,20,0,0,0))
+                .startDate(LocalDate.of(2021,1,20)).endDate(LocalDate.of(2022,1,20))
                 .status(Cell.Status.Prepared).content("content1").member(john).objective(objectiveJohn1).build();
         planRepository.save(planJohn1);
 
         Plan planJohn2 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,2,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,2,20,0,0,0))
+                .startDate(LocalDate.of(2021,2,20)).endDate(LocalDate.of(2022,2,20))
                 .status(Cell.Status.Prepared).content("content2").member(john).objective(objectiveJohn1).build();
         planRepository.save(planJohn2);
 
         Plan planJohn3 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,3,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,3,20,0,0,0))
+                .startDate(LocalDate.of(2021,3,20)).endDate(LocalDate.of(2022,3,20))
                 .status(Cell.Status.Prepared).content("content3").member(john).objective(objectiveJohn2).build();
         planRepository.save(planJohn3);
         Plan planJohn4 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,4,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,4,20,0,0,0))
+                .startDate(LocalDate.of(2021,4,20)).endDate(LocalDate.of(2022,4,20))
                 .status(Cell.Status.Prepared).content("content4").member(john).objective(objectiveJohn2).build();
         planRepository.save(planJohn4);
 
         Plan planJohn5 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,5,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,5,20,0,0,0))
+                .startDate(LocalDate.of(2021,5,20)).endDate(LocalDate.of(2022,5,20))
                 .status(Cell.Status.Prepared).content("content5").member(john).objective(objectiveJohn3).build();
         planRepository.save(planJohn5);
 
         Plan planJohn6 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,6,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,6,20,0,0,0))
+                .startDate(LocalDate.of(2021,6,20)).endDate(LocalDate.of(2022,6,20))
                 .status(Cell.Status.Prepared).content("content6").member(john).objective(objectiveJohn3).build();
         planRepository.save(planJohn6);
 
         Plan planJohn7 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,7,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,7,20,0,0,0))
+                .startDate(LocalDate.of(2021,7,20)).endDate(LocalDate.of(2022,7,20))
                 .status(Cell.Status.Prepared).content("content7").member(john).objective(objectiveJohn4).build();
         planRepository.save(planJohn7);
 
         Plan planJohn8 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,8,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,8,20,0,0,0))
+                .startDate(LocalDate.of(2021,8,20)).endDate(LocalDate.of(2022,8,20))
                 .status(Cell.Status.Prepared).content("content8").member(john).objective(objectiveJohn4).build();
         planRepository.save(planJohn8);
 
         Plan planJulia1 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,1,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,1,20,0,0,0))
+                .startDate(LocalDate.of(2021,1,20)).endDate(LocalDate.of(2022,1,20))
                 .status(Cell.Status.Prepared).content("content9").member(julia).objective(objectiveJulia1).build();
         planRepository.save(planJulia1);
 
         Plan planJulia2 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,2,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,2,20,0,0,0))
+                .startDate(LocalDate.of(2021,2,20)).endDate(LocalDate.of(2022,2,20))
                 .status(Cell.Status.Prepared).content("content10").member(julia).objective(objectiveJulia1).build();
         planRepository.save(planJulia2);
 
         Plan planJulia3 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,3,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,3,20,0,0,0))
+                .startDate(LocalDate.of(2021,3,20)).endDate(LocalDate.of(2022,3,20))
                 .status(Cell.Status.Prepared).content("content11").member(julia).objective(objectiveJulia2).build();
         planRepository.save(planJulia3);
 
         Plan planJulia4 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,4,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,4,20,0,0,0))
+                .startDate(LocalDate.of(2021,4,20)).endDate(LocalDate.of(2022,4,20))
                 .status(Cell.Status.Prepared).content("content12").member(julia).objective(objectiveJulia2).build();
         planRepository.save(planJulia4);
 
         Plan planJulia5 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,5,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,5,20,0,0,0))
+                .startDate(LocalDate.of(2021,5,20)).endDate(LocalDate.of(2022,5,20))
                 .status(Cell.Status.Prepared).content("content13").member(julia).objective(objectiveJulia3).build();
         planRepository.save(planJulia5);
 
         Plan planJulia6 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,6,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,6,20,0,0,0))
+                .startDate(LocalDate.of(2021,6,20)).endDate(LocalDate.of(2022,6,20))
                 .status(Cell.Status.Prepared).content("content14").member(julia).objective(objectiveJulia3).build();
         planRepository.save(planJulia6);
 
         Plan planJulia7 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,7,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,7,20,0,0,0))
+                .startDate(LocalDate.of(2021,7,20)).endDate(LocalDate.of(2022,7,20))
                 .status(Cell.Status.Prepared).content("content15").member(julia).objective(objectiveJulia4).build();
         planRepository.save(planJulia7);
 
         Plan planJulia8 = Plan.builder().type(Cell.Type.Plan)
-                .startDateTime(LocalDateTime.of(2021,8,20,0,0,0))
-                .endDateTime(LocalDateTime.of(2022,8,20,0,0,0))
+                .startDate(LocalDate.of(2021,8,20)).endDate(LocalDate.of(2022,8,20))
                 .status(Cell.Status.Prepared).content("content16").member(julia).objective(objectiveJulia4).build();
         planRepository.save(planJulia8);
     }

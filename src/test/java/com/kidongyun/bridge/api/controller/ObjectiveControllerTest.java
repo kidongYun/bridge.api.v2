@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,10 +76,10 @@ public class ObjectiveControllerTest {
 
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
-        Objective parent = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective parent = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
-        Objective child = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective child = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title2").description("desc2").member(john).priority(priority).parent(parent).build();
 
         Set<Objective> stub = Set.of(parent, child);
@@ -100,8 +100,8 @@ public class ObjectiveControllerTest {
     @Test
     public void getObjectiveById_normal() throws Exception {
         /* Arrange */
-        Objective stub = Objective.builder().id(2L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
+        Objective stub = Objective.builder().id(2L).type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
                 .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build();
 
         when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(stub));
@@ -141,10 +141,10 @@ public class ObjectiveControllerTest {
 
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
-        Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
-        Objective.Post stub = Objective.Post.builder().startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective.Post stub = Objective.Post.builder().startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);
@@ -172,10 +172,10 @@ public class ObjectiveControllerTest {
 
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
-        Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective parent = Objective.builder().id(1L).type(Cell.Type.Objective).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Prepared).title("title1").description("desc1").member(john).priority(priority).build();
 
-        Objective.Put stub = Objective.Put.builder().id(2L).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        Objective.Put stub = Objective.Put.builder().id(2L).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).email(john.getEmail()).title("title from test").description("desc from test").priorityId(priority.getId()).parentId(parent.getId()).build();
 
         String content = objectMapper.writeValueAsString(stub);

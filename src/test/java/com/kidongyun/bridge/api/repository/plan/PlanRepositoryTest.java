@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -31,24 +32,24 @@ public class PlanRepositoryTest {
     @Test
     public void findByObjective_normal() {
         /* Arrange */
-        Objective objective1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective objective1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(objective1);
 
-        Objective objective2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title2").description("desc2").build();
+        Objective objective2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title2").description("desc2").build();
         objectiveRepository.save(objective2);
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content3").objective(objective1).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content4").objective(objective1).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content5").objective(objective2).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content6").objective(objective2).build());
 
         /* Act */
@@ -64,24 +65,24 @@ public class PlanRepositoryTest {
     @Test
     public void findByObjectiveId_normal() {
         /* Arrange */
-        Objective objective1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
+        Objective objective1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title1").description("desc1").build();
         objectiveRepository.save(objective1);
 
-        Objective objective2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("title2").description("desc2").build();
+        Objective objective2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("title2").description("desc2").build();
         objectiveRepository.save(objective2);
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content3").objective(objective1).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content4").objective(objective1).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content5").objective(objective2).build());
 
-        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDateTime(LocalDateTime.now()).endDateTime(LocalDateTime.now())
+        planRepository.save(Plan.builder().type(Cell.Type.Plan).startDate(LocalDate.now()).endDate(LocalDate.now())
                 .status(Cell.Status.Complete).content("content6").objective(objective2).build());
 
         /* Act */

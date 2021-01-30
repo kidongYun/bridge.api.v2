@@ -14,7 +14,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Slf4j
@@ -38,8 +40,10 @@ public class Plan extends Cell {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
         private Long id;
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalTime startTime;
+        private LocalDate endDate;
+        private LocalTime endTime;
         private Cell.Status status;
         private Type type;
         private String email;
@@ -47,22 +51,16 @@ public class Plan extends Cell {
         private Long objectiveId;
 
         public static Response of(Plan plan) {
-            if(Objects.isNull(plan)) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan' parameter must not be null");
-            }
-
-            if(Objects.isNull(plan.getMember())) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.member' must not be null");
-            }
-
-            if(Objects.isNull(plan.getObjective())) {
-                throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'plan.objective' must not be null");
-            }
+            Assert.notNull(plan, "'plan' parameter must not be null");
+            Assert.notNull(plan.getMember(), "'plan.member' must not be null");
+            Assert.notNull(plan.getObjective(), "'plan.objective' must not be null");
 
             return Response.builder()
                     .id(plan.getId())
-                    .startDateTime(plan.getStartDateTime())
-                    .endDateTime(plan.getEndDateTime())
+                    .startDate(plan.getStartDate())
+                    .startTime(plan.getStartTime())
+                    .endDate(plan.getEndDate())
+                    .endTime(plan.getEndTime())
                     .status(plan.getStatus())
                     .type(plan.getType())
                     .email(plan.getMember().getEmail())
@@ -79,8 +77,8 @@ public class Plan extends Cell {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
@@ -99,8 +97,8 @@ public class Plan extends Cell {
     public static class Put {
         @ApiModelProperty(example = "15")
         private Long id;
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private Cell.Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
@@ -116,8 +114,8 @@ public class Plan extends Cell {
         Assert.notNull(objective, "파라미터 'Objective' 객체는 필수 값입니다");
 
         return Plan.builder()
-                .startDateTime(post.getStartDateTime())
-                .endDateTime(post.getEndDateTime())
+                .startDate(post.getStartDate())
+                .endDate(post.getEndDate())
                 .status(post.getStatus())
                 .member(member)
                 .content(post.getContent())
@@ -132,8 +130,8 @@ public class Plan extends Cell {
 
         return Plan.builder()
                 .id(put.getId())
-                .startDateTime(put.getStartDateTime())
-                .endDateTime(put.getEndDateTime())
+                .startDate(put.getStartDate())
+                .endDate(put.getEndDate())
                 .status(put.getStatus())
                 .member(member)
                 .content(put.getContent())

@@ -1,39 +1,32 @@
 package com.kidongyun.bridge.api.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kidongyun.bridge.api.config.QuerydslConfig;
 import com.kidongyun.bridge.api.config.SecurityConfig;
 import com.kidongyun.bridge.api.entity.Cell;
 import com.kidongyun.bridge.api.entity.Member;
 import com.kidongyun.bridge.api.entity.Objective;
 import com.kidongyun.bridge.api.entity.Plan;
 import com.kidongyun.bridge.api.exception.Advice;
-import com.kidongyun.bridge.api.repository.plan.PlanRepository;
 import com.kidongyun.bridge.api.security.TokenProvider;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PlanService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -81,11 +74,11 @@ public class PlanControllerTest {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        Objective obj = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title1").description("desc1").member(john).build();
+        Objective obj = Objective.builder().id(1L).type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title1").description("desc1").member(john).build();
 
-        Plan stub = Plan.builder().id(2L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).member(john).content("test content").objective(obj).build();
+        Plan stub = Plan.builder().id(2L).type(Cell.Type.Plan).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).member(john).content("test content").objective(obj).build();
 
         when(planServiceMock.findByType(Cell.Type.Plan)).thenReturn(Set.of(stub));
 
@@ -110,14 +103,14 @@ public class PlanControllerTest {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
-        Objective objStub = Objective.builder().id(1L).type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("title1").description("desc1").member(john).build();
+        Objective objStub = Objective.builder().id(1L).type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title1").description("desc1").member(john).build();
 
-        Plan planStub1 = Plan.builder().id(2L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).member(john).content("test content1").objective(objStub).build();
+        Plan planStub1 = Plan.builder().id(2L).type(Cell.Type.Plan).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).member(john).content("test content1").objective(objStub).build();
 
-        Plan planStub2 = Plan.builder().id(3L).type(Cell.Type.Plan).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).member(john).content("test content2").objective(objStub).build();
+        Plan planStub2 = Plan.builder().id(3L).type(Cell.Type.Plan).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).member(john).content("test content2").objective(objStub).build();
 
         when(planServiceMock.findByMemberEmail(anyString())).thenReturn(Set.of(planStub1, planStub2));
 

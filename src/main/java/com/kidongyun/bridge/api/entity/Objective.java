@@ -1,6 +1,7 @@
 package com.kidongyun.bridge.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -46,8 +49,10 @@ public class Objective extends Cell {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Response {
         private Long id;
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalTime startTime;
+        private LocalDate endDate;
+        private LocalTime endTime;
         private Status status;
         private Type type;
         private String email;
@@ -58,14 +63,16 @@ public class Objective extends Cell {
         private Set<Long> childrenId;
 
         public static Response of(Objective obj) {
-            if(Objects.isNull(obj) || Objects.isNull(obj.getMember()) || Objects.isNull(obj.getPriority())) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'obj', 'obj.member', 'obj.priority' must not be null");
-            }
+            Assert.notNull(obj, "parameter 'obj' must not be null");
+            Assert.notNull(obj.getMember(), "parameter 'obj.member' must not be null");
+            Assert.notNull(obj.getPriority(), "parameter 'obj.priority' must not be null");
 
             return Response.builder()
                     .id(obj.getId())
-                    .startDateTime(obj.getStartDateTime())
-                    .endDateTime(obj.getEndDateTime())
+                    .startDate(obj.getStartDate())
+                    .startTime(obj.getStartTime())
+                    .endDate(obj.getEndDate())
+                    .endTime(obj.getEndTime())
                     .status(obj.status)
                     .type(obj.type)
                     .email(obj.getMember().getEmail())
@@ -99,8 +106,8 @@ public class Objective extends Cell {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
@@ -122,8 +129,8 @@ public class Objective extends Cell {
     public static class Put {
         @ApiModelProperty(example = "1")
         private Long id;
-        private LocalDateTime startDateTime;
-        private LocalDateTime endDateTime;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private Status status;
         @ApiModelProperty(example = "john@gmail.com")
         private String email;
@@ -144,8 +151,8 @@ public class Objective extends Cell {
 
     public static Objective of(Post post, Priority priority, Member member, Objective parent) {
         return Objective.builder()
-                .startDateTime(Objects.requireNonNullElse(post.getStartDateTime(), LocalDateTime.now()))
-                .endDateTime(post.getEndDateTime())
+                .startDate(Objects.requireNonNullElse(post.getStartDate(), LocalDate.now()))
+                .endDate(post.getEndDate())
                 .status(Objects.requireNonNullElse(post.getStatus(), Status.Prepared))
                 .type(Type.Objective)
                 .member(member)
@@ -159,8 +166,8 @@ public class Objective extends Cell {
     public static Objective of(Put put, Priority priority, Member member, Objective parent) {
         return Objective.builder()
                 .id(put.getId())
-                .startDateTime(Objects.requireNonNullElse(put.getStartDateTime(), LocalDateTime.now()))
-                .endDateTime(put.getEndDateTime())
+                .startDate(Objects.requireNonNullElse(put.getStartDate(), LocalDate.now()))
+                .endDate(put.getEndDate())
                 .status(put.getStatus())
                 .type(Type.Objective)
                 .member(member)
