@@ -112,7 +112,7 @@ public class CellRepositoryTest {
     }
 
     @Test
-    public void findByTypeOrderByStartDate_whenItIsNormalCase_thenReturnObjOrderedAsc() {
+    public void findByTypeOrderByStart_whenItIsNormalCase_thenReturnObjOrderedAsc() {
         /* Arrange */
         Objective obj1 = Objective.builder()
                 .startDate(LocalDate.of(2021,2,20))
@@ -143,7 +143,7 @@ public class CellRepositoryTest {
         planRepository.save(plan2);
 
         /* Act */
-        Set<Objective> results = objectiveRepository.findByTypeOrderByStartDateTime(Cell.Type.Objective);
+        Set<Objective> results = objectiveRepository.findByTypeOrderByStartDate(Cell.Type.Objective);
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
@@ -195,7 +195,7 @@ public class CellRepositoryTest {
         planRepository.save(plan2);
 
         /* Act */
-        Set<Objective> results = objectiveRepository.findByTypeOrderByEndDateTime(Cell.Type.Objective);
+        Set<Objective> results = objectiveRepository.findByTypeOrderByEndDate(Cell.Type.Objective);
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
@@ -359,7 +359,7 @@ public class CellRepositoryTest {
         planRepository.save(planOfJulia2);
 
         /* Act */
-        Set<Cell> results = cellRepository.findByMemberEmailOrderByStartDateTime(john.getEmail());
+        Set<Cell> results = cellRepository.findByMemberEmailOrderByStartDate(john.getEmail());
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
@@ -425,7 +425,7 @@ public class CellRepositoryTest {
         planRepository.save(planOfJulia2);
 
         /* Act */
-        Set<Cell> results = cellRepository.findByMemberEmailOrderByEndDateTime(john.getEmail());
+        Set<Cell> results = cellRepository.findByMemberEmailOrderByEndDate(john.getEmail());
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);

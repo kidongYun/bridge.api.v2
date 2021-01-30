@@ -48,20 +48,20 @@ class CellService<T extends Cell> {
         return cellRepository.findByMemberEmail(email);
     }
 
-    public Set<T> findByMemberEmailOrderByStartDateTime(String email) {
+    public Set<T> findByMemberEmailOrderByStartDate(String email) {
         if(Objects.isNull(email)) {
             return Set.of();
         }
 
-        return cellRepository.findByMemberEmailOrderByStartDateTime(email);
+        return cellRepository.findByMemberEmailOrderByStartDate(email);
     }
 
-    public Set<T> findByMemberEmailOrderByEndDateTime(String email) {
+    public Set<T> findByMemberEmailOrderByEndDate(String email) {
         if(Objects.isNull(email)) {
             return Set.of();
         }
 
-        return cellRepository.findByMemberEmailOrderByEndDateTime(email);
+        return cellRepository.findByMemberEmailOrderByEndDate(email);
     }
 
     public Optional<T> save(T cell) {
