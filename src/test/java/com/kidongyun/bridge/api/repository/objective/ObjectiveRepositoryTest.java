@@ -309,6 +309,138 @@ public class ObjectiveRepositoryTest {
     }
 
     @Test
+    public void findByObjective_whenDescriptionIsOffered_thenReturnObjectivesContainSameDescription() {
+        /* Arrange */
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).description("descOfJohn1").build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).description("descOfJohn2").build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).description("descOfJohn3").build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).description("descOfJulia2").build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        String description = "John";
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().description(description).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(3);
+        for(Objective result : results) {
+            assertThat(result.getDescription().contains(description)).isTrue();
+        }
+    }
+
+    @Test
+    public void findByObjective_whenEmailIsOffered_thenReturnObjectivesHaveSameEmail() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now().minusDays(3)).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1)).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        List<Objective> resultsOfJohn = objectiveRepository.findByObjective(Objective.builder().member(john).build());
+        List<Objective> resultsOfJulia = objectiveRepository.findByObjective(Objective.builder().member(julia).build());
+
+        /* Assert */
+        assertThat(resultsOfJohn.size()).isEqualTo(3);
+        for(Objective result : resultsOfJohn) {
+            assertThat(result.getMember().getEmail()).isEqualTo(john.getEmail());
+        }
+
+        assertThat(resultsOfJulia.size()).isEqualTo(1);
+        for(Objective result : resultsOfJulia) {
+            assertThat(result.getMember().getEmail()).isEqualTo(julia.getEmail());
+        }
+    }
+
+    @Test
+    public void findByObjective_whenPriorityIsOffered_thenReturnObjectivesHaveSamePriority() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Priority priorityOfJohn1 = Priority.builder().level(1).description("Important").member(john).build();
+        priorityRepository.save(priorityOfJohn1);
+
+        Priority priorityOfJohn2 = Priority.builder().level(2).description("Normal").member(john).build();
+        priorityRepository.save(priorityOfJohn2);
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1")
+                .description("descOfJohn1").member(john).priority(priorityOfJohn1).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2")
+                .description("descOfJohn2").member(john).priority(priorityOfJohn1).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn3")
+                .description("descOfJohn3").member(john).priority(priorityOfJohn2).build();
+        objectiveRepository.save(objOfJohn3);
+
+        /* Act */
+        List<Objective> importantObjs = objectiveRepository.findByObjective(Objective.builder().priority(priorityOfJohn1).build());
+        List<Objective> normalObjs = objectiveRepository.findByObjective(Objective.builder().priority(priorityOfJohn2).build());
+
+        /* Assert */
+        assertThat(importantObjs.size()).isEqualTo(2);
+        for(Objective importantObj : importantObjs) {
+            assertThat(importantObj.getPriority().getId()).isEqualTo(priorityOfJohn1.getId());
+        }
+
+        assertThat(normalObjs.size()).isEqualTo(1);
+        for(Objective normalObj : normalObjs) {
+            assertThat(normalObj.getPriority().getId()).isEqualTo(priorityOfJohn2.getId());
+        }
+    }
+
+    @Test
+    public void findByObjective_whenParentIsOffered_thenReturnObjectivesHaveSameParent() {
+        /* Arrange */
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").parent(objOfJohn1).build();
+        objectiveRepository.save(objOfJohn3);
+
+        /* Act */
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().parent(objOfJohn1).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getParent().getId()).isEqualTo(objOfJohn1.getId());
+        }
+    }
+
+    @Test
     public void findByObjective_whenEndDateAndTitleAreOffered_thenReturnObjectivesHaveSameEndDateAndContainSameTitle() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();

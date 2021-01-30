@@ -19,9 +19,12 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
@@ -50,24 +53,16 @@ public class ObjectiveController {
         /* MEMBER 정보를 가져온다. 필수 정보이기 때문에 없다면 오류 반환 */
         Member member = memberService.findByEmail(get.getEmail()).orElse(null);
 
-        Objective filter = Objective.of(get, priority, member);
+        /* 부모 OBJECTIVE 를 가져온다. 없다면 빈 Objective 생성 */
+        Objective parent = objectiveService.findById(get.getParentId()).orElse(null);
 
-        log.info("YKD : " + filter.toString());
+        Objective filter = Objective.of(get, priority, member, parent);
 
-        objectiveService.findByObjective(filter);
+        List<Objective.Response> responses = objectiveService.findByObjective(filter)
+                .stream().map(Objective.Response::of).collect(toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK.getReasonPhrase());
+        return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
-
-//    @ExecuteLog
-//    @GetMapping
-//    public ResponseEntity<?> getObjective() {
-//        /* OBJECTIVE 목록을 가져온다 */
-//        Set<Objective> objectives = objectiveService.findByType(Cell.Type.Objective);
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(objectives.stream().map(Objective.Response::of).collect(toSet()));
-//    }
 
     @ExecuteLog
     @GetMapping("/id/{id}")
@@ -102,7 +97,7 @@ public class ObjectiveController {
         Member member = memberService.findByEmail(post.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + post.getEmail() + "' 에 해당하는 'Member' 객체를 가져오지 못했습니다"));
 
-        /* 부모 OBJECTIVE 를 가져온다. 없다면 빈 Objective 생성 */
+        /* 부모 OBJECTIVE 를 가져온다. 없다면 null 생성 */
         Objective parent = objectiveService.findById(post.getParentId()).orElse(null);
 
         /* 새로운 OBJECTIVE 객체 데이터베이스에 저장 */
@@ -123,8 +118,8 @@ public class ObjectiveController {
         Member member = memberService.findByEmail(put.getEmail())
                 .orElseThrow(() -> new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "'" + put.getEmail() + "' 에 해당하는 'Member' 객체를 가져오지 못했습니다"));
 
-        /* 부모 OBJECTIVE 를 가져온다. 없다면 빈 Objective 생성 */
-        Objective parent = objectiveService.findById(put.getParentId()).orElse(Objective.empty());
+        /* 부모 OBJECTIVE 를 가져온다. 없다면 null 생성 */
+        Objective parent = objectiveService.findById(put.getParentId()).orElse(null);
 
         /* 수정 된 OBJECTIVE 객체 데이터베이스에 업데이트 */
         Objective result = objectiveService.save(Objective.of(put, priority, member, parent))

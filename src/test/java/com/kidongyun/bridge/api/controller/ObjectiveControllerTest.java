@@ -84,6 +84,8 @@ public class ObjectiveControllerTest {
 
         Set<Objective> stub = Set.of(parent, child);
 
+        when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(null);
+        when(memberServiceMock.findByEmail(anyString())).thenReturn(null);
         when(objectiveServiceMock.findByType(Cell.Type.Objective)).thenReturn(stub);
 
         /* Act, Assert */

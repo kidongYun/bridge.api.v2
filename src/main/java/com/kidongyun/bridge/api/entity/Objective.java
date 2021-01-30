@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -90,8 +92,14 @@ public class Objective extends Cell {
     @AllArgsConstructor
     public static class Get {
         private Long id;
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate startDate;
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate endDate;
         private Status status;
         private String email;
+        private String title;
+        private String description;
         private Long priorityId;
         private Long parentId;
     }
@@ -140,13 +148,30 @@ public class Objective extends Cell {
         private Long parentId;
     }
 
-    public static Objective of(Get get, Priority priority, Member member) {
+    public static Objective of(Get get, Priority priority, Member member, Objective parent) {
+        if(Objects.isNull(get)) {
+            return Objective.empty();
+        }
+
         return Objective.builder()
                 .id(get.getId())
+                .startDate(get.getStartDate())
+                .endDate(get.getEndDate())
+                .status(get.getStatus())
+                .type(Type.Objective)
+                .member(member)
+                .title(get.getTitle())
+                .description(get.getDescription())
+                .priority(priority)
+                .parent(parent)
                 .build();
     }
 
     public static Objective of(Post post, Priority priority, Member member, Objective parent) {
+        if(Objects.isNull(post)) {
+            return Objective.empty();
+        }
+
         return Objective.builder()
                 .startDate(Objects.requireNonNullElse(post.getStartDate(), LocalDate.now()))
                 .endDate(post.getEndDate())
@@ -161,6 +186,10 @@ public class Objective extends Cell {
     }
 
     public static Objective of(Put put, Priority priority, Member member, Objective parent) {
+        if(Objects.isNull(put)) {
+            return Objective.empty();
+        }
+
         return Objective.builder()
                 .id(put.getId())
                 .startDate(Objects.requireNonNullElse(put.getStartDate(), LocalDate.now()))

@@ -23,7 +23,7 @@ public class PlanServiceTest {
     PlanService planService;
 
     @Test
-    public void findByObjectiveId_idIsNull() {
+    public void findByObjectiveId_whenIdIsNull_thenResultIsEmpty() {
         /* Arrange, Act */
         Set<Plan> result = planService.findByObjectiveId(null);
 

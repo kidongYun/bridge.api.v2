@@ -36,6 +36,22 @@ public class ObjectiveRepositoryCustomImpl implements ObjectiveRepositoryCustom 
          query.where(objective.title.contains(obj.getTitle()));
       }
 
+      if(Objects.nonNull(obj.getDescription())) {
+         query.where(objective.description.contains(obj.getDescription()));
+      }
+
+      if(Objects.nonNull(obj.getMember()) && Objects.nonNull(obj.getMember().getEmail())) {
+         query.where(objective.member.email.eq(obj.getMember().getEmail()));
+      }
+
+      if(Objects.nonNull(obj.getPriority()) && Objects.nonNull(obj.getPriority().getId())) {
+         query.where(objective.priority.id.eq(obj.getPriority().getId()));
+      }
+
+      if(Objects.nonNull(obj.getParent()) && Objects.nonNull(obj.getParent().getId())) {
+         query.where(objective.parent.id.eq(obj.getParent().getId()));
+      }
+
       return query.fetch();
    }
 }
