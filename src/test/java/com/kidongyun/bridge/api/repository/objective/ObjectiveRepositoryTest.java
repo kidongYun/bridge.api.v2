@@ -243,11 +243,105 @@ public class ObjectiveRepositoryTest {
         for(Objective result : results) {
             assertThat(result.getStartDate()).isBefore(LocalDate.now().plusDays(1));
             assertThat(result.getStartDate()).isAfter(LocalDate.now().minusDays(1));
+            assertThat(result.getStartDate()).isEqualTo(LocalDate.now());
         }
     }
 
     @Test
     public void findByObjective_whenEndDateIsOffered_thenReturnObjectivesHaveSameEndDate() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now().minusDays(3)).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1)).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().endDate(LocalDate.now()).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getEndDate()).isBefore(LocalDate.now().plusDays(1));
+            assertThat(result.getEndDate()).isAfter(LocalDate.now().minusDays(1));
+            assertThat(result.getEndDate()).isEqualTo(LocalDate.now());
+        }
+    }
+
+    @Test
+    public void findByObjective_whenTitleIsOffered_thenReturnObjectivesContainSameTitle() {
+        /* Arrange */
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).title("titleOfJohn1").build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).title("titleOfJohn2").build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).title("titleOfJohn3").build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).title("titleOfJulia2").build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        String title = "John";
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().title(title).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(3);
+        for(Objective result : results) {
+            assertThat(result.getTitle().contains(title)).isTrue();
+        }
+    }
+
+    @Test
+    public void findByObjective_whenEndDateAndTitleAreOffered_thenReturnObjectivesHaveSameEndDateAndContainSameTitle() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1)).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDate(LocalDate.now())
+                .endDate(LocalDate.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        String title = "John";
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().title(title).endDate(LocalDate.now()).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getEndDate()).isBefore(LocalDate.now().plusDays(1));
+            assertThat(result.getEndDate()).isAfter(LocalDate.now().minusDays(1));
+            assertThat(result.getEndDate()).isEqualTo(LocalDate.now());
+            assertThat(result.getTitle().contains(title)).isTrue();
+        }
     }
 }
