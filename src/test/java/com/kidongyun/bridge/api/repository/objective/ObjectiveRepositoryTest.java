@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -188,11 +189,9 @@ public class ObjectiveRepositoryTest {
     }
 
     @Test
-    public void findByObjective_when_then() {
+    public void findByObjective_whenIdIsOffered_thenReturnOneHasSameId() {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
-
-        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
 
         Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
                 .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
@@ -202,27 +201,54 @@ public class ObjectiveRepositoryTest {
                 .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").parent(objOfJohn1).member(john).build();
         objectiveRepository.save(objOfJohn2);
 
-        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").parent(objOfJohn1).member(john).build();
-        objectiveRepository.save(objOfJohn3);
-
-        Objective objOfJulia1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia1").description("descOfJulia1").member(julia).build();
-        objectiveRepository.save(objOfJulia1);
-
-        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").parent(objOfJulia1).member(julia).build();
-        objectiveRepository.save(objOfJulia2);
-
-        Objective objOfJulia3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
-                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJulia3").description("descOfJulia3").parent(objOfJulia1).member(julia).build();
-        objectiveRepository.save(objOfJulia3);
-
         /* Act */
-        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().status(Cell.Status.Complete).build());
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().id(objOfJohn1.getId()).build());
 
         /* Assert */
-        log.info("YKD : " + results.toString());
-        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0).getId()).isEqualTo(objOfJohn1.getId());
+        assertThat(results.get(0).getTitle()).isEqualTo(objOfJohn1.getTitle());
+        assertThat(results.get(0).getDescription()).isEqualTo(objOfJohn1.getDescription());
+        assertThat(results.get(0).getStartDateTime()).isEqualTo(objOfJohn1.getStartDateTime());
+        assertThat(results.get(0).getEndDateTime()).isEqualTo(objOfJohn1.getEndDateTime());
+    }
+
+    @Test
+    public void findByObjective_whenStartDateTimeIsOffered_thenReturnObjectivesHaveSameStartDateTime() {
+        /* Arrange */
+        Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
+
+        Member julia = Member.builder().email("julia@gmail.com").password("julia123").build();
+
+        Objective objOfJohn1 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJohn1").description("descOfJohn1").member(john).build();
+        objectiveRepository.save(objOfJohn1);
+
+        Objective objOfJohn2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now().minusDays(3))
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn2").description("descOfJohn2").member(john).build();
+        objectiveRepository.save(objOfJohn2);
+
+        Objective objOfJohn3 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now().plusDays(1))
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Prepared).title("titleOfJohn3").description("descOfJohn3").member(john).build();
+        objectiveRepository.save(objOfJohn3);
+
+        Objective objOfJulia2 = Objective.builder().type(Cell.Type.Objective).startDateTime(LocalDateTime.now())
+                .endDateTime(LocalDateTime.now()).status(Cell.Status.Complete).title("titleOfJulia2").description("descOfJulia2").member(julia).build();
+        objectiveRepository.save(objOfJulia2);
+
+        /* Act */
+        List<Objective> results = objectiveRepository.findByObjective(Objective.builder().startDateTime(LocalDate.now().atStartOfDay()).build());
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(2);
+        for(Objective result : results) {
+            assertThat(result.getStartDateTime()).isBefore(LocalDateTime.now().plusDays(1));
+            assertThat(result.getStartDateTime()).isAfter(LocalDateTime.now().minusDays(1));
+        }
+    }
+
+    @Test
+    public void findByObjective_whenEndDateTimeIsOffered_thenReturnObjectivesHaveSameEndDateTime() {
+
     }
 }
