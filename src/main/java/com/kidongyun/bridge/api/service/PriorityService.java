@@ -39,9 +39,9 @@ public class PriorityService {
         return priorityRepository.findByIdAndMemberEmail(priorityId, email);
     }
 
-    public Set<Priority> findByMemberEmail(String email) throws Exception {
+    public Set<Priority> findByMemberEmail(String email) {
         if(Objects.isNull(email)) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "'email' should be not null");
+            return Set.of();
         }
 
         return priorityRepository.findByMemberEmail(email);

@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void getObjective_whenItIsNormal_then() throws Exception {
+    public void getObjective_whenParameterHasId_thenReturnNormalResponse() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
@@ -100,16 +101,17 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void getObjectiveById_normal() throws Exception {
+    public void getObjective_whenParameterHasEmail_thenReturnNormalResponse() throws Exception {
         /* Arrange */
         Objective stub = Objective.builder().id(2L).type(Cell.Type.Objective).startDate(LocalDate.now())
                 .endDate(LocalDate.now()).status(Cell.Status.Prepared).title("title2").description("desc2").parent(Objective.builder().id(1L).build())
                 .priority(Priority.builder().id(1L).build()).member(Member.builder().email("john@gmail.com").build()).build();
 
-        when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(stub));
+        when(objectiveServiceMock.findByObjective(any(Objective.class))).thenReturn(List.of(stub));
 
         /* Act, Assert */
-        mockMvc.perform(get("/api/v1/objective/email/2")
+        mockMvc.perform(get("/api/v1/objective")
+                .param("email", "john@gmail.com")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,25 +121,23 @@ public class ObjectiveControllerTest {
     }
 
     @Test
-    public void getObjectiveById_cannotFindObjective() throws Exception {
-        /* Arrange */
-        when(objectiveServiceMock.findById(anyLong())).thenReturn(null);
-
-        /* Act, Assert */
-        String response = mockMvc.perform(get("/api/v1/objective/id/2")
+    public void getObjectiveById_whenObjectiveGetIsNull_thenReturnObjectivesWithoutFilter() throws Exception {
+        /* Arrange, Act */
+        String result = mockMvc.perform(get("/api/v1/objective")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         )
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        assertThat(response).isEqualTo("'obj', 'obj.member', 'obj.priority' must not be null");
+        /* Assert */
+        assertThat(result).isEqualTo("[]");
     }
 
     @Test
-    public void postObjective_normalCase() throws Exception {
+    public void postObjective_whenPostParametersAreWell_thenReturnNormalResponse() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
 
@@ -152,19 +152,27 @@ public class ObjectiveControllerTest {
         String content = objectMapper.writeValueAsString(stub);
 
         when(priorityServiceMock.findByIdAndMemberEmail(anyLong(), anyString())).thenReturn(Optional.of(priority));
+        when(priorityServiceMock.findAnyOne()).thenReturn(Optional.of(priority));
         when(objectiveServiceMock.findById(anyLong())).thenReturn(Optional.of(parent));
         when(memberServiceMock.findByEmail(anyString())).thenReturn(Optional.of(john));
         when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
-        /* Act, Assert */
-        mockMvc.perform(post("/api/v1/objective")
+        /* Act */
+        String result = mockMvc.perform(post("/api/v1/objective")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
         )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        /* Assert */
+        Objective.Response response = objectMapper.readValue(result, Objective.Response.class);
+        assertThat(response.getEmail()).isEqualTo(stub.getEmail());
+        assertThat(response.getTitle()).isEqualTo(stub.getTitle());
+        assertThat(response.getDescription()).isEqualTo(stub.getDescription());
     }
 
     @Test
@@ -188,7 +196,7 @@ public class ObjectiveControllerTest {
         when(objectiveServiceMock.save(any(Objective.class))).thenReturn(Optional.of(Objective.of(stub, priority, john, parent)));
 
         /* Act, Assert */
-        mockMvc.perform(put("/api/v1/objective")
+        mockMvc.perform(put("/api/v1/objective/" + stub.getId())
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)

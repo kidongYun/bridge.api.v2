@@ -102,6 +102,10 @@ public class Objective extends Cell {
         private String description;
         private Long priorityId;
         private Long parentId;
+
+        public static Get empty() {
+            return Get.builder().build();
+        }
     }
 
     @Getter

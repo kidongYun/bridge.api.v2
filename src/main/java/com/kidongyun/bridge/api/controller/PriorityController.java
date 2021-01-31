@@ -32,8 +32,9 @@ public class PriorityController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<?> getPriorityByEmail(@PathVariable("email") String email) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(priorityService.findByMemberEmail(email).stream().map(Priority.Response::of).collect(toSet()));
+    public ResponseEntity<?> getPriorityByEmail(@PathVariable("email") String email) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(priorityService.findByMemberEmail(email).stream().map(Priority.Response::of).collect(toSet()));
     }
 
     @PostMapping
