@@ -82,6 +82,10 @@ public class Objective extends Cell {
                     .childrenId(obj.getChildren().stream().map(Cell::getId).collect(toSet()))
                     .build();
         }
+
+        public static Response empty() {
+            return Response.builder().build();
+        }
     }
 
     @Getter
@@ -102,6 +106,7 @@ public class Objective extends Cell {
         private String description;
         private Long priorityId;
         private Long parentId;
+        private String sort;
 
         public static Get empty() {
             return Get.builder().build();

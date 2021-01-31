@@ -19,10 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -140,18 +137,15 @@ public class CellServiceTest {
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
 
-        Objective target = Objective.empty();
-        boolean first = true;
-
+        Objective prev = null;
         for(Objective result : results) {
-            if(first) {
-                target = result;
-                first = false;
+            if(Objects.isNull(prev)) {
+                prev = result;
                 continue;
             }
 
-            assertThat(target.getId()).isLessThan(result.getId());
-            target = result;
+            assertThat(prev.getId()).isLessThan(result.getId());
+            prev = result;
         }
     }
 
@@ -171,18 +165,15 @@ public class CellServiceTest {
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
 
-        Objective target = Objective.empty();
-        boolean first = true;
-
+        Objective prev = null;
         for(Objective result : results) {
-            if(first) {
-                target = result;
-                first = false;
+            if(Objects.isNull(prev)) {
+                prev = result;
                 continue;
             }
 
-            assertThat(target.getStartDate()).isBefore(result.getStartDate());
-            target = result;
+            assertThat(prev.getStartDate()).isBefore(result.getStartDate());
+            prev = result;
         }
     }
 }

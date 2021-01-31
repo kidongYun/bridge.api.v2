@@ -64,6 +64,8 @@ public class ObjectiveController {
         List<Objective.Response> responses = objectiveService.findByObjective(filter)
                 .stream().map(Objective.Response::of).collect(toList());
 
+        log.info("YKD : " + get.getSort());
+
         return ResponseEntity.status(HttpStatus.OK).body(responses);
     }
 

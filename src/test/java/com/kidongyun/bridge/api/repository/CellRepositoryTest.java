@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -147,12 +148,11 @@ public class CellRepositoryTest {
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
-        Cell prev = Cell.empty();
-        boolean first = true;
+
+        Cell prev = null;
         for(Cell result : results) {
-            if(first) {
+            if(Objects.isNull(prev)) {
                 prev = result;
-                first = false;
                 continue;
             }
 
@@ -199,12 +199,10 @@ public class CellRepositoryTest {
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
-        Cell prev = Cell.empty();
-        boolean first = true;
+        Cell prev = null;
         for(Cell result : results) {
-            if(first) {
+            if(Objects.isNull(prev)) {
                 prev = result;
-                first = false;
                 continue;
             }
 
@@ -363,12 +361,10 @@ public class CellRepositoryTest {
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
-        Cell prev = Cell.empty();
-        boolean first = true;
+        Cell prev = null;
         for(Cell result : results) {
-            if(first) {
+            if(Objects.isNull(prev)) {
                 prev = result;
-                first = false;
                 continue;
             }
 
@@ -429,12 +425,10 @@ public class CellRepositoryTest {
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);
-        Cell prev = Cell.empty();
-        boolean first = true;
+        Cell prev = null;
         for(Cell result : results) {
-            if(first) {
+            if(Objects.isNull(prev)) {
                 prev = result;
-                first = false;
                 continue;
             }
 
