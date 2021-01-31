@@ -7,23 +7,20 @@ import com.kidongyun.bridge.api.entity.Priority;
 import com.kidongyun.bridge.api.service.MemberService;
 import com.kidongyun.bridge.api.service.ObjectiveService;
 import com.kidongyun.bridge.api.service.PriorityService;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.transaction.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @CrossOrigin
@@ -49,6 +46,8 @@ public class ObjectiveController {
             get = Objective.Get.empty();
         }
 
+        log.info("YKD : " + get.getSort());
+
         /* PRIORITY 정보를 가져온다. */
         Priority priority = priorityService.findByIdAndMemberEmail(get.getPriorityId(), get.getEmail()).orElse(null);
 
@@ -61,12 +60,13 @@ public class ObjectiveController {
         /* 검색 조건에 해당하는 Objective 객체 생성 */
         Objective filter = Objective.of(get, priority, member, parent);
 
-        List<Objective.Response> responses = objectiveService.findByObjective(filter)
-                .stream().map(Objective.Response::of).collect(toList());
+        /* 검색 조건을 포함하여 해당하는 Objective 결과를 데이터베이스에서 가져온다 */
+        List<Objective> responses = objectiveService.findByObjective(filter);
 
-        log.info("YKD : " + get.getSort());
+        /* 정렬 조건에 맞추어 결과를 정렬 */
+        List<Objective> orderedResponse = objectiveService.order(responses, Comparator.comparingLong(Objective::getId));
 
-        return ResponseEntity.status(HttpStatus.OK).body(responses);
+        return ResponseEntity.status(HttpStatus.OK).body(orderedResponse.stream().map(Objective.Response::of).collect(toList()));
     }
 
     @ExecuteLog

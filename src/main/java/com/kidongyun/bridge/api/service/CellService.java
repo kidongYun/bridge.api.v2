@@ -81,4 +81,8 @@ class CellService<T extends Cell> {
     public Set<T> order(Set<T> src, Comparator<T> criteria) {
         return src.stream().sorted(criteria).collect(Collectors.toCollection(LinkedHashSet::new));
     }
+
+    public List<T> order(List<T> src, Comparator<T> criteria) {
+        return src.stream().sorted(criteria).collect(Collectors.toList());
+    }
 }

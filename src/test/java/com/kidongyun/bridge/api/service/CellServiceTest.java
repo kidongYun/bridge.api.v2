@@ -122,7 +122,7 @@ public class CellServiceTest {
     }
 
     @Test
-    public void order_whenCriteriaIsId_thenReturnOrderedListBasedId() {
+    public void order_whenCriteriaIsId_thenReturnOrderedSetBasedId() {
         /* Arrange */
         Set<Objective> stub = Set.of(
                 Objective.builder().id(2L).build(),
@@ -150,7 +150,7 @@ public class CellServiceTest {
     }
 
     @Test
-    public void order_whenCriteriaIsStartDate_thenRetrunOrderedListBasedStartDate() {
+    public void order_whenCriteriaIsStartDate_thenReturnOrderedSetBasedStartDate() {
         /* Arrange */
         Set<Objective> stub = Set.of(
                 Objective.builder().id(1L).startDate(LocalDate.of(2021,7,20)).build(),
@@ -161,6 +161,62 @@ public class CellServiceTest {
 
         /* Act */
         Set<Objective> results = objectiveService.order(stub, Comparator.comparing(Objective::getStartDate));
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+
+        Objective prev = null;
+        for(Objective result : results) {
+            if(Objects.isNull(prev)) {
+                prev = result;
+                continue;
+            }
+
+            assertThat(prev.getStartDate()).isBefore(result.getStartDate());
+            prev = result;
+        }
+    }
+
+    @Test
+    public void order_whenCriteriaIsId_thenReturnOrderedListBasedId() {
+        /* Arrange */
+        List<Objective> stub = List.of(
+                Objective.builder().id(2L).build(),
+                Objective.builder().id(4L).build(),
+                Objective.builder().id(3L).build(),
+                Objective.builder().id(1L).build()
+        );
+
+        /* Act */
+        List<Objective> results = objectiveService.order(stub, Comparator.comparingLong(Objective::getId));
+
+        /* Assert */
+        assertThat(results.size()).isEqualTo(4);
+
+            Objective prev = null;
+            for(Objective result : results) {
+                if(Objects.isNull(prev)) {
+                    prev = result;
+                    continue;
+                }
+
+                assertThat(prev.getId()).isLessThan(result.getId());
+                prev = result;
+            }
+    }
+
+    @Test
+    public void order_whenCriteriaIsStartDate_thenReturnOrderedListBasedStartDate() {
+        /* Arrange */
+        List<Objective> stub = List.of(
+                Objective.builder().id(1L).startDate(LocalDate.of(2021,7,20)).build(),
+                Objective.builder().id(2L).startDate(LocalDate.of(2022,6,12)).build(),
+                Objective.builder().id(3L).startDate(LocalDate.of(2020,4,2)).build(),
+                Objective.builder().id(4L).startDate(LocalDate.of(2019,7,7)).build()
+        );
+
+        /* Act */
+        List<Objective> results = objectiveService.order(stub, Comparator.comparing(Objective::getStartDate));
 
         /* Assert */
         assertThat(results.size()).isEqualTo(4);

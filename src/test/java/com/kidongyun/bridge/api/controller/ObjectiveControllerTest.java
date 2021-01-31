@@ -135,6 +135,7 @@ public class ObjectiveControllerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void getObjective_when_then() throws Exception {
         /* Arrange */
         Member john = Member.builder().email("john@gmail.com").password("q1w2e3r4").build();
@@ -142,16 +143,18 @@ public class ObjectiveControllerTest {
         Priority priority = Priority.builder().id(1L).level(1).description("Important").member(john).build();
 
         List<Objective> stub = List.of(
-                Objective.builder().id(3L).member(john).priority(priority).build(),
+                Objective.builder().id(1L).member(john).priority(priority).build(),
                 Objective.builder().id(2L).member(john).priority(priority).build(),
-                Objective.builder().id(4L).member(john).priority(priority).build(),
-                Objective.builder().id(1L).member(john).priority(priority).build()
+                Objective.builder().id(3L).member(john).priority(priority).build(),
+                Objective.builder().id(4L).member(john).priority(priority).build()
         );
 
         when(objectiveServiceMock.findByObjective(any(Objective.class))).thenReturn(stub);
+        when(objectiveServiceMock.order(anyList(), any(Comparator.class))).thenReturn(stub);
 
         /* Act */
         String result = mockMvc.perform(get("/api/v1/objective")
+                .param("sort", "-id")
                 .characterEncoding("utf-8")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -161,8 +164,7 @@ public class ObjectiveControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         /* Assert */
-        List<Objective.Response> responses = Arrays.asList(objectMapper.readValue(result, Objective.Response[].class));
-        log.info("YKD : " + responses);
+        Objective.Response[] responses = objectMapper.readValue(result, Objective.Response[].class);
 
         Objective.Response prev = null;
         for(Objective.Response response : responses) {
