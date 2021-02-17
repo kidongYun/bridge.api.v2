@@ -25,7 +25,6 @@ import static java.util.stream.Collectors.toSet;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/plan")
-@Transactional
 public class PlanController {
     private PlanService planService;
     private ObjectiveService objectiveService;

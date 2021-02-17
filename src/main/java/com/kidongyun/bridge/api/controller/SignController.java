@@ -24,7 +24,6 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/sign")
-@Transactional
 public class SignController {
     private MemberService memberService;
 

@@ -25,7 +25,6 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @CrossOrigin
 @RestController
-@Transactional
 @RequestMapping("api/v1/objective")
 public class ObjectiveController {
     private ObjectiveService objectiveService;

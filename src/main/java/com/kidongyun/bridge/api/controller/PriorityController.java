@@ -17,7 +17,6 @@ import static java.util.stream.Collectors.toSet;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/priority")
-@Transactional
 public class PriorityController {
     private PriorityService priorityService;
 
